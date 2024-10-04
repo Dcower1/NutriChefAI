@@ -2,4 +2,12 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+    <color name="toorbar">#7FA1C3</color>
+    <color name="fondo">#DAE8FC</color>
+    <color name="whiteobjetos">#F5EDED</color>
+    <color name="botones">#E2DAD6</color>
+    <color name="btnintenso">#7EA6E0</color>
+
 </resources>

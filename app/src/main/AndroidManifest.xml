@@ -13,6 +13,18 @@
         android:theme="@style/Theme.NutriChefAI"
         tools:targetApi="31">
         <activity
+            android:name=".fragments.platillos.Platillos"
+            android:exported="false" />
+        <activity
+            android:name=".fragments.perfiles.Perfil_Usuario"
+            android:exported="false" />
+        <activity
+            android:name=".fragments.freezer.Freezer_inv"
+            android:exported="false" />
+        <activity
+            android:name=".fragments.log.Login_Usuario"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
