@@ -9,7 +9,6 @@
     tools:context=".fragments.log.Log_Usuario">
 
 
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -17,11 +16,30 @@
         android:background="@color/toorbar"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:title="NutriChef AI"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:titleMarginStart="30dp" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+           >
+
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NutriChef AI"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
+
+    </androidx.appcompat.widget.Toolbar>
 
     <Button
         android:id="@+id/btn_login"
@@ -53,6 +71,7 @@
         android:id="@+id/viewSwitcher"
         android:layout_width="246dp"
         android:layout_height="532dp"
+        android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="wrap"
@@ -70,6 +89,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_login">
 
+            <ImageView
+                android:id="@+id/logoimg"
+                android:layout_width="128dp"
+                android:layout_height="86dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/fondosombra" />
+
             <EditText
                 android:id="@+id/editTextLoginUsername"
                 android:layout_width="210dp"
@@ -83,28 +112,27 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.432"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.239" />
+                app:layout_constraintTop_toBottomOf="@+id/logoimg"
+                app:layout_constraintVertical_bias="0.115" />
 
             <EditText
                 android:id="@+id/editTextLoginPassword"
                 android:layout_width="210dp"
                 android:layout_height="40dp"
-                android:layout_marginTop="64dp"
-                android:layout_marginBottom="176dp"
+                android:layout_marginTop="4dp"
                 android:ems="10"
                 android:gravity="center"
                 android:hint="Password"
                 android:inputType="textPassword"
                 android:paddingEnd="16dp"
 
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/btn_ingresar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.432"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextLoginUsername"
 
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toBottomOf="@+id/editTextLoginUsername"
+                app:layout_constraintVertical_bias="0.418" />
 
             <Button
                 android:id="@+id/btn_ingresar"
@@ -118,7 +146,9 @@
                 android:text="Ingresar"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/logoimg"
+                app:layout_constraintVertical_bias="0.961" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -131,6 +161,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_login">
+
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="128dp"
+                android:layout_height="86dp"
+                app:srcCompat="@drawable/fondosombra"
+                tools:layout_editor_absoluteX="59dp" />
 
             <EditText
                 android:id="@+id/editTextRegisterUser"
@@ -211,5 +248,17 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ViewSwitcher>
+
+    <ImageView
+        android:id="@+id/logotool"
+        android:layout_width="65dp"
+        android:layout_height="69dp"
+        android:src="@drawable/logowhite"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintEnd_toEndOf="@+id/toolbar"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
