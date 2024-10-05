@@ -3,15 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/chat"
+        android:id="@+id/chat_nav"
         android:title="ChatAI"
         android:icon="@drawable/menu_bt_ia"/>
     <item
-        android:id="@+id/add"
+        android:id="@+id/add_nav"
         android:icon="@drawable/add_food"
         android:title="add_food" />
     <item
-        android:id="@+id/perfil"
+        android:id="@+id/perfil_nav"
         android:title="Perfil"
         android:icon="@drawable/usuario_bt"/>
 </menu>

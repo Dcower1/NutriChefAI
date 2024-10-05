@@ -1,4 +1,4 @@
-package com.example.nutrichefai.fragments.log;
+package com.example.nutrichefai.fragments.chat;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,12 +17,12 @@ import com.example.nutrichefai.R;
 
 import org.jetbrains.annotations.Nullable;
 
-public class Login_Usuario extends Fragment {
+public class Chat_menu extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login_usuario, container, false);
+        View view = inflater.inflate(R.layout.fragment_chat_menu, container, false);
 
         // Configuración del padding según los insets del sistema (barra de estado, etc.)
         ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.main), (v, insets) -> {
