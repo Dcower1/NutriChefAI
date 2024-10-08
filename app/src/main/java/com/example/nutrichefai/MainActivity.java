@@ -1,7 +1,10 @@
 package com.example.nutrichefai;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,29 +21,46 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
-    //Botones del navegacion de la APP;
+    // Botones de la navegación de la app
     Toolbar toolbar;
     BottomNavigationView bottomNavigationView;
 
-    //Para inicializar los fragmentos;
+    // Para inicializar los fragmentos
     FrameLayout frameLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        EdgeToEdge.enable(this); // Si este es tu método para hacer la app a pantalla completa
         setContentView(R.layout.activity_main);
+
+        // Ajustar los márgenes de los system bars (barra de estado y navegación)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        // Referencias a la barra de navegación y fragment container
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         frameLayout = findViewById(R.id.fragment_container);
-        toolbar=findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
 
+        // Detectar si es una tableta
+        if (esTablet(this)) {
+            // Es una tableta: ajusta el diseño o los componentes si es necesario
+            Toast.makeText(this, "Este es un dispositivo tipo tableta", Toast.LENGTH_SHORT).show();
+            // Opcional: puedes usar un layout distinto para tablets si lo necesitas
+            // setContentView(R.layout.activity_main_tablet); // Si tuvieras un layout específico
+        } else {
+            // Es un teléfono: ajusta el diseño o comportamiento para pantallas más pequeñas
+            Toast.makeText(this, "Este es un dispositivo tipo teléfono", Toast.LENGTH_SHORT).show();
+        }
+
+        // Configurar la toolbar como ActionBar
         setSupportActionBar(toolbar);
 
+        // Manejar la selección de los elementos del BottomNavigationView
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.chat_nav) {
                 return loadFragment(new Chat_menu());
@@ -51,9 +71,16 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
-
     }
 
+    // Método para detectar si el dispositivo es una tableta
+    public boolean esTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
+
+    // Método para cargar los fragmentos
     private boolean loadFragment(Fragment fragment) {
         if (fragment != null) {
             getSupportFragmentManager()
@@ -65,4 +92,3 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 }
-
