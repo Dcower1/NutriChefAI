@@ -24,18 +24,17 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
 
             <TextView
                 android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:text="NutriChef AI"
                 android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:layout_centerInParent="true" />
+                android:textSize="20sp" />
 
         </RelativeLayout>
 
@@ -45,54 +44,52 @@
         android:id="@+id/btn_login"
         android:layout_width="104dp"
         android:layout_height="46dp"
-        android:layout_marginTop="172dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginStart="84dp"
         android:backgroundTint="@color/btnintenso"
         android:text="Login"
-        app:layout_constraintEnd_toStartOf="@+id/btn_register"
-        app:layout_constraintHorizontal_bias="0.973"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/viewSwitcher"
+        app:layout_constraintStart_toStartOf="@+id/viewSwitcher"
+        app:layout_constraintTop_toTopOf="@+id/btn_register"
+        app:layout_constraintVertical_bias="0.074" />
 
     <Button
         android:id="@+id/btn_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="172dp"
-        android:layout_marginEnd="516dp"
+        android:layout_marginBottom="8dp"
         android:backgroundTint="@color/btnintenso"
         android:text="Registro"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_login"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintBottom_toTopOf="@+id/viewSwitcher"
+        app:layout_constraintEnd_toEndOf="@+id/viewSwitcher"
+        app:layout_constraintHorizontal_bias="0.608"
+        app:layout_constraintStart_toEndOf="@+id/btn_login"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.901" />
 
     <ViewSwitcher
         android:id="@+id/viewSwitcher"
-        android:layout_width="613dp"
-        android:layout_height="533dp"
+        android:layout_width="527dp"
+        android:layout_height="433dp"
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="wrap"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btn_login"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.614"
         app:layout_constraintWidth_default="wrap">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/login_layout"
             android:layout_width="match_parent"
-            android:layout_height="492dp"
-            android:background="@drawable/transparent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_login">
+            android:layout_height="match_parent"
+            android:background="@drawable/transparent">
 
             <ImageView
                 android:id="@+id/logoimg"
-                android:layout_width="148dp"
-                android:layout_height="128dp"
+                android:layout_width="128dp"
+                android:layout_height="86dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -110,10 +107,10 @@
                 android:inputType="text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintHorizontal_bias="0.432"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/logoimg"
-                app:layout_constraintVertical_bias="0.128" />
+                app:layout_constraintVertical_bias="0.115" />
 
             <EditText
                 android:id="@+id/editTextLoginPassword"
@@ -128,11 +125,11 @@
 
                 app:layout_constraintBottom_toTopOf="@+id/btn_ingresar"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintHorizontal_bias="0.432"
                 app:layout_constraintStart_toStartOf="parent"
 
                 app:layout_constraintTop_toBottomOf="@+id/editTextLoginUsername"
-                app:layout_constraintVertical_bias="0.439" />
+                app:layout_constraintVertical_bias="0.418" />
 
             <Button
                 android:id="@+id/btn_ingresar"
@@ -155,7 +152,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/register_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="423dp"
             android:background="@drawable/transparent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -164,8 +161,8 @@
 
             <ImageView
                 android:id="@+id/logo"
-                android:layout_width="148dp"
-                android:layout_height="128dp"
+                android:layout_width="128dp"
+                android:layout_height="86dp"
                 android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
@@ -178,14 +175,12 @@
                 android:layout_width="210dp"
                 android:layout_height="40dp"
 
-                android:layout_marginTop="16dp"
                 android:ems="10"
                 android:gravity="center"
                 android:hint="Usuario"
-
                 android:inputType="text"
+
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/logo" />
 
@@ -193,7 +188,7 @@
                 android:id="@+id/editTextRegisterEmail"
                 android:layout_width="210dp"
                 android:layout_height="40dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="16dp"
 
                 android:ems="10"
                 android:gravity="center"
@@ -201,7 +196,6 @@
                 android:inputType="textEmailAddress"
 
                 app:layout_constraintEnd_toEndOf="@+id/editTextRegisterUser"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/editTextRegisterUser"
                 app:layout_constraintTop_toBottomOf="@+id/editTextRegisterUser" />
 
@@ -209,7 +203,7 @@
                 android:id="@+id/editTextRegisterPassword"
                 android:layout_width="210dp"
                 android:layout_height="40dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
 
                 android:ems="10"
                 android:gravity="center"
@@ -219,16 +213,15 @@
                 android:paddingEnd="16dp"
 
                 app:layout_constraintEnd_toEndOf="@+id/editTextRegisterEmail"
-                app:layout_constraintHorizontal_bias="0.0"
-
                 app:layout_constraintStart_toStartOf="@+id/editTextRegisterEmail"
+
                 app:layout_constraintTop_toBottomOf="@+id/editTextRegisterEmail" />
 
             <EditText
                 android:id="@+id/editTextRegisterPasswordRepeat"
                 android:layout_width="210dp"
                 android:layout_height="40dp"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="16dp"
 
                 android:ems="10"
                 android:gravity="center"
@@ -237,9 +230,8 @@
                 android:paddingEnd="16dp"
 
                 app:layout_constraintEnd_toEndOf="@+id/editTextRegisterPassword"
-                app:layout_constraintHorizontal_bias="0.0"
-
                 app:layout_constraintStart_toStartOf="@+id/editTextRegisterPassword"
+
                 app:layout_constraintTop_toBottomOf="@+id/editTextRegisterPassword" />
 
             <Button
@@ -251,10 +243,10 @@
 
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/editTextRegisterPasswordRepeat"
-                app:layout_constraintHorizontal_bias="0.59"
+                app:layout_constraintHorizontal_bias="0.465"
                 app:layout_constraintStart_toStartOf="@+id/editTextRegisterPasswordRepeat"
                 app:layout_constraintTop_toBottomOf="@+id/logo"
-                app:layout_constraintVertical_bias="0.837" />
+                app:layout_constraintVertical_bias="0.93" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

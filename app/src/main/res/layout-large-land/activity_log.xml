@@ -44,6 +44,7 @@
         android:id="@+id/btn_login"
         android:layout_width="104dp"
         android:layout_height="46dp"
+        android:layout_marginStart="80dp"
         android:backgroundTint="@color/btnintenso"
         android:text="Login"
         app:layout_constraintBottom_toTopOf="@+id/viewSwitcher"
@@ -60,15 +61,15 @@
         android:text="Registro"
         app:layout_constraintBottom_toTopOf="@+id/viewSwitcher"
         app:layout_constraintEnd_toEndOf="@+id/viewSwitcher"
-        app:layout_constraintHorizontal_bias="0.525"
+        app:layout_constraintHorizontal_bias="0.586"
         app:layout_constraintStart_toEndOf="@+id/btn_login"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="0.888" />
+        app:layout_constraintVertical_bias="0.942" />
 
     <ViewSwitcher
         android:id="@+id/viewSwitcher"
-        android:layout_width="246dp"
-        android:layout_height="532dp"
+        android:layout_width="499dp"
+        android:layout_height="432dp"
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -81,8 +82,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/login_layout"
-            android:layout_width="247dp"
-            android:layout_height="421dp"
+            android:layout_width="496dp"
+            android:layout_height="428dp"
             android:background="@drawable/transparent">
 
             <ImageView
@@ -150,8 +151,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/register_layout"
-            android:layout_width="247dp"
-            android:layout_height="364dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="@drawable/transparent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -162,6 +163,7 @@
                 android:id="@+id/logo"
                 android:layout_width="128dp"
                 android:layout_height="86dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
