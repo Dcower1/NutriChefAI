@@ -41,7 +41,7 @@ public class Log_Usuario extends AppCompatActivity {
 
     EditText txtloginusu, txtpassword;
     RequestQueue datos;
-    ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +128,9 @@ public class Log_Usuario extends AppCompatActivity {
     }
 
     public void consultardatos(String loginInput, String pass) {
-        String url = "http://44.215.236.242/NutriChefAI/consultar_usuario.php?login=" + loginInput + "&password=" + pass; // Updated URL
+
+        String url = "http://44.215.236.242/NutriChefAI/consultar_usuario.php?login=" + loginInput + "&password=" + pass;
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
