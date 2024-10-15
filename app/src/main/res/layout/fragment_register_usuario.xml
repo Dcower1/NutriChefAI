@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.log.Register_Usuario">
+
+    <ViewSwitcher
+        android:id="@+id/viewSwitcher_register"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/register_layout1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp">
+
+                <ImageView
+                    android:id="@+id/logo"
+                    android:layout_width="128dp"
+                    android:layout_height="86dp"
+                    android:layout_marginTop="16dp"
+                    android:src="@drawable/fondosombra"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/editTextRegisterUser"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:hint="Usuario"
+                    android:inputType="text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/logo" />
+
+                <EditText
+                    android:id="@+id/editTextRegisterEmail"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"
+                    app:layout_constraintEnd_toEndOf="@id/editTextRegisterUser"
+                    app:layout_constraintStart_toStartOf="@id/editTextRegisterUser"
+                    app:layout_constraintTop_toBottomOf="@id/editTextRegisterUser" />
+
+                <EditText
+                    android:id="@+id/editTextRegisterPassword"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    app:layout_constraintEnd_toEndOf="@id/editTextRegisterEmail"
+                    app:layout_constraintStart_toStartOf="@id/editTextRegisterEmail"
+                    app:layout_constraintTop_toBottomOf="@id/editTextRegisterEmail" />
+
+                <EditText
+                    android:id="@+id/editTextRegisterPasswordRepeat"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:hint="Repetir Password"
+                    android:inputType="textPassword"
+                    app:layout_constraintEnd_toEndOf="@id/editTextRegisterPassword"
+                    app:layout_constraintStart_toStartOf="@id/editTextRegisterPassword"
+                    app:layout_constraintTop_toBottomOf="@id/editTextRegisterPassword" />
+
+
+                <EditText
+                    android:id="@+id/editRegister_edad"
+                    android:layout_width="145dp"
+                    android:layout_height="71dp"
+                    android:hint="Edad"
+                    android:inputType="number"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextRegisterPasswordRepeat" />
+
+                <TextView
+                    android:id="@+id/textViewPeso"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Peso: 70 kg"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editRegister_edad" />
+
+                <SeekBar
+                    android:id="@+id/seekBarPeso"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="200"
+                    android:progress="70"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewPeso" />
+
+                <TextView
+                    android:id="@+id/textViewAltura"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Altura: 1.70 m"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/seekBarPeso" />
+
+                <SeekBar
+                    android:id="@+id/seekBarAltura"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="250"
+                    android:progress="170"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewAltura" />
+
+                <TextView
+                    android:id="@+id/textViewIMC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="IMC: "
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/seekBarAltura" />
+
+                <Button
+                    android:id="@+id/btn_next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Siguiente"
+                    android:backgroundTint="@color/btnintenso"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewIMC" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/register_layout2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp">
+
+                <ImageView
+                    android:id="@+id/logo2"
+                    android:layout_width="128dp"
+                    android:layout_height="86dp"
+                    android:layout_marginTop="16dp"
+                    android:src="@drawable/fondosombra"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textViewDieta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="¿Qué clase de dieta quieres seguir?"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/logo2" />
+
+                <CheckBox
+                    android:id="@+id/diet_recomendado"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dieta Recomendada"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewDieta" />
+
+
+                <LinearLayout
+                    android:id="@+id/linearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="44dp"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@+id/diet_recomendado"
+                    tools:layout_editor_absoluteX="16dp">
+
+                    <Button
+                        android:id="@+id/bt_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/btnintenso"
+                        android:text="Subir de Peso" />
+
+                    <Button
+                        android:id="@+id/bt_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/btnintenso"
+                        android:text="Ganar Fuerza" />
+
+                    <Button
+                        android:id="@+id/bt_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/btnintenso"
+                        android:text="Bajar de Peso" />
+
+                    <Button
+                        android:id="@+id/bt_4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/btnintenso"
+                        android:text="Mantener el Peso" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_registrar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Registrar"
+                    android:backgroundTint="@color/btnintenso"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.838"
+                    app:layout_constraintStart_toEndOf="@+id/btn_back"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <Button
+                    android:id="@+id/btn_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="36dp"
+                    android:text="atras"
+                    android:backgroundTint="@color/btnintenso"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+                    app:layout_constraintVertical_bias="0.0" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+    </ViewSwitcher>
+</androidx.constraintlayout.widget.ConstraintLayout>

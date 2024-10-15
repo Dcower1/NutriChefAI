@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
@@ -18,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,74 +39,48 @@ import java.util.Map;
 
 public class Log_Usuario extends AppCompatActivity {
     private Button btnLogin, btnRegister;
-    private Button bt_ingresar;
-    private ViewSwitcher viewSwitcher;
-
-    EditText txtloginusu, txtpassword;
-    RequestQueue datos;
-
+    private RequestQueue datos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this); // Si usas este método para pantalla completa
+        EdgeToEdge.enable(this); // If you are using this method for full screen
         setContentView(R.layout.activity_log);
 
-        // Ajustar los márgenes de las barras del sistema
+        // Adjust margins for system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // Inicializar botones y ViewSwitcher
+        // Initialize buttons
         btnLogin = findViewById(R.id.btn_login);
         btnRegister = findViewById(R.id.btn_register);
-        viewSwitcher = findViewById(R.id.viewSwitcher);
-
-        bt_ingresar = findViewById(R.id.btn_ingresar);
-        txtloginusu = findViewById(R.id.editTextLoginUsername);
-        txtpassword = findViewById(R.id.editTextLoginPassword);
         datos = Volley.newRequestQueue(this);
 
-
-
-
-        bt_ingresar.setOnClickListener(v -> {
-            String usernameOrEmail = txtloginusu.getText().toString().trim();
-            String password = txtpassword.getText().toString().trim();
-
-            if (usernameOrEmail.isEmpty() || password.isEmpty()) {
-                Toast.makeText(Log_Usuario.this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            consultardatos(usernameOrEmail, password);
-        });
-
-
-
-        // Alternar entre las vistas de login y registro
+        // Set up button click listeners
         btnLogin.setOnClickListener(v -> {
             moveButton(btnLogin, false);
             moveButton(btnRegister, true);
-            viewSwitcher.setDisplayedChild(0); // Mostrar layout de login
+            // Show the Usuario_log fragment
+            showFragment(new Usuario_log());
         });
 
         btnRegister.setOnClickListener(v -> {
             moveButton(btnRegister, false);
             moveButton(btnLogin, true);
-            viewSwitcher.setDisplayedChild(1); // Mostrar layout de registro
+            // Show the Register_Usuario fragment
+            showFragment(new Register_Usuario());
         });
 
-        // Detectar si es una tableta y realizar ajustes si es necesario
-        if (esTablet(this)) {
-            Toast.makeText(this, "Este es un dispositivo tipo tableta", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Este es un dispositivo tipo teléfono", Toast.LENGTH_SHORT).show();
+
+        if (savedInstanceState == null) {
+            showFragment(new Usuario_log());
         }
     }
 
-    // Método para animar el botón al hacer clic
+    // Method to animate button on click
     private void moveButton(final Button button, boolean moveUp) {
         float targetY = moveUp ? -50f : 0f;
 
@@ -113,48 +90,25 @@ public class Log_Usuario extends AppCompatActivity {
                 .start();
     }
 
-    // Método para detectar si el dispositivo es una tableta
+    // Method to show a fragment
+    private void showFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment); // Use the ID of your container
+        transaction.addToBackStack(null); // Add to back stack to enable navigation
+        transaction.commit();
+    }
+
+    // Method to check if the device is a tablet
     public boolean esTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
-    // Método para verificar si hay conexión a Internet
+    // Method to check internet availability
     private boolean isInternetAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-
-    public void consultardatos(String loginInput, String pass) {
-
-        String url = "http://44.215.236.242/NutriChefAI/consultar_usuario.php?login=" + loginInput + "&password=" + pass;
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    String estado = response.getString("estado");
-                    if (estado.equals("0")) {
-                        Toast.makeText(Log_Usuario.this, "Usuario no Existe", Toast.LENGTH_LONG).show();
-                    } else {
-                        Intent ventana = new Intent(Log_Usuario.this, MainActivity.class);
-                        startActivity(ventana);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
-        datos.add(request);
-    }
-
-
-
 }
