@@ -1,7 +1,13 @@
 package com.example.nutrichefai.fragments.log;
 
+import static android.content.ContentValues.TAG;
+
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +31,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.nutrichefai.MainActivity;
 import com.example.nutrichefai.R;
+import com.example.nutrichefai.bd.DBHelper;
+import com.example.nutrichefai.utils.Utilidades;
 
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
@@ -35,6 +43,7 @@ public class Usuario_log extends Fragment {
     private Button bt_ingresar;
     private EditText txtloginusu, txtpassword;
     private RequestQueue datos;
+    private DBHelper dbHelper;
 
     @Nullable
     @Override
@@ -50,7 +59,7 @@ public class Usuario_log extends Fragment {
 
         datos = Volley.newRequestQueue(requireContext());
 
-
+        dbHelper = new DBHelper(requireContext());
         bt_ingresar.setOnClickListener(v -> {
             String usernameOrEmail = txtloginusu.getText().toString().trim();
             String password = txtpassword.getText().toString().trim();
@@ -59,12 +68,32 @@ public class Usuario_log extends Fragment {
                 Toast.makeText(requireContext(), "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
                 return;
             }
-            consultardatos(usernameOrEmail, password);
+
+            // Check credentials locally first
+            if (checkLocalCredentials(usernameOrEmail, password)) {
+                // Login successful locally
+                Intent ventana = new Intent(requireActivity(), MainActivity.class);
+                startActivity(ventana);
+                requireActivity().finish();
+            } else {
+                // Check for internet connection
+                if (isNetworkAvailable()) {
+                    // If local check fails and internet is available, check on the server
+                    consultardatos(usernameOrEmail, password);
+                } else {
+                    // No internet connection, inform the user
+                    Toast.makeText(requireContext(), "Sin conexión a Internet. No se puede verificar con el servidor.", Toast.LENGTH_SHORT).show();
+                }
+            }
         });
+
 
         return view;
     }
+    private boolean checkLocalCredentials(String usernameOrEmail, String password) {
 
+        return dbHelper.validateUser(usernameOrEmail, Utilidades.hashPassword(password));
+    }
     public void consultardatos(String loginInput, String pass) {
         String url = "http://44.215.236.242/NutriChefAI/consultar_usuario.php?login=" + loginInput + "&password=" + pass;
 
@@ -77,10 +106,10 @@ public class Usuario_log extends Fragment {
                             if (estado.equals("0")) {
                                 Toast.makeText(requireContext(), "Usuario no Existe", Toast.LENGTH_LONG).show();
                             } else {
-                                // Proceed to MainActivity if login is successful
+
                                 Intent ventana = new Intent(requireActivity(), MainActivity.class);
                                 startActivity(ventana);
-                                requireActivity().finish(); // Optional: Close the login activity
+                                requireActivity().finish();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -98,5 +127,11 @@ public class Usuario_log extends Fragment {
 
         // Add request to the RequestQueue
         datos.add(request);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

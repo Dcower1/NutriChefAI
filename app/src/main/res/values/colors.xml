@@ -10,6 +10,7 @@
     <color name="botones">#E2DAD6</color>
     <color name="btnintenso">#7EA6E0</color>
 
-
+    <color name="colorDefault">#B0BEC5</color>
+    <color name="colorSelected">#81D4FA</color>
 </resources>
 

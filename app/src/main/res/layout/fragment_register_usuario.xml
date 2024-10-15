@@ -99,7 +99,7 @@
                     android:id="@+id/textViewPeso"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Peso: 70 kg"
+                    android:text="Peso: ejemplo 70 kg"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/editRegister_edad" />
@@ -144,8 +144,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Siguiente"
                     android:backgroundTint="@color/btnintenso"
+                    android:text="Siguiente"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textViewIMC" />
@@ -183,23 +183,14 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/logo2" />
 
-                <CheckBox
-                    android:id="@+id/diet_recomendado"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Dieta Recomendada"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewDieta" />
-
 
                 <LinearLayout
                     android:id="@+id/linearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="44dp"
+                    android:layout_marginTop="24dp"
                     android:orientation="vertical"
-                    app:layout_constraintTop_toBottomOf="@+id/diet_recomendado"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewDieta"
                     tools:layout_editor_absoluteX="16dp">
 
                     <Button
@@ -239,8 +230,8 @@
                     android:id="@+id/btn_registrar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Registrar"
                     android:backgroundTint="@color/btnintenso"
+                    android:text="Registrar"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.838"
@@ -253,8 +244,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="36dp"
-                    android:text="atras"
                     android:backgroundTint="@color/btnintenso"
+                    android:text="atras"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout"
