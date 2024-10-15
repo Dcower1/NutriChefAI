@@ -1,7 +1,10 @@
 package com.example.nutrichefai.fragments.log;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +22,34 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.nutrichefai.R;
 import com.example.nutrichefai.bd.DBHelper;
 import com.example.nutrichefai.utils.Utilidades;
 
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Register_Usuario extends Fragment {
 
@@ -80,17 +105,41 @@ public class Register_Usuario extends Fragment {
 
         // Funcionamiento de los SeekBars
         setupSeekBarListeners();
+
         btn_registrarce.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (validar()) {
-
+                    // Registro local
                     registrarUsuario();
+
+                    // Registro en el EC2
+                    String usuario = RegisterUser.getText().toString().trim();
+                    String mail = RegisterEmail.getText().toString().trim();
+                    String password = RegisterPassword.getText().toString().trim();
+                    String edadStr = Register_edad.getText().toString().trim();
+                    int edad = Integer.parseInt(edadStr); // Convertir edad a entero
+                    int peso = seekBarPeso.getProgress();
+                    float altura = seekBarAltura.getProgress() / 100.0f; // Convertir a metros
+                    float imc = peso / (altura * altura); // Calcular IMC
+
+                    // Verificar que la dieta no esté vacía
+                    if (!dieta.isEmpty()) {
+                        String hashedPassword = Utilidades.hashPassword(password); // Hashear la contraseña
+                        limpiarCamposRegistro();
+
+                        // Cambiar al fragmento de inicio de sesión
+                        cambiarAFragmentoLogUsuario();
+                        // Llamar al método de registro en EC2
+                        insertarUsuario(usuario, mail, hashedPassword, edad, peso, altura, imc, dieta);
+                    } else {
+                        Toast.makeText(getContext(), "Debe seleccionar una dieta", Toast.LENGTH_SHORT).show();
+                    }
                 }
-
-
             }
         });
+
+
 
 
 
@@ -117,7 +166,24 @@ public class Register_Usuario extends Fragment {
         });
         return view;
     }
+    // Método para limpiar los campos de registro
+    private void limpiarCamposRegistro() {
+        RegisterUser.setText("");
+        RegisterEmail.setText("");
+        RegisterPassword.setText("");
+        Register_edad.setText("");
+        seekBarPeso.setProgress(0);
+        seekBarAltura.setProgress(0);
+        dieta = ""; // Limpiar selección de dieta
+    }
 
+    // Método para cambiar al fragmento Log_Usuario
+    private void cambiarAFragmentoLogUsuario() {
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, new Usuario_log()); // 'fragment_container' es el id del contenedor de tus fragmentos
+        transaction.addToBackStack(null); // Añadir a la pila de retroceso para que el usuario pueda volver si lo desea
+        transaction.commit();
+    }
     private void setupSeekBarListeners() {
 
 
@@ -285,4 +351,45 @@ public class Register_Usuario extends Fragment {
 
         return isValid; // Return the result of the validation
     }
+
+    // Método para insertar un usuario
+    private void insertarUsuario(String usuario, String mail, String password, int edad, int peso, float altura, float imc, String dieta) {
+        String url = "http://44.215.236.242/NutriChefAI/insert_user.php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Maneja la respuesta del servidor
+                        Log.d("Respuesta", response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Maneja los errores
+                Log.e("Error", error.toString());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("usuario", usuario);
+                params.put("mail", mail);
+                params.put("password", password);
+                params.put("edad", String.valueOf(edad));
+                params.put("peso", String.valueOf(peso));
+                params.put("altura", String.valueOf(altura));
+                params.put("imc", String.valueOf(imc));
+                params.put("dieta", dieta);
+                return params;
+            }
+        };
+
+        // Agrega la petición a la cola de Volley usando getContext()
+        RequestQueue queue = Volley.newRequestQueue(getContext()); // Usar getContext() aquí
+        queue.add(stringRequest);
+    }
+
+
+
+
 }

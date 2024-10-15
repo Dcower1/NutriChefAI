@@ -65,11 +65,11 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public long insertarUsuario(String usuario, String email, String password, String edad, String peso, String altura, String imc, String dieta) {
+    public long insertarUsuario(String usuario, String mail, String password, String edad, String peso, String altura, String imc, String dieta) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_usuario, usuario);
-        values.put(COLUMN_mail, email);
+        values.put(COLUMN_mail, mail);
         values.put(COLUMN_password, password);
         values.put(COLUMN_edad, edad);
         values.put(COLUMN_peso, peso);
@@ -95,10 +95,8 @@ public class DBHelper extends SQLiteOpenHelper {
         return isValid;
     }
 
-
-    // Example hash function; you should replace it with your actual hashing method
     private String hashPassword(String password) {
-        // Implement your hashing logic here (e.g., using SHA-256)
-        return password; // Placeholder: return the password as-is for testing
+
+        return password;
     }
 }

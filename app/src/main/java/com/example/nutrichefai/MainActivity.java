@@ -46,20 +46,13 @@ public class MainActivity extends AppCompatActivity {
         frameLayout = findViewById(R.id.fragment_container);
         toolbar = findViewById(R.id.toolbar);
 
-        // Detectar si es una tableta
-        if (esTablet(this)) {
-            // Es una tableta: ajusta el diseño o los componentes si es necesario
-            Toast.makeText(this, "Este es un dispositivo tipo tableta", Toast.LENGTH_SHORT).show();
-            // Opcional: puedes usar un layout distinto para tablets si lo necesitas
-            // setContentView(R.layout.activity_main_tablet); // Si tuvieras un layout específico
-        } else {
-            // Es un teléfono: ajusta el diseño o comportamiento para pantallas más pequeñas
-            Toast.makeText(this, "Este es un dispositivo tipo teléfono", Toast.LENGTH_SHORT).show();
-        }
+
 
         // Configurar la toolbar como ActionBar
         setSupportActionBar(toolbar);
-
+        if (savedInstanceState == null) {
+            loadFragment(new Chat_menu());
+        }
         // Manejar la selección de los elementos del BottomNavigationView
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.chat_nav) {
