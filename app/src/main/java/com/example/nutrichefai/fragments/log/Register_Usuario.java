@@ -111,7 +111,7 @@ public class Register_Usuario extends Fragment {
             public void onClick(View v) {
                 if (validar()) {
                     // Registro local
-                    registrarUsuario();
+                    //registrarUsuario();
 
                     // Registro en el EC2
                     String usuario = RegisterUser.getText().toString().trim();
@@ -379,7 +379,7 @@ public class Register_Usuario extends Fragment {
                 params.put("peso", String.valueOf(peso));
                 params.put("altura", String.valueOf(altura));
                 params.put("imc", String.valueOf(imc));
-                params.put("dieta", dieta);
+
                 return params;
             }
         };
