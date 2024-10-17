@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -68,7 +69,7 @@ public class Usuario_log extends Fragment {
                 Toast.makeText(requireContext(), "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
                 return;
             }
-
+            String hashedPassword = Utilidades.hashPassword(password);
             // Check credentials locally first
             if (checkLocalCredentials(usernameOrEmail, password)) {
                 // Login successful locally
@@ -79,7 +80,7 @@ public class Usuario_log extends Fragment {
                 // Check for internet connection
                 if (isNetworkAvailable()) {
                     // If local check fails and internet is available, check on the server
-                    consultardatos(usernameOrEmail, password);
+                    consultardatos(usernameOrEmail, hashedPassword);
                 } else {
                     // No internet connection, inform the user
                     Toast.makeText(requireContext(), "Sin conexión a Internet. No se puede verificar con el servidor.", Toast.LENGTH_SHORT).show();
@@ -106,10 +107,17 @@ public class Usuario_log extends Fragment {
                             if (estado.equals("0")) {
                                 Toast.makeText(requireContext(), "Usuario no Existe", Toast.LENGTH_LONG).show();
                             } else {
+                                // Obtén el id_usu de la respuesta
+                                int userId = response.getInt("id_usu"); // Asumiendo que se devuelve en la respuesta
 
-                                Intent ventana = new Intent(requireActivity(), MainActivity.class);
-                                startActivity(ventana);
-                                requireActivity().finish();
+                                // Guardar el id_usu en SharedPreferences
+                                SharedPreferences sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putInt("userId", userId);
+                                editor.apply();
+
+                                // Ahora, llama a cargar_usuario.php con el id_usu
+                                cargarUsuario(userId);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -129,6 +137,43 @@ public class Usuario_log extends Fragment {
         datos.add(request);
     }
 
+    // Método para cargar los datos del usuario
+    private void cargarUsuario(int userId) {
+        String url = "http://44.215.236.242/NutriChefAI/cargar_usuario.php?id=" + userId;
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String estado = response.getString("estado");
+                            if (estado.equals("1")) {
+                                JSONObject userData = response.getJSONObject("data");
+                                // Aquí puedes pasar los datos al siguiente fragmento
+                                Intent ventana = new Intent(requireActivity(), MainActivity.class);
+                                ventana.putExtra("userData", userData.toString()); // Convierte a string para pasar
+                                startActivity(ventana);
+                                requireActivity().finish();
+                            } else {
+                                Toast.makeText(requireContext(), "Error al cargar los datos del usuario", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(requireContext(), "Error en la respuesta del servidor", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(requireContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
+                        error.printStackTrace();
+                    }
+                });
+
+        // Add request to the RequestQueue
+        datos.add(request);
+    }
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();

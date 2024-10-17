@@ -20,6 +20,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.Request;
@@ -44,33 +45,33 @@ public class Log_Usuario extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this); // If you are using this method for full screen
+        EdgeToEdge.enable(this);  // este es tu método para hacer la app a pantalla completa asi no se bugea en los demas dispositivos.
         setContentView(R.layout.activity_log);
 
-        // Adjust margins for system bars
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // Initialize buttons
+
         btnLogin = findViewById(R.id.btn_login);
         btnRegister = findViewById(R.id.btn_register);
         datos = Volley.newRequestQueue(this);
 
-        // Set up button click listeners
+
+
+
         btnLogin.setOnClickListener(v -> {
-            moveButton(btnLogin, false);
-            moveButton(btnRegister, true);
-            // Show the Usuario_log fragment
+
+
             showFragment(new Usuario_log());
         });
 
         btnRegister.setOnClickListener(v -> {
-            moveButton(btnRegister, false);
-            moveButton(btnLogin, true);
-            // Show the Register_Usuario fragment
+
+
             showFragment(new Register_Usuario());
         });
 
@@ -90,22 +91,36 @@ public class Log_Usuario extends AppCompatActivity {
                 .start();
     }
 
-    // Method to show a fragment
+    // Metodo para mostrar el fragmento
     private void showFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment); // Use the ID of your container
-        transaction.addToBackStack(null); // Add to back stack to enable navigation
-        transaction.commit();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // Reemplaza el fragmento actual
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+
+
+        if (fragment instanceof Usuario_log) {
+
+            moveButton(btnLogin, false);
+            moveButton(btnRegister, true);
+        } else if (fragment instanceof Register_Usuario) {
+
+            moveButton(btnRegister, false);
+            moveButton(btnLogin, true);
+        }
     }
 
-    // Method to check if the device is a tablet
+
     public boolean esTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
-    // Method to check internet availability
+
     private boolean isInternetAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();

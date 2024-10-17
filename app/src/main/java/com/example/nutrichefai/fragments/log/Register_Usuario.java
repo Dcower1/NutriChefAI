@@ -354,7 +354,7 @@ public class Register_Usuario extends Fragment {
 
     // Método para insertar un usuario
     private void insertarUsuario(String usuario, String mail, String password, int edad, int peso, float altura, float imc, String dieta) {
-        String url = "http://44.215.236.242/NutriChefAI/insert_user.php";
+        String url = "http://44.215.236.242/NutriChefAI/inset_user.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

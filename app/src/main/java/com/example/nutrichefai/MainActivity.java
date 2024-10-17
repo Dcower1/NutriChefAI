@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this); // Si este es tu método para hacer la app a pantalla completa
+        EdgeToEdge.enable(this); // este es tu método para hacer la app a pantalla completa asi no se bugea en los demas dispositivos.
         setContentView(R.layout.activity_main);
 
         // Ajustar los márgenes de los system bars (barra de estado y navegación)
