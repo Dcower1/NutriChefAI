@@ -1,15 +1,22 @@
 package com.example.nutrichefai.fragments.log;
 
+import static android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD;
+
+import static com.example.nutrichefai.utils.Utilidades.isValidPassword;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +72,11 @@ public class Register_Usuario extends Fragment {
     TextView textViewPeso, textViewAltura, textViewIMC;
     DBHelper dbHelper;;
 
+    private boolean isPasswordVisible = false;
+    private boolean isPasswordRepeatVisible = false;
+    private ImageView passwordToggle;
+    private ImageView passwordRepeatToggle;
+
     @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
@@ -83,6 +95,9 @@ public class Register_Usuario extends Fragment {
         btn_atras = view.findViewById(R.id.btn_back);
         btn_registrarce = view.findViewById(R.id.btn_registrar);
 
+
+
+
         //botones de la dieta
         bfueza = view.findViewById(R.id.bt_1);
         bsubirpeso = view.findViewById(R.id.bt_2);
@@ -96,6 +111,9 @@ public class Register_Usuario extends Fragment {
         Register_edad = view.findViewById(R.id.editRegister_edad);
 
 
+        // Inicializar los toggles de visibilidad
+        passwordToggle = view.findViewById(R.id.imageViewPasswordToggle);
+        passwordRepeatToggle = view.findViewById(R.id.imageViewPasswordRepeatToggle);
         // Inicializar SeekBar and TextView con los ID
         seekBarPeso = view.findViewById(R.id.seekBarPeso);
         seekBarAltura = view.findViewById(R.id.seekBarAltura);
@@ -103,6 +121,34 @@ public class Register_Usuario extends Fragment {
         textViewAltura = view.findViewById(R.id.textViewAltura);
         textViewIMC = view.findViewById(R.id.textViewIMC);
 
+        passwordToggle.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    togglePasswordVisibility(RegisterPassword, passwordToggle, true);
+                    v.performClick(); // Asegurarte de que el clic se maneje correctamente
+                    return true; // Evento manejado
+
+                case MotionEvent.ACTION_UP:
+                    togglePasswordVisibility(RegisterPassword, passwordToggle, false);
+                    return true;
+            }
+            return false;
+        });
+
+
+        passwordRepeatToggle.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    togglePasswordVisibility(RegisterPasswordRepeat, passwordRepeatToggle, true);
+                    return true; // Evento manejado
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    togglePasswordVisibility(RegisterPasswordRepeat, passwordRepeatToggle, false);
+                    return true; // Evento manejado
+            }
+            return false; // Evento no manejado
+        });
         // Funcionamiento de los SeekBars
         setupSeekBarListeners();
 
@@ -166,6 +212,19 @@ public class Register_Usuario extends Fragment {
         });
         return view;
     }
+
+
+    private void togglePasswordVisibility(EditText editText, ImageView toggle, boolean isVisible) {
+        if (isVisible) {
+            editText.setInputType(InputType.TYPE_CLASS_TEXT); // Mostrar texto
+            toggle.setImageResource(R.drawable.baseline_visibility_24); // Cambiar a ícono de "ver"
+        } else {
+            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD); // Ocultar texto
+            toggle.setImageResource(R.drawable.baseline_visibility_off_24); // Cambiar a ícono de "no ver"
+        }
+        editText.setSelection(editText.getText().length()); // Colocar el cursor al final
+    }
+
     // Método para limpiar los campos de registro
     private void limpiarCamposRegistro() {
         RegisterUser.setText("");
@@ -277,36 +336,6 @@ public class Register_Usuario extends Fragment {
         bmantenerpeso.setBackgroundColor(getResources().getColor(R.color.colorDefault));
     }
 
-    private void registrarUsuario() {
-        String usuario = RegisterUser.getText().toString().trim();
-        String mail = RegisterEmail.getText().toString().trim();
-        String password = RegisterPassword.getText().toString().trim();
-        String edad = Register_edad.getText().toString().trim();
-        int peso = seekBarPeso.getProgress();
-        float altura = seekBarAltura.getProgress() / 100.0f; // Convertir altura a metros
-        float imc = peso / (altura * altura); // Cálculo de IMC
-
-        // Validar si se ha seleccionado una dieta
-        if (dieta.isEmpty()) {
-            Toast.makeText(getContext(), "Debe seleccionar una dieta", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String hashedPassword = Utilidades.hashPassword(password); // Hashear contraseña
-        try {
-            long id = dbHelper.insertarUsuario(usuario, mail, hashedPassword, edad, String.valueOf(peso), String.valueOf(altura), String.valueOf(imc), dieta);
-            // Verificar si la inserción fue exitosa
-            if (id > 0) {
-                Toast.makeText(getContext(), "Registro exitoso", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getContext(), "Error al registrar usuario", Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-
     //esto es boolean porque me deberia retornar un true o un false
     private boolean validar() {
         String usuario = RegisterUser.getText().toString().trim();
@@ -315,21 +344,32 @@ public class Register_Usuario extends Fragment {
         String passwordRepeat = RegisterPasswordRepeat.getText().toString().trim();
         String edad = Register_edad.getText().toString().trim();
 
-        boolean isValid = true; // Assume all inputs are valid initially
+        boolean isValid = true;
 
         if (usuario.isEmpty()) {
             RegisterUser.setError("El campo de usuario está vacío");
             isValid = false; // Set valid to false
+        }else if (usuario.length() < 4) {
+            RegisterUser.setError("El usuario debe tener al menos 4 letras");
+            isValid = false;
+        } else if (!usuario.matches("[a-zA-Z0-9]+")) {
+            RegisterUser.setError("El usuario solo puede contener letras y números");
+            isValid = false;
         }
 
         if (email.isEmpty()) {
             RegisterEmail.setError("El campo de email está vacío");
-            isValid = false; // Set valid to false
+            isValid = false;
+        } else if (!Utilidades.isValidEmail(email)) {
+        RegisterEmail.setError("El formato del email no es válido");
+        isValid = false;
         }
-
         if (password.isEmpty()) {
             RegisterPassword.setError("El campo de contraseña está vacío");
-            isValid = false; // Set valid to false
+            isValid = false;
+        } else if (!isValidPassword(password)) {
+            RegisterPassword.setError("La contraseña debe tener al menos 6 caracteres y 1 mayúscula");
+            isValid = false;
         }
 
         if (passwordRepeat.isEmpty()) {

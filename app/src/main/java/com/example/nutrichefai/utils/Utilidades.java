@@ -28,6 +28,13 @@ public class Utilidades {
             throw new RuntimeException(e);
         }
     }
+    public static boolean isValidEmail(String email) {
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        return email.matches(emailPattern);
+    }
 
+    public static boolean isValidPassword(String password) {
+        return password.length() >= 6 && password.matches(".*[A-Z].*"); // Al menos 6 caracteres y 1 mayúscula
+    }
 
 }

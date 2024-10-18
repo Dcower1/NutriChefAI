@@ -72,6 +72,19 @@
                     app:layout_constraintStart_toStartOf="@id/editTextRegisterEmail"
                     app:layout_constraintTop_toBottomOf="@id/editTextRegisterEmail" />
 
+                <ImageView
+                    android:id="@+id/imageViewPasswordToggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="12dp"
+                    android:contentDescription="Mostrar/Ocultar Contraseña"
+                    android:src="@drawable/baseline_visibility_off_24"
+                    app:layout_constraintEnd_toEndOf="@id/editTextRegisterPassword"
+                    app:layout_constraintTop_toTopOf="@id/editTextRegisterPassword"
+                     android:clickable="true" />
+
                 <EditText
                     android:id="@+id/editTextRegisterPasswordRepeat"
                     android:layout_width="0dp"
@@ -83,6 +96,18 @@
                     app:layout_constraintEnd_toEndOf="@id/editTextRegisterPassword"
                     app:layout_constraintStart_toStartOf="@id/editTextRegisterPassword"
                     app:layout_constraintTop_toBottomOf="@id/editTextRegisterPassword" />
+                <ImageView
+                    android:id="@+id/imageViewPasswordRepeatToggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="12dp"
+                    android:contentDescription="Mostrar/Ocultar Repetir Contraseña"
+                    android:src="@drawable/baseline_visibility_off_24"
+                    app:layout_constraintEnd_toEndOf="@id/editTextRegisterPasswordRepeat"
+                    app:layout_constraintTop_toTopOf="@id/editTextRegisterPasswordRepeat"
+                    android:clickable="true" />
 
 
                 <EditText
@@ -116,7 +141,7 @@
                     android:id="@+id/textViewAltura"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Altura: 1.70 m"
+                    android:text="Altura: 1.20 m"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/seekBarPeso" />
@@ -126,7 +151,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:max="250"
-                    android:progress="170"
+                    android:progress="120"
                     app:layout_constraintTop_toBottomOf="@+id/textViewAltura" />
 
                 <TextView

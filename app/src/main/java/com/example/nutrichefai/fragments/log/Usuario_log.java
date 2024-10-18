@@ -9,12 +9,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -51,8 +54,8 @@ public class Usuario_log extends Fragment {
     private Button bt_ingresar;
     private EditText txtloginusu, txtpassword;
     private RequestQueue datos;
-    private DBHelper dbHelper;
 
+    private ImageView passwordToggle;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -63,9 +66,10 @@ public class Usuario_log extends Fragment {
         txtloginusu = view.findViewById(R.id.editTextLoginUsername);
         txtpassword = view.findViewById(R.id.editTextLoginPassword);
         bt_ingresar = view.findViewById(R.id.btn_ingresar);
+        passwordToggle = view.findViewById(R.id.passwordToggle);
 
         datos = Volley.newRequestQueue(requireContext());
-        dbHelper = new DBHelper(requireContext());
+
 
         bt_ingresar.setOnClickListener(v -> {
             String usernameOrEmail = txtloginusu.getText().toString().trim();
@@ -83,6 +87,19 @@ public class Usuario_log extends Fragment {
             validarUsuario(url);
         });
 
+
+        //funcion https://developer.android.com/develop/ui/views/components/pickers?hl=es-419
+        passwordToggle.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    togglePasswordVisibility(txtpassword, passwordToggle, true);
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    togglePasswordVisibility(txtpassword, passwordToggle, false);
+                    return true;
+            }
+            return false;
+        });
         return view;
     }
 
@@ -134,5 +151,16 @@ public class Usuario_log extends Fragment {
 
         RequestQueue requestQueue = Volley.newRequestQueue(requireContext());
         requestQueue.add(stringRequest);
+    }
+
+    private void togglePasswordVisibility(EditText editText, ImageView toggle, boolean isVisible) {
+        if (isVisible) {
+            editText.setInputType(InputType.TYPE_CLASS_TEXT); // Mostrar texto
+            toggle.setImageResource(R.drawable.baseline_visibility_24); // Cambiar a ícono de "ver"
+        } else {
+            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD); // Ocultar texto
+            toggle.setImageResource(R.drawable.baseline_visibility_off_24); // Cambiar a ícono de "no ver"
+        }
+        editText.setSelection(editText.getText().length()); // Colocar el cursor al final
     }
 }
