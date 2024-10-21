@@ -111,11 +111,13 @@
 
 
                 <EditText
-                    android:id="@+id/editRegister_edad"
-                    android:layout_width="145dp"
-                    android:layout_height="71dp"
-                    android:hint="Edad"
-                    android:inputType="number"
+                    android:id="@+id/editRegisterBirthday"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:hint="Fecha de Cumpleaños"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:gravity="center"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/editTextRegisterPasswordRepeat" />
@@ -127,7 +129,7 @@
                     android:text="Peso: ejemplo 70 kg"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editRegister_edad" />
+                    app:layout_constraintTop_toBottomOf="@+id/editRegisterBirthday" />
 
                 <SeekBar
                     android:id="@+id/seekBarPeso"

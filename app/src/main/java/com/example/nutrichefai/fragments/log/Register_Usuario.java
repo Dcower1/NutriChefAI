@@ -1,12 +1,9 @@
 package com.example.nutrichefai.fragments.log;
 
-import static android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD;
-
 import static com.example.nutrichefai.utils.Utilidades.isValidPassword;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.os.AsyncTask;
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -22,9 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -43,26 +38,20 @@ import com.example.nutrichefai.bd.DBHelper;
 import com.example.nutrichefai.utils.Utilidades;
 
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class Register_Usuario extends Fragment {
 
     private ViewSwitcher viewSwitcher;
     Button btnNext,btn_atras,btn_registrarce;
-    EditText RegisterUser,RegisterEmail,RegisterPasswordRepeat,RegisterPassword,Register_edad;
+    EditText RegisterUser,RegisterEmail,RegisterPasswordRepeat,RegisterPassword;
 
     Button bfueza,bsubirpeso,bbajarpeso,bmantenerpeso;
 
@@ -71,7 +60,7 @@ public class Register_Usuario extends Fragment {
     SeekBar seekBarPeso, seekBarAltura;
     TextView textViewPeso, textViewAltura, textViewIMC;
     DBHelper dbHelper;;
-
+    EditText editBirthday;
     private boolean isPasswordVisible = false;
     private boolean isPasswordRepeatVisible = false;
     private ImageView passwordToggle;
@@ -108,8 +97,7 @@ public class Register_Usuario extends Fragment {
         RegisterEmail = view.findViewById(R.id.editTextRegisterEmail);
         RegisterPasswordRepeat = view.findViewById(R.id.editTextRegisterPasswordRepeat);
         RegisterPassword = view.findViewById(R.id.editTextRegisterPassword);
-        Register_edad = view.findViewById(R.id.editRegister_edad);
-
+        editBirthday = view.findViewById(R.id.editRegisterBirthday);
 
         // Inicializar los toggles de visibilidad
         passwordToggle = view.findViewById(R.id.imageViewPasswordToggle);
@@ -151,20 +139,36 @@ public class Register_Usuario extends Fragment {
         });
         // Funcionamiento de los SeekBars
         setupSeekBarListeners();
+        // Configurar el campo de fecha de cumpleaños
+        editBirthday.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
 
+            // Mostrar el DatePickerDialog para seleccionar la fecha de cumpleaños
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    getContext(),
+                    (view1, year1, month1, dayOfMonth) -> {
+                        // Actualizar el EditText con la fecha seleccionada
+                        editBirthday.setText(dayOfMonth + "/" + (month1 + 1) + "/" + year1);
+                    },
+                    year, month, day
+            );
+            datePickerDialog.show();
+        });
         btn_registrarce.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (validar()) {
-                    // Registro local
-                    //registrarUsuario();
-
                     // Registro en el EC2
                     String usuario = RegisterUser.getText().toString().trim();
                     String mail = RegisterEmail.getText().toString().trim();
                     String password = RegisterPassword.getText().toString().trim();
-                    String edadStr = Register_edad.getText().toString().trim();
-                    int edad = Integer.parseInt(edadStr); // Convertir edad a entero
+                    String birthday = editBirthday.getText().toString().trim();
+                    SimpleDateFormat inputFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                    SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
                     int peso = seekBarPeso.getProgress();
                     float altura = seekBarAltura.getProgress() / 100.0f; // Convertir a metros
                     float imc = peso / (altura * altura); // Calcular IMC
@@ -174,18 +178,26 @@ public class Register_Usuario extends Fragment {
                         String hashedPassword = Utilidades.hashPassword(password); // Hashear la contraseña
                         limpiarCamposRegistro();
 
-                        // Cambiar al fragmento de inicio de sesión
-                        cambiarAFragmentoLogUsuario();
-                        // Llamar al método de registro en EC2
-                        insertarUsuario(usuario, mail, hashedPassword, edad, peso, altura, imc, dieta);
+                        // Intentar convertir la fecha
+                        try {
+                            Date date = inputFormat.parse(birthday);
+                            String formattedDate = outputFormat.format(date);
+
+                            // Cambiar al fragmento de inicio de sesión
+                            cambiarAFragmentoLogUsuario();
+
+                            // Llamar al método de registro en EC2 pasando la fecha de cumpleaños en lugar de la edad
+                            insertarUsuario(usuario, mail, hashedPassword, formattedDate, peso, altura, imc);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getContext(), "Formato de fecha no válido. Por favor, use dd/MM/yyyy.", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
                         Toast.makeText(getContext(), "Debe seleccionar una dieta", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
         });
-
-
 
 
 
@@ -230,7 +242,7 @@ public class Register_Usuario extends Fragment {
         RegisterUser.setText("");
         RegisterEmail.setText("");
         RegisterPassword.setText("");
-        Register_edad.setText("");
+        editBirthday.setText("");
         seekBarPeso.setProgress(0);
         seekBarAltura.setProgress(0);
         dieta = ""; // Limpiar selección de dieta
@@ -342,7 +354,7 @@ public class Register_Usuario extends Fragment {
         String email = RegisterEmail.getText().toString().trim();
         String password = RegisterPassword.getText().toString().trim();
         String passwordRepeat = RegisterPasswordRepeat.getText().toString().trim();
-        String edad = Register_edad.getText().toString().trim();
+        String birthday = editBirthday.getText().toString().trim();
 
         boolean isValid = true;
 
@@ -377,9 +389,33 @@ public class Register_Usuario extends Fragment {
             isValid = false; // Set valid to false
         }
 
-        if (edad.isEmpty()) {
-            Register_edad.setError("El campo de edad está vacío");
-            isValid = false; // Set valid to false
+        if (birthday.isEmpty()) {
+            editBirthday.setError("El campo de fecha de nacimiento está vacío");
+            isValid = false;
+        } else {
+            // Validar la edad con la fecha de nacimiento
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            try {
+                Date birthDate = dateFormat.parse(birthday);
+                Calendar birthCalendar = Calendar.getInstance();
+                birthCalendar.setTime(birthDate);
+
+                Calendar today = Calendar.getInstance();
+                int age = today.get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR);
+
+                // Si el cumpleaños aún no ha ocurrido este año, restar 1 a la edad
+                if (today.get(Calendar.DAY_OF_YEAR) < birthCalendar.get(Calendar.DAY_OF_YEAR)) {
+                    age--;
+                }
+
+                if (age < 16 || age > 130) {
+                    editBirthday.setError("Debes tener entre 16 y 130 años");
+                    isValid = false;
+                }
+            } catch (ParseException e) {
+                editBirthday.setError("Formato de fecha no válido");
+                isValid = false;
+            }
         }
 
         // Validar si las contraseñas coinciden
@@ -393,7 +429,7 @@ public class Register_Usuario extends Fragment {
     }
 
     // Método para insertar un usuario
-    private void insertarUsuario(String usuario, String mail, String password, int edad, int peso, float altura, float imc, String dieta) {
+    private void insertarUsuario(String usuario, String mail, String password, String birthday, int peso, float altura, float imc) {
         String url = "http://44.215.236.242/NutriChefAI/inset_user.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -415,21 +451,16 @@ public class Register_Usuario extends Fragment {
                 params.put("usuario", usuario);
                 params.put("mail", mail);
                 params.put("password", password);
-                params.put("edad", String.valueOf(edad));
+                params.put("edad", birthday);
                 params.put("peso", String.valueOf(peso));
                 params.put("altura", String.valueOf(altura));
                 params.put("imc", String.valueOf(imc));
-
                 return params;
             }
         };
 
         // Agrega la petición a la cola de Volley usando getContext()
-        RequestQueue queue = Volley.newRequestQueue(getContext()); // Usar getContext() aquí
+        RequestQueue queue = Volley.newRequestQueue(getContext());
         queue.add(stringRequest);
     }
-
-
-
-
 }
