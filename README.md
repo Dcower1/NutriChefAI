@@ -7,3 +7,5 @@ NutriChef AI es una empresa emergente enfocada en desarrollar soluciones tecnolÃ
 
 
 ![image](https://github.com/user-attachments/assets/d801cf1c-b05e-412b-a6de-420edb4ebea6)
+![image](https://github.com/user-attachments/assets/f62c2730-09ef-4582-9e42-961824b034a2)
+![image](https://github.com/user-attachments/assets/d0f17280-3510-4025-a469-4302ef375773)
