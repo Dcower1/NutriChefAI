@@ -48,20 +48,15 @@ public class Log_Usuario extends AppCompatActivity {
         EdgeToEdge.enable(this);  // este es tu método para hacer la app a pantalla completa asi no se bugea en los demas dispositivos.
         setContentView(R.layout.activity_log);
 
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-
         btnLogin = findViewById(R.id.btn_login);
         btnRegister = findViewById(R.id.btn_register);
         datos = Volley.newRequestQueue(this);
-
-
-
 
         btnLogin.setOnClickListener(v -> {
 
@@ -75,13 +70,12 @@ public class Log_Usuario extends AppCompatActivity {
             showFragment(new Register_Usuario());
         });
 
-
         if (savedInstanceState == null) {
             showFragment(new Usuario_log());
         }
     }
 
-    // Method to animate button on click
+    // Metodo para activar la animacion de los botones
     private void moveButton(final Button button, boolean moveUp) {
         float targetY = moveUp ? -50f : 0f;
 

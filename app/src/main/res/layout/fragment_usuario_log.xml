@@ -38,29 +38,27 @@
             android:inputType="text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.432"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/logoimg"
-            app:layout_constraintVertical_bias="0.115" />
+            app:layout_constraintVertical_bias="0.117" />
 
         <EditText
             android:id="@+id/editTextLoginPassword"
             android:layout_width="210dp"
             android:layout_height="40dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="36dp"
             android:ems="10"
             android:gravity="center"
             android:hint="Password"
             android:inputType="textPassword"
             android:paddingEnd="16dp"
 
-            app:layout_constraintBottom_toTopOf="@+id/btn_ingresar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.432"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
 
-            app:layout_constraintTop_toBottomOf="@+id/editTextLoginUsername"
-            app:layout_constraintVertical_bias="0.418" />
+            app:layout_constraintTop_toBottomOf="@+id/editTextLoginUsername" />
 
         <ImageView
             android:id="@+id/passwordToggle"
@@ -74,21 +72,62 @@
             app:layout_constraintEnd_toEndOf="@+id/editTextLoginPassword"
             app:layout_constraintTop_toTopOf="@+id/editTextLoginPassword" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout2"
+            android:layout_width="168dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/rounded_corners"
+            app:circularflow_radiusInDP="25%"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView6">
+
+            <ImageButton
+                android:id="@+id/btn_gogle"
+                android:layout_width="59dp"
+                android:layout_height="58dp"
+                android:src="@drawable/logogogle"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sing-up Google"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_gogle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.2"
+                app:layout_constraintStart_toEndOf="@+id/btn_gogle"
+                app:layout_constraintTop_toTopOf="@+id/btn_gogle"
+                app:layout_constraintVertical_bias="0.487" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <Button
             android:id="@+id/btn_ingresar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
 
 
+            android:layout_marginTop="16dp"
             android:backgroundTint="@color/btnintenso"
-
             android:text="Ingresar"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/logoimg"
-            app:layout_constraintVertical_bias="0.961" />
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Recuperar password"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextLoginPassword" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

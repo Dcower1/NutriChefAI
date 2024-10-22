@@ -31,7 +31,7 @@
                     android:id="@+id/logo"
                     android:layout_width="128dp"
                     android:layout_height="86dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:src="@drawable/fondosombra"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -41,6 +41,7 @@
                     android:id="@+id/editTextRegisterUser"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
+                    android:layout_marginTop="8dp"
                     android:gravity="center"
                     android:hint="Usuario"
                     android:inputType="text"
@@ -76,14 +77,13 @@
                     android:id="@+id/imageViewPasswordToggle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginTop="12dp"
+                    android:clickable="true"
                     android:contentDescription="Mostrar/Ocultar Contraseña"
                     android:src="@drawable/baseline_visibility_off_24"
                     app:layout_constraintEnd_toEndOf="@id/editTextRegisterPassword"
-                    app:layout_constraintTop_toTopOf="@id/editTextRegisterPassword"
-                     android:clickable="true" />
+                    app:layout_constraintTop_toTopOf="@id/editTextRegisterPassword" />
 
                 <EditText
                     android:id="@+id/editTextRegisterPasswordRepeat"
@@ -96,28 +96,29 @@
                     app:layout_constraintEnd_toEndOf="@id/editTextRegisterPassword"
                     app:layout_constraintStart_toStartOf="@id/editTextRegisterPassword"
                     app:layout_constraintTop_toBottomOf="@id/editTextRegisterPassword" />
+
                 <ImageView
                     android:id="@+id/imageViewPasswordRepeatToggle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginTop="12dp"
+                    android:clickable="true"
                     android:contentDescription="Mostrar/Ocultar Repetir Contraseña"
                     android:src="@drawable/baseline_visibility_off_24"
                     app:layout_constraintEnd_toEndOf="@id/editTextRegisterPasswordRepeat"
-                    app:layout_constraintTop_toTopOf="@id/editTextRegisterPasswordRepeat"
-                    android:clickable="true" />
+                    app:layout_constraintTop_toTopOf="@id/editTextRegisterPasswordRepeat" />
 
 
                 <EditText
                     android:id="@+id/editRegisterBirthday"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:hint="Fecha de Cumpleaños"
-                    android:focusable="false"
+                    android:layout_width="197dp"
+                    android:layout_height="36dp"
+                    android:layout_marginTop="8dp"
                     android:clickable="true"
+                    android:focusable="false"
                     android:gravity="center"
+                    android:hint="Fecha de Cumpleaños"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/editTextRegisterPasswordRepeat" />
@@ -126,6 +127,7 @@
                     android:id="@+id/textViewPeso"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:text="Peso: ejemplo 70 kg"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -143,6 +145,7 @@
                     android:id="@+id/textViewAltura"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:text="Altura: 1.20 m"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
