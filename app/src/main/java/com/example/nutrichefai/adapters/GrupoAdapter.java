@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nutrichefai.R;
@@ -17,29 +18,29 @@ import java.util.List;
 public class GrupoAdapter extends RecyclerView.Adapter<GrupoAdapter.GrupoViewHolder> {
     private List<Grupo> grupoList;
     private Context context;
+    private boolean isLargeScreen;
     private OnGrupoClickListener onGrupoClickListener;
 
     public interface OnGrupoClickListener {
         void onGrupoClick(int grupoId);
-
     }
 
-    public GrupoAdapter(List<Grupo> grupoList, Context context, OnGrupoClickListener onGrupoClickListener) {
+    public GrupoAdapter(List<Grupo> grupoList, Context context, boolean isLargeScreen, OnGrupoClickListener listener) {
         this.grupoList = grupoList;
         this.context = context;
-
-        this.onGrupoClickListener = onGrupoClickListener;
-
+        this.isLargeScreen = isLargeScreen;
+        this.onGrupoClickListener = listener;
     }
 
+    @NonNull
     @Override
-    public GrupoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public GrupoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.cardview, parent, false);
         return new GrupoViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(GrupoViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GrupoViewHolder holder, int position) {
         Grupo grupo = grupoList.get(position);
 
         int imageResId = context.getResources().getIdentifier(grupo.getImageName(), "drawable", context.getPackageName());
@@ -47,6 +48,13 @@ public class GrupoAdapter extends RecyclerView.Adapter<GrupoAdapter.GrupoViewHol
         holder.grupoName.setText(grupo.getName());
 
         holder.itemView.setOnClickListener(v -> onGrupoClickListener.onGrupoClick(grupo.getId()));
+
+        // Ajustar el tamaño de la tarjeta en función del tamaño de pantalla
+        if (!isLargeScreen) {
+            holder.itemView.getLayoutParams().width = (int) (context.getResources().getDimension(R.dimen.card_width) * 0.8);
+            holder.itemView.getLayoutParams().height = (int) (context.getResources().getDimension(R.dimen.card_height) * 0.8);
+            holder.itemView.requestLayout();
+        }
     }
 
     @Override

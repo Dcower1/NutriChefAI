@@ -39,8 +39,8 @@
 
                 <EditText
                     android:id="@+id/editTextRegisterUser"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_width="265dp"
+                    android:layout_height="47dp"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
                     android:hint="Usuario"
@@ -48,6 +48,17 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/logo" />
+
+
+                <Spinner
+                    android:id="@+id/spinner_gender"
+                    android:layout_width="125dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.462"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editRegisterBirthday" />
 
                 <EditText
                     android:id="@+id/editTextRegisterEmail"
@@ -112,14 +123,15 @@
 
                 <EditText
                     android:id="@+id/editRegisterBirthday"
-                    android:layout_width="197dp"
-                    android:layout_height="36dp"
+                    android:layout_width="260dp"
+                    android:layout_height="45dp"
                     android:layout_marginTop="8dp"
                     android:clickable="true"
                     android:focusable="false"
                     android:gravity="center"
                     android:hint="Fecha de Cumpleaños"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.497"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/editTextRegisterPasswordRepeat" />
 
@@ -127,11 +139,11 @@
                     android:id="@+id/textViewPeso"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="16dp"
                     android:text="Peso: ejemplo 70 kg"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editRegisterBirthday" />
+                    app:layout_constraintTop_toBottomOf="@+id/spinner_gender" />
 
                 <SeekBar
                     android:id="@+id/seekBarPeso"
@@ -163,9 +175,11 @@
                     android:id="@+id/textViewIMC"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
                     android:text="IMC: "
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.498"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/seekBarAltura" />
 
@@ -173,7 +187,7 @@
                     android:id="@+id/btn_next"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:backgroundTint="@color/btnintenso"
                     android:text="Siguiente"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -202,6 +216,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
 
                 <TextView
                     android:id="@+id/textViewDieta"

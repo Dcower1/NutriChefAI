@@ -11,10 +11,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
@@ -50,16 +52,17 @@ import java.util.Map;
 public class Register_Usuario extends Fragment {
 
     private ViewSwitcher viewSwitcher;
-    Button btnNext,btn_atras,btn_registrarce;
-    EditText RegisterUser,RegisterEmail,RegisterPasswordRepeat,RegisterPassword;
+    Button btnNext, btn_atras, btn_registrarce;
+    EditText RegisterUser, RegisterEmail, RegisterPasswordRepeat, RegisterPassword;
 
-    Button bfueza,bsubirpeso,bbajarpeso,bmantenerpeso;
+    Button bfueza, bsubirpeso, bbajarpeso, bmantenerpeso;
 
     private String dieta = "";
 
     SeekBar seekBarPeso, seekBarAltura;
     TextView textViewPeso, textViewAltura, textViewIMC;
-    DBHelper dbHelper;;
+    DBHelper dbHelper;
+    ;
     EditText editBirthday;
     private boolean isPasswordVisible = false;
     private boolean isPasswordRepeatVisible = false;
@@ -84,7 +87,11 @@ public class Register_Usuario extends Fragment {
         btn_atras = view.findViewById(R.id.btn_back);
         btn_registrarce = view.findViewById(R.id.btn_registrar);
 
-
+        Spinner spinnerGender = view.findViewById(R.id.spinner_gender);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.gender_options, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerGender.setAdapter(adapter);
 
 
         //botones de la dieta
@@ -161,33 +168,43 @@ public class Register_Usuario extends Fragment {
             @Override
             public void onClick(View v) {
                 if (validar()) {
-                    // Registro en el EC2
                     String usuario = RegisterUser.getText().toString().trim();
-                    String mail = RegisterEmail.getText().toString().trim();
+                    String email = RegisterEmail.getText().toString().trim();
                     String password = RegisterPassword.getText().toString().trim();
                     String birthday = editBirthday.getText().toString().trim();
                     SimpleDateFormat inputFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                     SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
                     int peso = seekBarPeso.getProgress();
-                    float altura = seekBarAltura.getProgress() / 100.0f; // Convertir a metros
-                    float imc = peso / (altura * altura); // Calcular IMC
+                    float altura = seekBarAltura.getProgress() / 100.0f;
+                    float imc = peso / (altura * altura);
 
-                    // Verificar que la dieta no esté vacía
+                    Spinner spinnerGender = view.findViewById(R.id.spinner_gender);
+                    int sexo;
+                    switch (spinnerGender.getSelectedItemPosition()) {
+                        case 0:
+                            sexo = 1; // Hombre
+                            break;
+                        case 1:
+                            sexo = 2; // Mujer
+                            break;
+                        case 2:
+                            sexo = 3; // Otro
+                            break;
+                        default:
+                            sexo = 1;
+                    }
+
                     if (!dieta.isEmpty()) {
-                        String hashedPassword = Utilidades.hashPassword(password); // Hashear la contraseña
-                        limpiarCamposRegistro();
+                        String hashedPassword = Utilidades.hashPassword(password);
+                        limpiarCamposRegistro(view);
 
-                        // Intentar convertir la fecha
                         try {
                             Date date = inputFormat.parse(birthday);
                             String formattedDate = outputFormat.format(date);
 
-                            // Cambiar al fragmento de inicio de sesión
                             cambiarAFragmentoLogUsuario();
-
-                            // Llamar al método de registro en EC2 pasando la fecha de cumpleaños en lugar de la edad
-                            insertarUsuario(usuario, mail, hashedPassword, formattedDate, peso, altura, imc);
+                            insertarUsuario(usuario, email, hashedPassword, formattedDate, peso, sexo, altura, imc);
                         } catch (ParseException e) {
                             e.printStackTrace();
                             Toast.makeText(getContext(), "Formato de fecha no válido. Por favor, use dd/MM/yyyy.", Toast.LENGTH_SHORT).show();
@@ -198,7 +215,6 @@ public class Register_Usuario extends Fragment {
                 }
             }
         });
-
 
 
         btnNext.setOnClickListener(new View.OnClickListener() {
@@ -238,7 +254,7 @@ public class Register_Usuario extends Fragment {
     }
 
     // Método para limpiar los campos de registro
-    private void limpiarCamposRegistro() {
+    private void limpiarCamposRegistro(View view) {
         RegisterUser.setText("");
         RegisterEmail.setText("");
         RegisterPassword.setText("");
@@ -246,7 +262,14 @@ public class Register_Usuario extends Fragment {
         seekBarPeso.setProgress(0);
         seekBarAltura.setProgress(0);
         dieta = ""; // Limpiar selección de dieta
+
+        // Restablecer el Spinner de género a la primera opción
+        Spinner spinnerGender = view.findViewById(R.id.spinner_gender);
+        if (spinnerGender != null) {
+            spinnerGender.setSelection(0);
+        }
     }
+
 
     // Método para cambiar al fragmento Log_Usuario
     private void cambiarAFragmentoLogUsuario() {
@@ -255,6 +278,7 @@ public class Register_Usuario extends Fragment {
         transaction.addToBackStack(null); // Añadir a la pila de retroceso para que el usuario pueda volver si lo desea
         transaction.commit();
     }
+
     private void setupSeekBarListeners() {
 
 
@@ -267,10 +291,12 @@ public class Register_Usuario extends Fragment {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
 
         // funcionamiento del seekbar de altura
@@ -282,12 +308,15 @@ public class Register_Usuario extends Fragment {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
     }
+
     private void setupDietaButtons() {
         bfueza.setOnClickListener(v -> selectDietaButton(bfueza, "fuerza"));
         bsubirpeso.setOnClickListener(v -> selectDietaButton(bsubirpeso, "subir_peso"));
@@ -317,6 +346,7 @@ public class Register_Usuario extends Fragment {
             inicializarDietaRecomendada(imc);
         }
     }
+
     private void inicializarDietaRecomendada(float imc) {
         // Limpiar selección previa
         desmarcarBotonesDieta();
@@ -340,6 +370,7 @@ public class Register_Usuario extends Fragment {
             dieta = "fuerza";
         }
     }
+
     private void desmarcarBotonesDieta() {
         // Reiniciar el fondo de los botones para que no se vean seleccionados
         bfueza.setBackgroundColor(getResources().getColor(R.color.colorDefault));
@@ -361,7 +392,7 @@ public class Register_Usuario extends Fragment {
         if (usuario.isEmpty()) {
             RegisterUser.setError("El campo de usuario está vacío");
             isValid = false; // Set valid to false
-        }else if (usuario.length() < 4) {
+        } else if (usuario.length() < 4) {
             RegisterUser.setError("El usuario debe tener al menos 4 letras");
             isValid = false;
         } else if (!usuario.matches("[a-zA-Z0-9]+")) {
@@ -373,8 +404,8 @@ public class Register_Usuario extends Fragment {
             RegisterEmail.setError("El campo de email está vacío");
             isValid = false;
         } else if (!Utilidades.isValidEmail(email)) {
-        RegisterEmail.setError("El formato del email no es válido");
-        isValid = false;
+            RegisterEmail.setError("El formato del email no es válido");
+            isValid = false;
         }
         if (password.isEmpty()) {
             RegisterPassword.setError("El campo de contraseña está vacío");
@@ -429,32 +460,34 @@ public class Register_Usuario extends Fragment {
     }
 
     // Método para insertar un usuario
-    private void insertarUsuario(String usuario, String mail, String password, String birthday, int peso, float altura, float imc) {
-        String url = "http://44.215.236.242/NutriChefAI/inset_user.php";
+    private void insertarUsuario(String usuario, String email, String password, String birthday, int peso, int sexo, float altura, float imc) {
+        String url = "http://98.82.247.63/NutriChefAi/inser_user.php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Maneja la respuesta del servidor
-                        Log.d("Respuesta", response);
+                        // Manejar la respuesta del servidor
+                        Log.d("Respuesta del servidor", response);
+                        Toast.makeText(getContext(), "Respuesta: " + response, Toast.LENGTH_SHORT).show();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // Maneja los errores
                 Log.e("Error", error.toString());
+                Toast.makeText(getContext(), "Error en la solicitud: " + error.toString(), Toast.LENGTH_SHORT).show();
             }
         }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("usuario", usuario);
-                params.put("mail", mail);
+                params.put("email", email);
                 params.put("password", password);
-                params.put("edad", birthday);
+                params.put("fechaNac", birthday);
                 params.put("peso", String.valueOf(peso));
                 params.put("altura", String.valueOf(altura));
                 params.put("imc", String.valueOf(imc));
+                params.put("sexo", String.valueOf(sexo));
                 return params;
             }
         };
@@ -463,4 +496,5 @@ public class Register_Usuario extends Fragment {
         RequestQueue queue = Volley.newRequestQueue(getContext());
         queue.add(stringRequest);
     }
+
 }

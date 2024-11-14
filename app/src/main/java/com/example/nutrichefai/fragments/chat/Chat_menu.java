@@ -66,7 +66,7 @@ public class Chat_menu extends Fragment {
 
     private void loadUserData(int userId) {
         // URL para obtener los datos del usuario (ajusta según tu API)
-        String url = "http://44.215.236.242/NutriChefAI/cargar_usuario.php?id_usu=" + userId;
+        String url = "http://98.82.247.63/NutriChefAi/cargar_usuario.php?id_usu=" + userId;
 
         // Crear una solicitud para obtener los datos del usuario
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -79,10 +79,10 @@ public class Chat_menu extends Fragment {
                         if (estado.equals("1")) {
                             JSONObject data = jsonResponse.getJSONObject("data");
                             String nombre = data.getString("usuario");
-                            String edad = data.getString("edad");
+                            String edad = data.getString("fechaNac");
                             String peso = data.getString("peso");
                             String altura = data.getString("altura");
-                            String imc = data.getString("IMC");
+                            String imc = data.getString("imc");
 
                             // Establece los datos en los TextViews
                             nombreusuario.setText(nombre);

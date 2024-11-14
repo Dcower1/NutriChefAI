@@ -50,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
         frameLayout = findViewById(R.id.fragment_container);
         toolbar = findViewById(R.id.toolbar);
 
+        // Obtener el ancho de la pantalla en dp
+        int screenWidthDp = getResources().getConfiguration().screenWidthDp;
+
         // Recibe el userId desde el Intent
         Intent intent = getIntent();
         userId = intent.getIntExtra("userId", -1);
@@ -58,28 +61,30 @@ public class MainActivity extends AppCompatActivity {
         // Cargar el fragmento Chat_menu con el userId si es la primera vez
         if (savedInstanceState == null) {
             if (userId != -1) {
-                loadFragment(new Chat_menu(), userId);  // Asegúrate de siempre pasar el userId correcto
+                loadFragment(new Chat_menu(), userId, screenWidthDp >= 600);
             } else {
-                // Si no hay userId, mostrar error y no cargar fragmento
                 Toast.makeText(this, "Error: Usuario no identificado", Toast.LENGTH_LONG).show();
             }
         }
 
+
         // Configurar la toolbar como ActionBar
         setSupportActionBar(toolbar);
-        if (savedInstanceState == null) {
-            loadFragment(new Chat_menu(), userId);
-        }
-        // Manejar la selección de los elementos del BottomNavigationView
         bottomNavigationView.setOnItemSelectedListener(item -> {
+            Fragment fragment;
+
             if (item.getItemId() == R.id.chat_nav) {
-                return loadFragment(new Chat_menu(), userId);  // Pasar el userId también al cambiar de fragmento
+                fragment = new Chat_menu();
             } else if (item.getItemId() == R.id.add_nav) {
-                return loadFragment(new Freezer_inv(), userId);  // Pasar el userId a otros fragmentos si es necesario
+                fragment = new Freezer_inv();
             } else if (item.getItemId() == R.id.perfil_nav) {
-                return loadFragment(new Perfil_Usuario(), userId);  // Pasar el userId al perfil
+                fragment = new Perfil_Usuario();
+            } else {
+                return false;
             }
-            return false;
+
+            // Llamar al método loadFragment con la condición del tamaño de pantalla
+            return loadFragment(fragment, userId, screenWidthDp >= 600); // Pasar la condición del tamaño
         });
     }
 
@@ -90,14 +95,16 @@ public class MainActivity extends AppCompatActivity {
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
-    // Método para cargar los fragmentos
-    private boolean loadFragment(Fragment fragment, int userId) {
+    // Modificar el método loadFragment para aceptar el tercer parámetro
+    private boolean loadFragment(Fragment fragment, int userId, boolean isLargeScreen) {
         if (fragment != null) {
-            // Pasar el userId al fragmento usando Bundle
+            // Crear un Bundle y pasar los argumentos userId e isLargeScreen
             Bundle args = new Bundle();
             args.putInt("userId", userId);
+            args.putBoolean("isLargeScreen", isLargeScreen); // Pasar el tamaño de pantalla al fragmento
             fragment.setArguments(args);
 
+            // Reemplazar el fragmento en el contenedor
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, fragment)
@@ -106,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
+
 
 
 }

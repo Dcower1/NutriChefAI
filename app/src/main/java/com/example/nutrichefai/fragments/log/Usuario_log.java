@@ -83,7 +83,7 @@ public class Usuario_log extends Fragment {
             String hashedPassword = Utilidades.hashPassword(password);
 
             // Valida al usuario en la nube
-            String url = "http://44.215.236.242/NutriChefAI/consultar_usuario.php?login=" + usernameOrEmail + "&password=" + hashedPassword;
+            String url = "http://98.82.247.63/NutriChefAi/consultar_usuario.php?login=" + usernameOrEmail + "&password=" + hashedPassword;
             validarUsuario(url);
         });
 
@@ -143,8 +143,8 @@ public class Usuario_log extends Fragment {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> parametros = new HashMap<>();
-                parametros.put("usuario", txtloginusu.getText().toString());
-                parametros.put("password", txtpassword.getText().toString());
+                parametros.put("login", txtloginusu.getText().toString().trim());
+                parametros.put("password", Utilidades.hashPassword(txtpassword.getText().toString().trim()));
                 return parametros;
             }
         };
@@ -152,6 +152,7 @@ public class Usuario_log extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(requireContext());
         requestQueue.add(stringRequest);
     }
+
 
     private void togglePasswordVisibility(EditText editText, ImageView toggle, boolean isVisible) {
         if (isVisible) {

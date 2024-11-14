@@ -13,6 +13,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,6 +38,7 @@ public class Freezer_inv extends Fragment {
     private IngredienteAdapter ingredienteAdapter;
     private DBHelper dbHelper;
     private ImageView backButton;
+    private boolean isLargeScreen; // Flag de tamaño de pantalla
 
     @Nullable
     @Override
@@ -49,14 +51,26 @@ public class Freezer_inv extends Fragment {
             return insets;
         });
 
+        // Obtener el flag de tamaño de pantalla desde los argumentos
+        isLargeScreen = getArguments() != null && getArguments().getBoolean("isLargeScreen", false);
+
+        // Inicializar RecyclerView y DBHelper
         recyclerView = view.findViewById(R.id.selector_ingredientes);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         dbHelper = new DBHelper(getContext());
 
+        // Configurar el LayoutManager en función del tamaño de pantalla
+        if (isLargeScreen) {
+            int spanCount = Math.max(1, getResources().getConfiguration().screenWidthDp / 100);
+            recyclerView.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
+        } else {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        }
+
+        // Inicializar el botón de retroceso
         backButton = view.findViewById(R.id.bt_atras);
         backButton.setOnClickListener(v -> handleBackNavigation());
 
-        // Cargar y mostrar los grupos
+        // Cargar y mostrar los grupos al inicio
         loadGrupos();
 
         return view;
@@ -66,22 +80,23 @@ public class Freezer_inv extends Fragment {
         // Ocultar el botón de retroceso cuando se muestran los grupos
         backButton.setVisibility(View.GONE);
 
+        // Obtener los datos de los grupos y configurar el adaptador
         List<Grupo> grupoList = dbHelper.getAllGrupos();
-        grupoAdapter = new GrupoAdapter(grupoList, getContext(), grupoId -> loadTiposAlimento(grupoId));
+        grupoAdapter = new GrupoAdapter(grupoList, getContext(), isLargeScreen, grupoId -> loadTiposAlimento(grupoId));
         recyclerView.setAdapter(grupoAdapter);
     }
 
     private void loadTiposAlimento(int grupoId) {
         backButton.setVisibility(View.VISIBLE);
         List<TipoAlimento> tipoAlimentoList = dbHelper.getTipoAlimentosByGrupo(grupoId);
-        tipoAlimentoAdapter = new TipoAlimentoAdapter(tipoAlimentoList, getContext(), tipoAlimentoId -> loadIngredientes(tipoAlimentoId));
+        tipoAlimentoAdapter = new TipoAlimentoAdapter(tipoAlimentoList, getContext(), isLargeScreen, tipoAlimentoId -> loadIngredientes(tipoAlimentoId));
         recyclerView.setAdapter(tipoAlimentoAdapter);
     }
 
     private void loadIngredientes(int tipoAlimentoId) {
         backButton.setVisibility(View.VISIBLE);
         List<Food> ingredienteList = dbHelper.getIngredientesByTipo(tipoAlimentoId);
-        ingredienteAdapter = new IngredienteAdapter(ingredienteList, getContext());
+        ingredienteAdapter = new IngredienteAdapter(ingredienteList, getContext(), isLargeScreen);
         recyclerView.setAdapter(ingredienteAdapter);
     }
 
