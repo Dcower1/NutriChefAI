@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -93,12 +94,31 @@ public class Freezer_inv extends Fragment {
         recyclerView.setAdapter(tipoAlimentoAdapter);
     }
 
+    //https://developer.android.com/develop/ui/views/layout/recyclerview?hl=es-419
     private void loadIngredientes(int tipoAlimentoId) {
+
         backButton.setVisibility(View.VISIBLE);
         List<Food> ingredienteList = dbHelper.getIngredientesByTipo(tipoAlimentoId);
-        ingredienteAdapter = new IngredienteAdapter(ingredienteList, getContext(), isLargeScreen);
+        ItemTouchHelper.Callback callback = new IngredienteAdapter(ingredienteList, getContext(), isLargeScreen, null).getItemTouchHelperCallback();
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+
+        // Crear el adaptador con el ItemTouchHelper
+        ingredienteAdapter = new IngredienteAdapter(ingredienteList, getContext(), isLargeScreen, itemTouchHelper);
         recyclerView.setAdapter(ingredienteAdapter);
+        // Asociar el ItemTouchHelper al RecyclerView
+        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
+    
+   // private void loadIngredientes2(int tipoAlimentoId) {
+        //backButton.setVisibility(View.VISIBLE);
+        //List<Food> ingredienteList = dbHelper.getIngredientesByTipo(tipoAlimentoId);
+        //ingredienteAdapter = new IngredienteAdapter(ingredienteList, getContext(), isLargeScreen);
+        //recyclerView.setAdapter(ingredienteAdapter);
+
+
+        //ItemTouchHelper itemTouchHelper = new ItemTouchHelper(ingredienteAdapter.getItemTouchHelperCallback());
+       // itemTouchHelper.attachToRecyclerView(recyclerView);
+    //}
 
     private void handleBackNavigation() {
         if (recyclerView.getAdapter() instanceof IngredienteAdapter) {
