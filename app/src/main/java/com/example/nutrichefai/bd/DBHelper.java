@@ -17,7 +17,7 @@ import java.util.List;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "NutriChefAI.db";
-    private static final int DATABASE_VERSION = 6; //V6
+    private static final int DATABASE_VERSION = 8; //V7
 
     // Tablas
     public static final String TABLA_GRUPO = "grupo_alimenticio";
@@ -99,17 +99,17 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // Método para insertar Grupos Alimenticios iniciales
     private void insertGrupos(SQLiteDatabase db) {
-        addGrupo(db, "Carbohidratos", "default_image");
-        addGrupo(db, "Proteínas", "default_image");
-        addGrupo(db, "Frutas", "default_image");
-        addGrupo(db, "Lácteos", "default_image");
-        addGrupo(db, "Grasas y Aceites", "default_image");
-        addGrupo(db, "Vegetales", "default_image");
-        addGrupo(db, "Legumbres", "default_image");
-        addGrupo(db, "Azúcares y Endulzantes", "default_image");
-        addGrupo(db, "Bebidas", "default_image");
-        addGrupo(db, "Snacks y Dulces", "default_image");
-        addGrupo(db, "Hierbas y Especias", "default_image");
+        addGrupo(db, "Carbohidratos", "img1");
+        addGrupo(db, "Proteínas", "img2");
+        addGrupo(db, "Frutas", "img3");
+        addGrupo(db, "Lácteos", "img4");
+        addGrupo(db, "Grasas y Aceites", "img5");
+        addGrupo(db, "Vegetales", "img6");
+        addGrupo(db, "Legumbres", "img7");
+        addGrupo(db, "Azúcares y Endulzantes", "img8");
+        addGrupo(db, "Bebidas", "img9");
+        addGrupo(db, "Snacks y Dulces", "img10");
+        addGrupo(db, "Hierbas y Especias", "img11");
     }
 
     private void addGrupo(SQLiteDatabase db, String nombre, String imagen) {
@@ -121,36 +121,36 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // Método para insertar Tipos de Alimentos iniciales
     private void insertTipos(SQLiteDatabase db) {
-        addTipo(db, "Granos y Cereales", "default_image", 1);
-        addTipo(db, "Panes y Pastas", "default_image", 1);
-        addTipo(db, "Tubérculos y Raíces", "default_image", 1);
-        addTipo(db, "Legumbres", "default_image", 1);
-        addTipo(db, "Verduras C.up", "default_image", 1);
-        addTipo(db, "Carnes", "default_image", 2);
-        addTipo(db, "Pescados y Mariscos", "default_image", 2);
-        addTipo(db, "Huevos", "default_image", 2);
-        addTipo(db, "Tofu y Tempeh", "default_image", 2);
-        addTipo(db, "Frutos Secos y Semillas", "default_image", 2);
-        addTipo(db, "Frutas varias", "default_image", 3);
-        addTipo(db, "Leche y Derivados", "default_image", 4);
-        addTipo(db, "Quesos", "default_image", 4);
-        addTipo(db, "Yogur", "default_image", 4);
-        addTipo(db, "Aceites", "default_image", 5);
-        addTipo(db, "Otros", "default_image", 5);
-        addTipo(db, "Vegetales Varios", "default_image", 6);
-        addTipo(db, "Frijoles", "default_image", 7);
-        addTipo(db, "Lentejas", "default_image", 7);
-        addTipo(db, "Guisantes", "default_image", 7);
-        addTipo(db, "Azúcar", "default_image", 8);
-        addTipo(db, "Miel y Sirope", "default_image", 8);
-        addTipo(db, "Endulzantes Naturales", "default_image", 8);
-        addTipo(db, "Bebidas No Alcohólicas", "default_image", 9);
-        addTipo(db, "Bebidas Fermentadas", "default_image", 9);
-        addTipo(db, "Bebidas Alcohólicas", "default_image", 9);
-        addTipo(db, "Dulces", "default_image", 10);
-        addTipo(db, "Snacks Salados", "default_image", 10);
-        addTipo(db, "Hierbas Frescas", "default_image", 11);
-        addTipo(db, "Especias", "default_image", 11);
+        addTipo(db, "Granos y Cereales", "tipo1", 1);
+        addTipo(db, "Panes y Pastas", "tipo2", 1);
+        addTipo(db, "Tubérculos y Raíces", "tipo3", 1);
+        addTipo(db, "Legumbres", "tipo4", 1);
+        addTipo(db, "Verduras C.up", "tipo5", 1);
+        addTipo(db, "Carnes", "tipo6", 2);
+        addTipo(db, "Pescados y Mariscos", "tipo7", 2);
+        addTipo(db, "Huevos", "tipo8", 2);
+        addTipo(db, "Tofu y Tempeh", "tipo9", 2);
+        addTipo(db, "Frutos Secos y Semillas", "tipo10", 2);
+        addTipo(db, "Frutas varias", "tipo11", 3);
+        addTipo(db, "Leche y Derivados", "tipo12", 4);
+        addTipo(db, "Quesos", "tipo13", 4);
+        addTipo(db, "Yogur", "tipo14", 4);
+        addTipo(db, "Aceites", "tipo15", 5);
+        addTipo(db, "Otros", "tipo16", 5);
+        addTipo(db, "Vegetales Varios", "tipo17", 6);
+        addTipo(db, "Frijoles", "tipo18", 7);
+        addTipo(db, "Lentejas", "tipo19", 7);
+        addTipo(db, "Guisantes", "tipo20", 7);
+        addTipo(db, "Azúcar", "tipo21", 8);
+        addTipo(db, "Miel y Sirope", "tipo22", 8);
+        addTipo(db, "Endulzantes Naturales", "tipo23", 8);
+        addTipo(db, "Bebidas No Alcohólicas", "tipo24", 9);
+        addTipo(db, "Bebidas Fermentadas", "tipo25", 9);
+        addTipo(db, "Bebidas Alcohólicas", "tipo26", 9);
+        addTipo(db, "Dulces", "tipo27", 10);
+        addTipo(db, "Snacks Salados", "tipo28", 10);
+        addTipo(db, "Hierbas Frescas", "tipo29", 11);
+        addTipo(db, "Especias", "tipo30", 11);
 
     }
 
@@ -166,18 +166,18 @@ public class DBHelper extends SQLiteOpenHelper {
     private void insertInitialIngredients(SQLiteDatabase db) {
 
         // Carbohidratos
-        addIngredient(db, "Arroz", "Rico en carbohidratos", "default_image", 1);
-        addIngredient(db, "Trigo", "Rico en carbohidratos", "default_image", 1);
-        addIngredient(db, "Avena", "Rica en fibra", "default_image", 1);
+        addIngredient(db, "Arroz", "Rico en carbohidratos", "arroz", 1);
+        addIngredient(db, "Trigo", "Rico en carbohidratos", "trigo", 1);
+        addIngredient(db, "Avena", "Rica en fibra", "avena", 1);
         addIngredient(db, "Cebada", "Rica en fibra y nutrientes", "default_image", 1);
         addIngredient(db, "Centeno", "Rico en carbohidratos", "default_image", 1);
         addIngredient(db, "Maíz", "Rico en carbohidratos", "default_image", 1);
         addIngredient(db, "Quinoa", "Rica en proteínas", "default_image", 1);
         addIngredient(db, "Mijo", "Rico en fibra", "default_image", 1);
 
-        addIngredient(db, "Pan integral", "Rico en fibra", "default_image", 2);
-        addIngredient(db, "Pan blanco", "Rico en carbohidratos", "default_image", 2);
-        addIngredient(db, "Pasta", "Rica en carbohidratos", "default_image", 2);
+        addIngredient(db, "Pan integral", "Rico en fibra", "pani", 2);
+        addIngredient(db, "Pan blanco", "Rico en carbohidratos", "pan", 2);
+        addIngredient(db, "Pasta", "Rica en carbohidratos", "fideo", 2);
         addIngredient(db, "Fideos", "Rico en carbohidratos", "default_image", 2);
         addIngredient(db, "Tortillas", "Rico en carbohidratos", "default_image", 2);
         addIngredient(db, "Papa", "Rica en carbohidratos", "default_image", 3);
@@ -186,37 +186,37 @@ public class DBHelper extends SQLiteOpenHelper {
         addIngredient(db, "Ñame", "Rico en carbohidratos", "default_image", 3);
 
 
-        addIngredient(db, "Lentejas", "Ricas en proteínas y fibra", "default_image", 4);
+        addIngredient(db, "Lentejas", "Ricas en proteínas y fibra", "lentejas", 4);
         addIngredient(db, "Garbanzos", "Ricos en proteínas y fibra", "default_image", 4);
         addIngredient(db, "Frijoles", "Ricos en proteínas y fibra", "default_image", 4);
         addIngredient(db, "Alubias", "Ricas en proteínas y fibra", "default_image", 4);
         addIngredient(db, "Guisantes", "Ricos en carbohidratos", "default_image", 4);
 
         addIngredient(db, "Calabaza", "Rica en carbohidratos", "default_image", 5);
-        addIngredient(db, "Zanahorias", "Ricas en vitamina A", "default_image", 5);
+        addIngredient(db, "Zanahorias", "Ricas en vitamina A", "zana", 5);
         addIngredient(db, "Remolacha", "Rica en antioxidantes", "default_image", 5);
         addIngredient(db, "Morron Rojo", "Rico en vitamina C", "ingrediente1", 5);
         // Proteínas
-        addIngredient(db, "Pollo", "Rico en proteínas", "default_image", 6);
-        addIngredient(db, "Res", "Rica en proteínas", "default_image", 6);
+        addIngredient(db, "Pollo", "Rico en proteínas", "pollo", 6);
+        addIngredient(db, "Res", "Rica en proteínas", "res", 6);
         addIngredient(db, "Cerdo", "Rico en proteínas", "default_image", 6);
         addIngredient(db, "Cordero", "Rico en proteínas", "default_image", 6);
         addIngredient(db, "Pavo", "Rico en proteínas", "default_image", 6);
 
-        addIngredient(db, "Salmón", "Rico en omega 3", "default_image", 7);
-        addIngredient(db, "Atún", "Rico en proteínas y omega 3", "default_image", 7);
+        addIngredient(db, "Salmón", "Rico en omega 3", "salmon", 7);
+        addIngredient(db, "Atún", "Rico en proteínas y omega 3", "atun", 7);
         addIngredient(db, "Bacalao", "Rico en proteínas", "default_image", 7);
         addIngredient(db, "Sardinas", "Ricas en omega 3", "default_image", 7);
         addIngredient(db, "Camarones", "Ricos en proteínas", "default_image", 7);
         addIngredient(db, "Mejillones", "Ricos en proteínas", "default_image", 7);
 
-        addIngredient(db, "Huevo entero", "Rico en proteínas", "default_image", 8);
-        addIngredient(db, "Claras de huevo", "Ricas en proteínas", "default_image", 8);
+        addIngredient(db, "Huevo entero", "Rico en proteínas", "huevo", 8);
+        addIngredient(db, "Claras de huevo", "Ricas en proteínas", "clarah", 8);
 
-        addIngredient(db, "Tofu", "Rico en proteínas", "default_image", 9);
+        addIngredient(db, "Tofu", "Rico en proteínas", "tofu", 9);
         addIngredient(db, "Tempeh", "Rico en proteínas", "default_image", 9);
 
-        addIngredient(db, "Almendras", "Ricas en grasas saludables", "default_image", 10);
+        addIngredient(db, "Almendras", "Ricas en grasas saludables", "alme", 10);
         addIngredient(db, "Nueces", "Ricas en omega 3", "default_image", 10);
         addIngredient(db, "Semillas de chía", "Ricas en omega 3", "default_image", 10);
         addIngredient(db, "Semillas de lino", "Ricas en fibra", "default_image", 10);
@@ -224,7 +224,7 @@ public class DBHelper extends SQLiteOpenHelper {
         addIngredient(db, "Avellanas", "Ricas en vitamina E", "default_image", 10);
         addIngredient(db, "Semillas de sésamo", "Ricas en calcio", "default_image", 10);
         // Frutas
-        addIngredient(db, "Naranjas", "Ricas en vitamina C", "default_image", 11);
+        addIngredient(db, "Naranjas", "Ricas en vitamina C", "naranja", 11);
         addIngredient(db, "Limones", "Ricos en vitamina C", "default_image", 11);
         addIngredient(db, "Mandarinas", "Ricas en vitamina C", "default_image", 11);
         addIngredient(db, "Pomelos", "Ricos en vitamina C", "default_image", 11);

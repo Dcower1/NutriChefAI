@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nutrichefai.R;
-import com.example.nutrichefai.adapters.FoodAdapter;
+
 import com.example.nutrichefai.adapters.GrupoAdapter;
 import com.example.nutrichefai.adapters.IngredienteAdapter;
 import com.example.nutrichefai.adapters.TipoAlimentoAdapter;
