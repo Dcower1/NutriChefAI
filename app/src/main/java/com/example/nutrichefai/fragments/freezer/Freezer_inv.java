@@ -9,10 +9,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -55,6 +60,7 @@ public class Freezer_inv extends Fragment {
     private IngredienteAdapter ingredienteAdapter;
 
     private boolean showingGrupos = true; // Estado inicial: mostrando grupos
+    private int userId; // ID del usuario
 
     private ImageView backButton; // Botón de retroceso
 
@@ -71,22 +77,26 @@ public class Freezer_inv extends Fragment {
         ingredienteList = new ArrayList<>();
 
         backButton = view.findViewById(R.id.bt_atras);
-        backButton.setVisibility(View.GONE); // Ocultar el botón inicialmente
+        backButton.setVisibility(View.GONE);
         backButton.setOnClickListener(v -> handleBackNavigation());
 
-        // Obtener el ID del usuario desde SharedPreferences
+        // Recuperar el userId desde SharedPreferences
         SharedPreferences preferences = requireContext().getSharedPreferences("UsuarioPrefs", Context.MODE_PRIVATE);
-        int idUsuario = preferences.getInt("idUsuario", -1); // ID guardado, usa un valor por defecto si no existe
+        userId = preferences.getInt("idUsuario", -1);
+        Log.d("Freezer_inv", "userId recuperado: " + userId);
+
+        if (userId == -1) {
+            Toast.makeText(requireContext(), "Usuario no identificado. Por favor, inicia sesión nuevamente.", Toast.LENGTH_SHORT).show();
+            return view; // Evita continuar si no hay usuario identificado
+        }
 
         // Configurar el DragListener
         ImageView refrigerator = view.findViewById(R.id.image_refrigerator);
-        refrigerator.setOnDragListener(new RefrigeratorDragListener(requireContext(), idUsuario));
+        refrigerator.setOnDragListener(new RefrigeratorDragListener(requireContext(), userId, this));
 
-        loadGrupos(); // Carga los grupos inicialmente
-
+        loadGrupos();
         return view;
     }
-
 
     private void loadGrupos() {
         String url = "http://98.82.247.63/NutriChefAi/obtener_grupos.php";
@@ -194,49 +204,83 @@ public class Freezer_inv extends Fragment {
         queue.add(request);
     }
 
-
-    private void asociarIngredienteConUsuario(int idIngrediente) {
-        SharedPreferences preferences = requireContext().getSharedPreferences("UsuarioPrefs", Context.MODE_PRIVATE);
-        int idUsuario = preferences.getInt("idUsuario", -1); // Obtiene el ID del usuario actual
-
-        if (idUsuario == -1) {
-            Toast.makeText(requireContext(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
-            return;
+    private Ingrediente obtenerIngredientePorId(int idIngrediente) {
+        for (Ingrediente ingrediente : ingredienteList) {
+            if (ingrediente.getId() == idIngrediente) {
+                return ingrediente;
+            }
         }
+        return null;
+    }
 
+    private void asociarIngredienteConUsuario(int idIngrediente, String cantidad) {
         String url = "http://98.82.247.63/NutriChefAi/asociar_ingrediente.php";
         RequestQueue queue = Volley.newRequestQueue(requireContext());
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
-                response -> {
-                    try {
-                        JSONObject jsonResponse = new JSONObject(response);
-                        boolean success = jsonResponse.getBoolean("success");
-
-                        if (success) {
-                            Toast.makeText(requireContext(), "Ingrediente agregado al inventario", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(requireContext(), "Error: " + jsonResponse.getString("message"), Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(requireContext(), "Error procesando respuesta del servidor", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                error -> {
-                    Toast.makeText(requireContext(), "Error al asociar ingrediente: " + error.toString(), Toast.LENGTH_SHORT).show();
-                }) {
+                response -> Toast.makeText(requireContext(), "Ingrediente agregado al inventario", Toast.LENGTH_SHORT).show(),
+                error -> Toast.makeText(requireContext(), "Error al agregar ingrediente", Toast.LENGTH_SHORT).show()) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("id_usuario", String.valueOf(idUsuario));
+                params.put("id_usuario", String.valueOf(userId));
                 params.put("id_ingrediente", String.valueOf(idIngrediente));
+                params.put("cantidad", cantidad);
                 return params;
             }
         };
 
         queue.add(request);
     }
+
+    public void showDynamicCard(int idIngrediente) {
+        CardView cardView = requireView().findViewById(R.id.card_view_dynamic);
+        TextView foodName = cardView.findViewById(R.id.text_food_name_dynamic);
+        ImageView foodImage = cardView.findViewById(R.id.image_food_dynamic);
+        EditText editQuantity = cardView.findViewById(R.id.edit_quantity_dynamic);
+        Spinner spinnerUnit = cardView.findViewById(R.id.spinner_unit_dynamic);
+        Button buttonAdd = cardView.findViewById(R.id.button_add_dynamic);
+        Button buttonCancel = cardView.findViewById(R.id.button_cancel_dynamic);
+
+        // Obtener los detalles del ingrediente por ID
+        Ingrediente ingrediente = obtenerIngredientePorId(idIngrediente);
+        if (ingrediente != null) {
+            // Establecer el nombre del ingrediente
+            foodName.setText(ingrediente.getNombre());
+
+            // Buscar la imagen en drawable usando el nombre almacenado en la tabla
+            int imageResourceId = requireContext().getResources().getIdentifier(
+                    ingrediente.getImageName(), "drawable", requireContext().getPackageName());
+
+            // Establecer la imagen si se encuentra; de lo contrario, usar una imagen predeterminada
+            if (imageResourceId != 0) {
+                foodImage.setImageResource(imageResourceId);
+            } else {
+                foodImage.setImageResource(R.drawable.default_image); // Imagen predeterminada
+            }
+        }
+
+        // Mostrar la tarjeta
+        cardView.setVisibility(View.VISIBLE);
+
+        // Manejar el botón "Añadir"
+        buttonAdd.setOnClickListener(v -> {
+            String cantidad = editQuantity.getText().toString();
+            String unidad = spinnerUnit.getSelectedItem().toString();
+
+            if (cantidad.isEmpty()) {
+                Toast.makeText(requireContext(), "Por favor, ingresa la cantidad", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            asociarIngredienteConUsuario(idIngrediente, cantidad + " " + unidad);
+            cardView.setVisibility(View.GONE); // Ocultar la tarjeta después de agregar
+        });
+
+        // Manejar el botón "Cancelar"
+        buttonCancel.setOnClickListener(v -> cardView.setVisibility(View.GONE));
+    }
+
     public void handleBackNavigation() {
         if (recyclerView.getAdapter() instanceof IngredienteAdapter) {
             recyclerView.setAdapter(tipoAlimentoAdapter);

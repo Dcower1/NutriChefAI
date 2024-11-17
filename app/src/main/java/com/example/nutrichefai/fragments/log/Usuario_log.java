@@ -104,6 +104,13 @@ public class Usuario_log extends Fragment {
     }
 
     private void validarUsuario(String url) {
+        // Validar que los campos de usuario y contraseña no estén vacíos antes de la solicitud
+        if (txtloginusu.getText().toString().trim().isEmpty() || txtpassword.getText().toString().trim().isEmpty()) {
+            Toast.makeText(requireContext(), "Por favor, ingresa usuario y contraseña", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Crear la solicitud POST
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
                     try {
@@ -117,11 +124,15 @@ public class Usuario_log extends Fragment {
                             // Obtener el ID del usuario desde la respuesta
                             int userId = jsonResponse.getJSONObject("data").getInt("id_usu");
 
-                            // Redirigir a MainActivity pasando el userId
-                            Intent intent = new Intent(requireActivity(), MainActivity.class);
-                            intent.putExtra("userId", userId); // Pasar el userId a MainActivity
-                            startActivity(intent);
-                            requireActivity().finish();
+                            if (userId > 0) {
+                                // Redirigir a MainActivity pasando el userId
+                                Intent intent = new Intent(requireActivity(), MainActivity.class);
+                                intent.putExtra("userId", userId); // Pasar el userId a MainActivity
+                                startActivity(intent);
+                                requireActivity().finish(); // Finalizar la actividad actual para evitar que el usuario regrese
+                            } else {
+                                Toast.makeText(requireContext(), "Error: ID de usuario no válido", Toast.LENGTH_SHORT).show();
+                            }
                         } else {
                             Toast.makeText(requireContext(), "Usuario o Contraseña incorrectos", Toast.LENGTH_SHORT).show();
                         }
@@ -135,13 +146,15 @@ public class Usuario_log extends Fragment {
                     Log.e("VolleyError", error.toString());
 
                     if (error.networkResponse != null) {
-                        Log.e("NetworkResponse", new String(error.networkResponse.data));
+                        Log.e("NetworkResponse", "Código de estado: " + error.networkResponse.statusCode);
+                        Log.e("NetworkResponse", "Respuesta: " + new String(error.networkResponse.data));
                     }
                     Toast.makeText(requireContext(), "Hubo un error con la conexión", Toast.LENGTH_SHORT).show();
                 }
         ) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
+                // Parámetros enviados en la solicitud POST
                 Map<String, String> parametros = new HashMap<>();
                 parametros.put("login", txtloginusu.getText().toString().trim());
                 parametros.put("password", Utilidades.hashPassword(txtpassword.getText().toString().trim()));
@@ -149,6 +162,7 @@ public class Usuario_log extends Fragment {
             }
         };
 
+        // Añadir la solicitud a la cola
         RequestQueue requestQueue = Volley.newRequestQueue(requireContext());
         requestQueue.add(stringRequest);
     }
