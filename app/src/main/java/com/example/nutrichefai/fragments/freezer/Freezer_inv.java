@@ -1,130 +1,252 @@
 package com.example.nutrichefai.fragments.freezer;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.nutrichefai.R;
 
 import com.example.nutrichefai.adapters.GrupoAdapter;
 import com.example.nutrichefai.adapters.IngredienteAdapter;
 import com.example.nutrichefai.adapters.TipoAlimentoAdapter;
-import com.example.nutrichefai.bd.DBHelper;
-import com.example.nutrichefai.bd.Food;
 import com.example.nutrichefai.bd.Grupo;
+import com.example.nutrichefai.bd.Ingrediente;
+import com.example.nutrichefai.bd.RefrigeratorDragListener;
 import com.example.nutrichefai.bd.TipoAlimento;
 
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Freezer_inv extends Fragment {
     private RecyclerView recyclerView;
+    private List<Grupo> grupoList;
+    private List<TipoAlimento> tipoAlimentoList;
+    private List<Ingrediente> ingredienteList;
+
     private GrupoAdapter grupoAdapter;
     private TipoAlimentoAdapter tipoAlimentoAdapter;
     private IngredienteAdapter ingredienteAdapter;
-    private DBHelper dbHelper;
-    private ImageView backButton;
-    private boolean isLargeScreen; // Flag de tamaño de pantalla
+
+    private boolean showingGrupos = true; // Estado inicial: mostrando grupos
+
+    private ImageView backButton; // Botón de retroceso
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_freezer_inv, container, false);
 
-        ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
-        // Obtener el flag de tamaño de pantalla desde los argumentos
-        isLargeScreen = getArguments() != null && getArguments().getBoolean("isLargeScreen", false);
-
-        // Inicializar RecyclerView y DBHelper
         recyclerView = view.findViewById(R.id.selector_ingredientes);
-        dbHelper = new DBHelper(getContext());
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        // Configurar el LayoutManager en función del tamaño de pantalla
-        if (isLargeScreen) {
-            int spanCount = Math.max(1, getResources().getConfiguration().screenWidthDp / 100);
-            recyclerView.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
-        } else {
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        }
+        grupoList = new ArrayList<>();
+        tipoAlimentoList = new ArrayList<>();
+        ingredienteList = new ArrayList<>();
 
-        // Inicializar el botón de retroceso
         backButton = view.findViewById(R.id.bt_atras);
+        backButton.setVisibility(View.GONE); // Ocultar el botón inicialmente
         backButton.setOnClickListener(v -> handleBackNavigation());
 
-        // Cargar y mostrar los grupos al inicio
-        loadGrupos();
+        // Obtener el ID del usuario desde SharedPreferences
+        SharedPreferences preferences = requireContext().getSharedPreferences("UsuarioPrefs", Context.MODE_PRIVATE);
+        int idUsuario = preferences.getInt("idUsuario", -1); // ID guardado, usa un valor por defecto si no existe
+
+        // Configurar el DragListener
+        ImageView refrigerator = view.findViewById(R.id.image_refrigerator);
+        refrigerator.setOnDragListener(new RefrigeratorDragListener(requireContext(), idUsuario));
+
+        loadGrupos(); // Carga los grupos inicialmente
 
         return view;
     }
 
+
     private void loadGrupos() {
-        // Ocultar el botón de retroceso cuando se muestran los grupos
-        backButton.setVisibility(View.GONE);
+        String url = "http://98.82.247.63/NutriChefAi/obtener_grupos.php";
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
 
-        // Obtener los datos de los grupos y configurar el adaptador
-        List<Grupo> grupoList = dbHelper.getAllGrupos();
-        grupoAdapter = new GrupoAdapter(grupoList, getContext(), isLargeScreen, grupoId -> loadTiposAlimento(grupoId));
-        recyclerView.setAdapter(grupoAdapter);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        if (response.getBoolean("success")) {
+                            grupoList.clear();
+                            JSONArray grupos = response.getJSONArray("grupos");
+
+                            for (int i = 0; i < grupos.length(); i++) {
+                                JSONObject grupo = grupos.getJSONObject(i);
+                                grupoList.add(new Grupo(
+                                        grupo.getInt("id_grupo"),
+                                        grupo.getString("nombre_grupo"),
+                                        grupo.getString("imagen_grupo")
+                                ));
+                            }
+
+                            grupoAdapter = new GrupoAdapter(grupoList, requireContext(), Freezer_inv.this);
+                            recyclerView.setAdapter(grupoAdapter);
+                            backButton.setVisibility(View.GONE); // Ocultar el botón al mostrar grupos
+                            showingGrupos = true;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(requireContext(), "Error al procesar los datos", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> Toast.makeText(requireContext(), "Error al cargar los datos: " + error.getMessage(), Toast.LENGTH_SHORT).show());
+
+        queue.add(request);
     }
 
-    private void loadTiposAlimento(int grupoId) {
-        backButton.setVisibility(View.VISIBLE);
-        List<TipoAlimento> tipoAlimentoList = dbHelper.getTipoAlimentosByGrupo(grupoId);
-        tipoAlimentoAdapter = new TipoAlimentoAdapter(tipoAlimentoList, getContext(), isLargeScreen, tipoAlimentoId -> loadIngredientes(tipoAlimentoId));
-        recyclerView.setAdapter(tipoAlimentoAdapter);
+    public void loadTiposAlimentos(int idGrupo) {
+        String url = "http://98.82.247.63/NutriChefAi/get_tipo.php?id_grupo=" + idGrupo;
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        if (response.getBoolean("success")) {
+                            tipoAlimentoList.clear();
+                            JSONArray tipos = response.getJSONArray("tipos");
+
+                            for (int i = 0; i < tipos.length(); i++) {
+                                JSONObject tipo = tipos.getJSONObject(i);
+                                tipoAlimentoList.add(new TipoAlimento(
+                                        tipo.getInt("id_tipo"),
+                                        tipo.getString("nombre_tipo"),
+                                        tipo.getString("imagen_tipo"),
+                                        idGrupo
+                                ));
+                            }
+
+                            tipoAlimentoAdapter = new TipoAlimentoAdapter(tipoAlimentoList, requireContext(), Freezer_inv.this);
+                            recyclerView.setAdapter(tipoAlimentoAdapter);
+                            backButton.setVisibility(View.VISIBLE); // Mostrar el botón en tipos de alimentos
+                            showingGrupos = false;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(requireContext(), "Error al procesar los datos", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> Toast.makeText(requireContext(), "Error al cargar los datos: " + error.getMessage(), Toast.LENGTH_SHORT).show());
+
+        queue.add(request);
     }
 
-    //https://developer.android.com/develop/ui/views/layout/recyclerview?hl=es-419
-    private void loadIngredientes(int tipoAlimentoId) {
+    public void loadIngredientes(int idTipo) {
+        String url = "http://98.82.247.63/NutriChefAi/get_ingredientes.php?id_tipo=" + idTipo;
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
 
-        backButton.setVisibility(View.VISIBLE);
-        List<Food> ingredienteList = dbHelper.getIngredientesByTipo(tipoAlimentoId);
-        ItemTouchHelper.Callback callback = new IngredienteAdapter(ingredienteList, getContext(), isLargeScreen, null).getItemTouchHelperCallback();
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        if (response.getBoolean("success")) {
+                            ingredienteList.clear();
+                            JSONArray ingredientes = response.getJSONArray("ingredientes");
 
-        // Crear el adaptador con el ItemTouchHelper
-        ingredienteAdapter = new IngredienteAdapter(ingredienteList, getContext(), isLargeScreen, itemTouchHelper);
-        recyclerView.setAdapter(ingredienteAdapter);
-        // Asociar el ItemTouchHelper al RecyclerView
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+                            for (int i = 0; i < ingredientes.length(); i++) {
+                                JSONObject ingrediente = ingredientes.getJSONObject(i);
+                                ingredienteList.add(new Ingrediente(
+                                        ingrediente.getInt("id_ingrediente"),
+                                        ingrediente.getString("nombre"),
+                                        ingrediente.getString("descripcion"),
+                                        ingrediente.getString("image_nombre")
+                                ));
+                            }
+
+                            ingredienteAdapter = new IngredienteAdapter(ingredienteList, requireContext());
+                            recyclerView.setAdapter(ingredienteAdapter);
+                            backButton.setVisibility(View.VISIBLE); // Mostrar el botón en ingredientes
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(requireContext(), "Error al procesar los datos", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> Toast.makeText(requireContext(), "Error al cargar los datos: " + error.getMessage(), Toast.LENGTH_SHORT).show());
+
+        queue.add(request);
     }
-    
-   // private void loadIngredientes2(int tipoAlimentoId) {
-        //backButton.setVisibility(View.VISIBLE);
-        //List<Food> ingredienteList = dbHelper.getIngredientesByTipo(tipoAlimentoId);
-        //ingredienteAdapter = new IngredienteAdapter(ingredienteList, getContext(), isLargeScreen);
-        //recyclerView.setAdapter(ingredienteAdapter);
 
 
-        //ItemTouchHelper itemTouchHelper = new ItemTouchHelper(ingredienteAdapter.getItemTouchHelperCallback());
-       // itemTouchHelper.attachToRecyclerView(recyclerView);
-    //}
+    private void asociarIngredienteConUsuario(int idIngrediente) {
+        SharedPreferences preferences = requireContext().getSharedPreferences("UsuarioPrefs", Context.MODE_PRIVATE);
+        int idUsuario = preferences.getInt("idUsuario", -1); // Obtiene el ID del usuario actual
 
-    private void handleBackNavigation() {
+        if (idUsuario == -1) {
+            Toast.makeText(requireContext(), "Usuario no identificado", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String url = "http://98.82.247.63/NutriChefAi/asociar_ingrediente.php";
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
+
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                response -> {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        boolean success = jsonResponse.getBoolean("success");
+
+                        if (success) {
+                            Toast.makeText(requireContext(), "Ingrediente agregado al inventario", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(requireContext(), "Error: " + jsonResponse.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(requireContext(), "Error procesando respuesta del servidor", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    Toast.makeText(requireContext(), "Error al asociar ingrediente: " + error.toString(), Toast.LENGTH_SHORT).show();
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("id_usuario", String.valueOf(idUsuario));
+                params.put("id_ingrediente", String.valueOf(idIngrediente));
+                return params;
+            }
+        };
+
+        queue.add(request);
+    }
+    public void handleBackNavigation() {
         if (recyclerView.getAdapter() instanceof IngredienteAdapter) {
-            loadGrupos();
+            recyclerView.setAdapter(tipoAlimentoAdapter);
+            backButton.setVisibility(View.VISIBLE); // Botón sigue visible en tipos de alimentos
         } else if (recyclerView.getAdapter() instanceof TipoAlimentoAdapter) {
-            loadGrupos();
+            recyclerView.setAdapter(grupoAdapter);
+            backButton.setVisibility(View.GONE); // Ocultar el botón en grupos
+            showingGrupos = true;
+        } else {
+            Toast.makeText(requireContext(), "Ya estás en la vista inicial", Toast.LENGTH_SHORT).show();
         }
     }
 }

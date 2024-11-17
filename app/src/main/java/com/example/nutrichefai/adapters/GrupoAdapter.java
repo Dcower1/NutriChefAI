@@ -1,6 +1,8 @@
 package com.example.nutrichefai.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,28 +10,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.nutrichefai.R;
 import com.example.nutrichefai.bd.Grupo;
+import com.example.nutrichefai.fragments.freezer.Freezer_inv;
 
+import java.time.Instant;
 import java.util.List;
 
 public class GrupoAdapter extends RecyclerView.Adapter<GrupoAdapter.GrupoViewHolder> {
-    private List<Grupo> grupoList;
+    private List<Grupo> grupos;
     private Context context;
-    private boolean isLargeScreen;
-    private OnGrupoClickListener onGrupoClickListener;
+    private Freezer_inv fragment;
 
-    public interface OnGrupoClickListener {
-        void onGrupoClick(int grupoId);
-    }
-
-    public GrupoAdapter(List<Grupo> grupoList, Context context, boolean isLargeScreen, OnGrupoClickListener listener) {
-        this.grupoList = grupoList;
+    public GrupoAdapter(List<Grupo> grupos, Context context, Freezer_inv fragment) {
+        this.grupos = grupos;
         this.context = context;
-        this.isLargeScreen = isLargeScreen;
-        this.onGrupoClickListener = listener;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -41,35 +41,38 @@ public class GrupoAdapter extends RecyclerView.Adapter<GrupoAdapter.GrupoViewHol
 
     @Override
     public void onBindViewHolder(@NonNull GrupoViewHolder holder, int position) {
-        Grupo grupo = grupoList.get(position);
+        Grupo grupo = grupos.get(position);
 
-        int imageResId = context.getResources().getIdentifier(grupo.getImageName(), "drawable", context.getPackageName());
-        holder.grupoImage.setImageResource(imageResId);
-        holder.grupoName.setText(grupo.getName());
+        holder.textFoodName.setText(grupo.getNombreGrupo());
 
-        holder.itemView.setOnClickListener(v -> onGrupoClickListener.onGrupoClick(grupo.getId()));
+        int imageResourceId = context.getResources().getIdentifier(
+                grupo.getImagenGrupo(), "drawable", context.getPackageName());
 
-        // Ajustar el tamaño de la tarjeta en función del tamaño de pantalla
-        if (!isLargeScreen) {
-            holder.itemView.getLayoutParams().width = (int) (context.getResources().getDimension(R.dimen.card_width) * 0.8);
-            holder.itemView.getLayoutParams().height = (int) (context.getResources().getDimension(R.dimen.card_height) * 0.8);
-            holder.itemView.requestLayout();
+        if (imageResourceId != 0) {
+            Glide.with(context).load(imageResourceId).into(holder.imageFood);
+        } else {
+            holder.imageFood.setImageResource(R.drawable.default_image);
         }
+
+        holder.cardView.setOnClickListener(v -> fragment.loadTiposAlimentos(grupo.getIdGrupo()));
     }
 
     @Override
     public int getItemCount() {
-        return grupoList.size();
+        return grupos.size();
     }
 
     public static class GrupoViewHolder extends RecyclerView.ViewHolder {
-        ImageView grupoImage;
-        TextView grupoName;
 
-        public GrupoViewHolder(View itemView) {
+        TextView textFoodName;
+        ImageView imageFood;
+        CardView cardView;
+
+        public GrupoViewHolder(@NonNull View itemView) {
             super(itemView);
-            grupoImage = itemView.findViewById(R.id.image_food);
-            grupoName = itemView.findViewById(R.id.text_food_name);
+            textFoodName = itemView.findViewById(R.id.text_food_name);
+            imageFood = itemView.findViewById(R.id.image_food);
+            cardView = itemView.findViewById(R.id.cardViewadd);
         }
     }
 }

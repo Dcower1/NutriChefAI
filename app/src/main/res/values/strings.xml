@@ -8,5 +8,11 @@
         <item>Otro</item>
     </string-array>
 
+
+    <string-array name="units_array">
+        <item>gramos</item>
+        <item>unidades</item>
+    </string-array>
+
 </resources>
 

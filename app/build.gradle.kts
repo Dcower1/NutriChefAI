@@ -43,5 +43,7 @@ dependencies {
 
     //dependencia Internet
     implementation(libs.volley)
+    implementation(libs.glide)
+    annotationProcessor(libs.glidecompiler)
 
 }

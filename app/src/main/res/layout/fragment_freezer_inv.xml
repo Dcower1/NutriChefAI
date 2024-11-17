@@ -9,11 +9,24 @@
 
 
     <!-- Contenedor principal ajustado a los márgenes de la pantalla -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/selector_ingredientes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/contaner_freezer"
+        tools:listitem="@layout/cardview" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/contaner_freezer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="373dp"
+        android:layout_height="231dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,7 +36,7 @@
 
         <!-- Imagen principal adaptada al ancho del contenedor -->
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/image_refrigerator"
             android:layout_width="354dp"
             android:layout_height="250dp"
             android:src="@drawable/frezer2"
@@ -31,35 +44,17 @@
             app:layout_constraintHorizontal_bias="0.483"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- Botón de retroceso en la esquina inferior derecha de la imagen -->
-
-        <!-- Contenedor para el carrusel de ingredientes -->
+        <!-- Botón de retroceso -->
         <ImageView
             android:id="@+id/bt_atras"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="4dp"
-            android:elevation="10dp"
+            android:layout_margin="16dp"
             android:src="@drawable/back_1"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+            app:layout_constraintBottom_toBottomOf="@id/image_refrigerator"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/selector_ingredientes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView2"
-            app:layout_constraintVertical_bias="0.179" />
+        <!-- RecyclerView como carrusel horizontal -->
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
 

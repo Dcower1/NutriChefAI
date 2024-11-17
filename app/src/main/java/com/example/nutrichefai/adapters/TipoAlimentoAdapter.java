@@ -10,26 +10,22 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.nutrichefai.R;
 import com.example.nutrichefai.bd.TipoAlimento;
+import com.example.nutrichefai.fragments.freezer.Freezer_inv;
 
 import java.util.List;
 
 public class TipoAlimentoAdapter extends RecyclerView.Adapter<TipoAlimentoAdapter.TipoAlimentoViewHolder> {
-    private List<TipoAlimento> tipoAlimentoList;
+    private List<TipoAlimento> tipoAlimentos;
     private Context context;
-    private boolean isLargeScreen;
-    private OnTipoAlimentoClickListener onTipoAlimentoClickListener;
+    private Freezer_inv fragment;
 
-    public interface OnTipoAlimentoClickListener {
-        void onTipoAlimentoClick(int tipoAlimentoId);
-    }
-
-    public TipoAlimentoAdapter(List<TipoAlimento> tipoAlimentoList, Context context, boolean isLargeScreen, OnTipoAlimentoClickListener listener) {
-        this.tipoAlimentoList = tipoAlimentoList;
+    public TipoAlimentoAdapter(List<TipoAlimento> tipoAlimentos, Context context, Freezer_inv fragment) {
+        this.tipoAlimentos = tipoAlimentos;
         this.context = context;
-        this.isLargeScreen = isLargeScreen;
-        this.onTipoAlimentoClickListener = listener;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -41,35 +37,36 @@ public class TipoAlimentoAdapter extends RecyclerView.Adapter<TipoAlimentoAdapte
 
     @Override
     public void onBindViewHolder(@NonNull TipoAlimentoViewHolder holder, int position) {
-        TipoAlimento tipoAlimento = tipoAlimentoList.get(position);
+        TipoAlimento tipo = tipoAlimentos.get(position);
 
-        int imageResId = context.getResources().getIdentifier(tipoAlimento.getImageName(), "drawable", context.getPackageName());
-        holder.tipoImage.setImageResource(imageResId);
-        holder.tipoName.setText(tipoAlimento.getName());
+        holder.textFoodName.setText(tipo.getName());
 
-        holder.itemView.setOnClickListener(v -> onTipoAlimentoClickListener.onTipoAlimentoClick(tipoAlimento.getId()));
+        int imageResourceId = context.getResources().getIdentifier(
+                tipo.getImageName(), "drawable", context.getPackageName());
 
-        // Ajustar el tamaño de la tarjeta en función del tamaño de pantalla
-        if (!isLargeScreen) {
-            holder.itemView.getLayoutParams().width = (int) (context.getResources().getDimension(R.dimen.card_width) * 0.8);
-            holder.itemView.getLayoutParams().height = (int) (context.getResources().getDimension(R.dimen.card_height) * 0.8);
-            holder.itemView.requestLayout();
+        if (imageResourceId != 0) {
+            Glide.with(context).load(imageResourceId).into(holder.imageFood);
+        } else {
+            holder.imageFood.setImageResource(R.drawable.default_image);
         }
+
+        holder.itemView.setOnClickListener(v -> fragment.loadIngredientes(tipo.getId()));
     }
 
     @Override
     public int getItemCount() {
-        return tipoAlimentoList.size();
+        return tipoAlimentos.size();
     }
 
     public static class TipoAlimentoViewHolder extends RecyclerView.ViewHolder {
-        ImageView tipoImage;
-        TextView tipoName;
 
-        public TipoAlimentoViewHolder(View itemView) {
+        TextView textFoodName;
+        ImageView imageFood;
+
+        public TipoAlimentoViewHolder(@NonNull View itemView) {
             super(itemView);
-            tipoImage = itemView.findViewById(R.id.image_food);
-            tipoName = itemView.findViewById(R.id.text_food_name);
+            textFoodName = itemView.findViewById(R.id.text_food_name);
+            imageFood = itemView.findViewById(R.id.image_food);
         }
     }
 }

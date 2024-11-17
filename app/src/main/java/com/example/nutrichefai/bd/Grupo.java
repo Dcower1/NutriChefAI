@@ -1,26 +1,25 @@
 package com.example.nutrichefai.bd;
 
 public class Grupo {
-    private int id;
-    private String name;
-    private String imageName;
+    private int idGrupo;
+    private String nombreGrupo;
+    private String imagenGrupo;
 
-    public Grupo(int id, String name, String imageName) {
-        this.id = id;
-        this.name = name;
-        this.imageName = imageName;
+    public Grupo(int idGrupo, String nombreGrupo, String imagenGrupo) {
+        this.idGrupo = idGrupo;
+        this.nombreGrupo = nombreGrupo;
+        this.imagenGrupo = imagenGrupo;
     }
 
-    // Getters y setters
-    public int getId() {
-        return id;
+    public int getIdGrupo() {
+        return idGrupo;
     }
 
-    public String getName() {
-        return name;
+    public String getNombreGrupo() {
+        return nombreGrupo;
     }
 
-    public String getImageName() {
-        return imageName;
+    public String getImagenGrupo() {
+        return imagenGrupo;
     }
 }

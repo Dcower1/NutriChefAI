@@ -1,76 +1,32 @@
 package com.example.nutrichefai.adapters;
 
+import android.content.ClipData;
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.nutrichefai.R;
-import com.example.nutrichefai.bd.Food;
+import com.example.nutrichefai.bd.Ingrediente;
 
-import java.util.Collections;
 import java.util.List;
 
 public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.IngredienteViewHolder> {
-    private List<Food> ingredienteList;
+    private List<Ingrediente> ingredientes;
     private Context context;
-    private boolean isLargeScreen;
-    private final ItemTouchHelper itemTouchHelper;
 
-    // Constructor actualizado para recibir ItemTouchHelper
-    public IngredienteAdapter(List<Food> ingredienteList, Context context, boolean isLargeScreen, ItemTouchHelper itemTouchHelper) {
-        this.ingredienteList = ingredienteList;
+    public IngredienteAdapter(List<Ingrediente> ingredientes, Context context) {
+        this.ingredientes = ingredientes;
         this.context = context;
-        this.isLargeScreen = isLargeScreen;
-        this.itemTouchHelper = itemTouchHelper;
-    }
-
-    // Callback para el arrastre https://developer.android.com/reference/androidx/recyclerview/widget/ItemTouchHelper
-    public ItemTouchHelper.Callback getItemTouchHelperCallback() {
-        return new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                int fromPosition = viewHolder.getAdapterPosition();
-                int toPosition = target.getAdapterPosition();
-
-                // Actualizar la lista y notificar el cambio
-                Collections.swap(ingredienteList, fromPosition, toPosition);
-                notifyItemMoved(fromPosition, toPosition);
-                return true;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                // No hacemos nada en el swipe
-            }
-
-            @Override
-            public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-                if (actionState == ItemTouchHelper.ACTION_STATE_DRAG && viewHolder != null) {
-                    viewHolder.itemView.animate().scaleX(1.1f).scaleY(1.1f).setDuration(150).start();
-                    viewHolder.itemView.setAlpha(0.9f);
-                } else if (actionState == ItemTouchHelper.ACTION_STATE_IDLE && viewHolder != null) {
-                    viewHolder.itemView.animate().scaleX(1.0f).scaleY(1.0f).setDuration(150).start();
-                    viewHolder.itemView.setAlpha(1.0f);
-                }
-                super.onSelectedChanged(viewHolder, actionState);
-            }
-
-            @Override
-            public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-                super.clearView(recyclerView, viewHolder);
-                viewHolder.itemView.setAlpha(1.0f);
-                viewHolder.itemView.setScaleX(1.0f);
-                viewHolder.itemView.setScaleY(1.0f);
-            }
-        };
     }
 
     @NonNull
@@ -80,59 +36,53 @@ public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.
         return new IngredienteViewHolder(view);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onBindViewHolder(@NonNull IngredienteViewHolder holder, int position) {
-        Food food = ingredienteList.get(position);
+        Ingrediente ingrediente = ingredientes.get(position);
 
-        int imageResId = context.getResources().getIdentifier(food.getImageName(), "drawable", context.getPackageName());
-        holder.ingredienteImage.setImageResource(imageResId);
-        holder.ingredienteName.setText(food.getName());
+        holder.textFoodName.setText(ingrediente.getNombre());
 
-        if (!isLargeScreen) {
-            holder.itemView.getLayoutParams().width = (int) (context.getResources().getDimension(R.dimen.card_width) * 0.8);
-            holder.itemView.getLayoutParams().height = (int) (context.getResources().getDimension(R.dimen.card_height) * 0.8);
-            holder.itemView.requestLayout();
+        int imageResourceId = context.getResources().getIdentifier(
+                ingrediente.getImageName(), "drawable", context.getPackageName());
+
+        if (imageResourceId != 0) {
+            Glide.with(context).load(imageResourceId).into(holder.imageFood);
+        } else {
+            holder.imageFood.setImageResource(R.drawable.default_image);
         }
 
-        // Detectar el movimiento de arrastre
-        holder.itemView.setOnTouchListener(new View.OnTouchListener() {
-            private float initialY;
+        // Configurar inicio de arrastre
+        holder.cardView.setOnLongClickListener(v -> {
+            // Crear datos del arrastre
+            ClipData data = ClipData.newPlainText("id_ingrediente", String.valueOf(ingrediente.getId()));
 
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        initialY = event.getY();
-                        return true;
-                    case MotionEvent.ACTION_MOVE:
-                        float currentY = event.getY();
-                        if (initialY - currentY > 20) {
-                            itemTouchHelper.startDrag(holder);
-                            return true;
-                        }
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        initialY = 0;
-                        break;
-                }
-                return false;
-            }
+            // Crear la sombra personalizada
+            View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(holder.cardView);
+
+            // Iniciar el evento de arrastre
+            v.startDragAndDrop(data, shadowBuilder, null, 0);
+            return true;
         });
     }
 
+
     @Override
     public int getItemCount() {
-        return ingredienteList.size();
+        return ingredientes.size();
     }
 
     public static class IngredienteViewHolder extends RecyclerView.ViewHolder {
-        ImageView ingredienteImage;
-        TextView ingredienteName;
 
-        public IngredienteViewHolder(View itemView) {
+        TextView textFoodName;
+        ImageView imageFood;
+        CardView cardView;
+
+        public IngredienteViewHolder(@NonNull View itemView) {
             super(itemView);
-            ingredienteImage = itemView.findViewById(R.id.image_food);
-            ingredienteName = itemView.findViewById(R.id.text_food_name);
+            textFoodName = itemView.findViewById(R.id.text_food_name);
+            imageFood = itemView.findViewById(R.id.image_food);
+            cardView = itemView.findViewById(R.id.cardViewadd);
         }
     }
 }

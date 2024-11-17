@@ -44,8 +44,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_Id_Tipo_FK = "id_tipo_fk";
 
     // Columnas de Inventario
+// Columnas de Inventario
     public static final String Id_Inventario = "id_inventario";
-    public static final String COLUMN_Ingrediente = "ingrediente";
+    public static final String COLUMN_Id_Usuario = "id_usuario"; // Asociado al usuario en AWS
+    public static final String COLUMN_Id_Ingrediente_FK = "id_ingrediente_fk"; // Asociado al ingrediente
     public static final String COLUMN_Cantidad = "cantidad";
 
     public DBHelper(Context context) {
@@ -81,11 +83,14 @@ public class DBHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(" + COLUMN_Id_Tipo_FK + ") REFERENCES " + TABLA_TIPO_ALIMENTO + "(" + Id_Tipo + "))";
         db.execSQL(CREATE_TABLA_INGREDIENTES);
 
+        // Crear tabla de Inventario asociarlo con el usuario por el cual debe tener el id del usuario que esta en aws y asociar el id del ingrediente a ingresar con su cantidad
         // Crear tabla de Inventario
         String CREATE_TABLA_INVENTARIO = "CREATE TABLE " + TABLA_INVENTARIO + "(" +
                 Id_Inventario + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_Ingrediente + " TEXT, " +
-                COLUMN_Cantidad + " INTEGER)";
+                COLUMN_Id_Usuario + " TEXT, " + // ID del usuario que está en AWS
+                COLUMN_Id_Ingrediente_FK + " INTEGER, " + // ID del ingrediente
+                COLUMN_Cantidad + " INTEGER, " +
+                "FOREIGN KEY(" + COLUMN_Id_Ingrediente_FK + ") REFERENCES " + TABLA_INGREDIENTES + "(" + Id_Ingrediente + "))";
         db.execSQL(CREATE_TABLA_INVENTARIO);
 
         insertInitialData(db);
@@ -416,27 +421,6 @@ public class DBHelper extends SQLiteOpenHelper {
             e.printStackTrace();
         }
         return tipoAlimentoList;
-    }
-    @SuppressLint("Range")
-    public List<Food> getIngredientesByTipo(int tipoId) {
-        List<Food> ingredienteList = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT * FROM " + TABLA_INGREDIENTES + " WHERE " + COLUMN_Id_Tipo_FK + " = ?";
-
-        try (Cursor cursor = db.rawQuery(selectQuery, new String[]{String.valueOf(tipoId)})) {
-            if (cursor.moveToFirst()) {
-                do {
-                    int id = cursor.getInt(cursor.getColumnIndex(Id_Ingrediente));
-                    String name = cursor.getString(cursor.getColumnIndex(COLUMN_Nombre_Ingrediente));
-                    String info = cursor.getString(cursor.getColumnIndex(COLUMN_info));
-                    String imageName = cursor.getString(cursor.getColumnIndex(COLUMN_Imagen_Nombre));
-                    ingredienteList.add(new Food(id, name, info, imageName, tipoId));
-                } while (cursor.moveToNext());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ingredienteList;
     }
 
     @Override
