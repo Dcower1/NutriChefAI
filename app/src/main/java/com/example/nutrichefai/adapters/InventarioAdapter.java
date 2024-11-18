@@ -1,6 +1,7 @@
 package com.example.nutrichefai.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,11 +59,16 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
             }
         });
     }
-    // Método para actualizar la lista de ingredientes
-    public void updateIngredientesList(List<InventarioIngrediente> newIngredientesList) {
-        this.ingredientesList.clear();
-        this.ingredientesList.addAll(newIngredientesList);
-        notifyDataSetChanged();
+    public void updateCantidad(int idIngrediente, String nuevaCantidad) {
+        for (int i = 0; i < ingredientesList.size(); i++) {
+            InventarioIngrediente ingrediente = ingredientesList.get(i);
+            if (ingrediente.getId() == idIngrediente) {
+                ingrediente.setCantidad(nuevaCantidad); // Actualiza la cantidad
+                notifyItemChanged(i); // Notifica solo el cambio del elemento actualizado
+                Log.d("InventarioAdapter", "Cantidad actualizada para id: " + idIngrediente + " nuevaCantidad: " + nuevaCantidad);
+                break;
+            }
+        }
     }
 
     @Override

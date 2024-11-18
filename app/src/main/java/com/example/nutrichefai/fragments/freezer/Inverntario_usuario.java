@@ -187,9 +187,11 @@ public class Inverntario_usuario extends Fragment {
         // Botón para eliminar ingrediente
         deleteButton.setOnClickListener(v -> {
             eliminarIngredienteEnServidor(ingrediente.getId());
-            cardViewInventario.setVisibility(View.GONE); // Ocultar la tarjeta después de eliminar
+            cardViewInventario.setVisibility(View.GONE);
+            fabCancelar.setVisibility(View.GONE);// Ocultar la tarjeta después de eliminar
         });
 
+        // Botón para aceptar cambios
         acceptButton.setOnClickListener(v -> {
             // Enviar la cantidad temporal al servidor
             actualizarCantidadEnServidor(ingrediente.getId(), cantidadTemporal[0]);
@@ -199,6 +201,7 @@ public class Inverntario_usuario extends Fragment {
 
             // Ocultar la tarjeta
             cardViewInventario.setVisibility(View.GONE);
+            fabCancelar.setVisibility(View.GONE);
         });
 
         fabCancelar.setOnClickListener(v -> {
@@ -220,6 +223,11 @@ public class Inverntario_usuario extends Fragment {
                         JSONObject jsonResponse = new JSONObject(response);
                         if (jsonResponse.getInt("estado") == 1) {
                             Toast.makeText(requireContext(), "Cantidad actualizada correctamente", Toast.LENGTH_SHORT).show();
+
+                            // Actualiza la cantidad visualmente en el adaptador
+                            if (adapter != null) {
+                                adapter.updateCantidad(idIngrediente, String.valueOf(nuevaCantidad));
+                            }
                         } else {
                             Toast.makeText(requireContext(), "Error al actualizar cantidad", Toast.LENGTH_SHORT).show();
                         }
@@ -272,8 +280,6 @@ public class Inverntario_usuario extends Fragment {
 
         queue.add(request);
     }
-
-
     private void eliminarIngredienteLocal(int idIngrediente) {
         for (int i = 0; i < ingredientesList.size(); i++) {
             if (ingredientesList.get(i).getId() == idIngrediente) {

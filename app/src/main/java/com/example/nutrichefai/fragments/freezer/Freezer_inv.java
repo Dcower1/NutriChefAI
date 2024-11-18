@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -106,7 +108,31 @@ public class Freezer_inv extends Fragment {
         ImageView refrigerator = view.findViewById(R.id.image_refrigerator);
         refrigerator.setOnDragListener(new RefrigeratorDragListener(requireContext(), this, userId));
 
-        refrigerator.setOnClickListener(v -> navigateToInverntarioUsuario());
+        // Configurar animación de zoom
+        refrigerator.setOnClickListener(v -> {
+            Animation zoomIn = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_in);
+            refrigerator.startAnimation(zoomIn);
+
+            // Navegar al inventario después de la animación
+            zoomIn.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    // Nada
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    navigateToInverntarioUsuario(); // Navega al fragmento del inventario
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                    // Nada
+                }
+            });
+        });
+
+        //refrigerator.setOnClickListener(v -> navigateToInverntarioUsuario());
 
         loadGrupos();
 
