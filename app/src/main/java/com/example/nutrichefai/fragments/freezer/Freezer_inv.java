@@ -237,16 +237,26 @@ public class Freezer_inv extends Fragment {
 
 
     private void navigateToInverntarioUsuario() {
+        if (userId == -1) {
+            Toast.makeText(requireContext(), "Error: Usuario no identificado.", Toast.LENGTH_SHORT).show();
+            Log.e("Freezer_inv", "Error: Usuario no identificado.");
+            return;
+        }
+
         Fragment inverntarioUsuarioFragment = new Inverntario_usuario();
 
+        // Pasar el userId al fragmento
         Bundle args = new Bundle();
         args.putInt("userId", userId);
         inverntarioUsuarioFragment.setArguments(args);
 
+        // Realizar la transacción del fragmento
         FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, inverntarioUsuarioFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+
+        Log.d("Freezer_inv", "Navegación a Inverntario_usuario con userId: " + userId);
     }
 
     public void showDynamicCard(int idIngrediente) {
@@ -265,28 +275,48 @@ public class Freezer_inv extends Fragment {
         if (ingrediente != null) {
             Log.d("Freezer_inv", "Ingrediente encontrado: " + ingrediente.getNombre());
 
+            // Configura el nombre y la imagen del ingrediente
             foodName.setText(ingrediente.getNombre());
             int imageResourceId = requireContext().getResources().getIdentifier(
                     ingrediente.getImageName(), "drawable", requireContext().getPackageName());
             foodImage.setImageResource(imageResourceId != 0 ? imageResourceId : R.drawable.default_image);
 
+            // Configurar el botón de agregar cantidad
             buttonAdd.setOnClickListener(v -> {
-                String cantidad = editQuantity.getText().toString();
-                if (!cantidad.isEmpty()) {
-                    asociarIngredienteConUsuario(idIngrediente, Integer.parseInt(cantidad));
-                    cardView.setVisibility(View.GONE);
-                } else {
+                String cantidadStr = editQuantity.getText().toString().trim();
+
+                if (cantidadStr.isEmpty()) {
                     Toast.makeText(requireContext(), "Por favor, ingresa una cantidad válida.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                try {
+                    int cantidad = Integer.parseInt(cantidadStr);
+                    if (cantidad <= 0) {
+                        Toast.makeText(requireContext(), "La cantidad debe ser mayor a 0.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Asociar el ingrediente con la cantidad ingresada
+                    asociarIngredienteConUsuario(idIngrediente, cantidad);
+
+                    // Ocultar la tarjeta dinámica
+                    cardView.setVisibility(View.GONE);
+                    Toast.makeText(requireContext(), "Cantidad enviada: " + cantidad, Toast.LENGTH_SHORT).show();
+                } catch (NumberFormatException e) {
+                    Toast.makeText(requireContext(), "Cantidad inválida. Por favor, ingresa un número.", Toast.LENGTH_SHORT).show();
                 }
             });
 
+            // Configurar el botón de cancelar
             buttonCancel.setOnClickListener(v -> cardView.setVisibility(View.GONE));
+
+            // Mostrar la tarjeta dinámica
             cardView.setVisibility(View.VISIBLE);
         } else {
             Log.e("Freezer_inv", "Ingrediente no encontrado para ID: " + idIngrediente);
         }
     }
-
 
 
     private Ingrediente obtenerIngredientePorId(int idIngrediente) {

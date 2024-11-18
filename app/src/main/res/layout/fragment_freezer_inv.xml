@@ -112,7 +112,9 @@
                     android:inputType="number"
                     android:hint="Cantidad"
                     android:padding="8dp"
-                    android:background="@android:drawable/edit_text" />
+                    android:background="@android:drawable/edit_text"
+                    android:gravity="center_vertical"
+                    android:maxLength="5" />
 
                 <!-- Selector de unidad -->
                 <Spinner

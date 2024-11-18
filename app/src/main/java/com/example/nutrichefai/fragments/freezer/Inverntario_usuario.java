@@ -58,24 +58,30 @@ public class Inverntario_usuario extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 3)); // Vista en rejilla (3 columnas)
         ingredientesList = new ArrayList<>();
 
-        // Recuperar userId desde SharedPreferences
-        SharedPreferences preferences = requireContext().getSharedPreferences("UsuarioPrefs", Context.MODE_PRIVATE);
-        userId = preferences.getInt("idUsuario", -1);
-        Log.d("Inverntario_usuario", "userId recuperado: " + userId);
-
-        if (userId != -1) {
-            cargarInventarioUsuario(userId); // Cargar inventario si userId es válido
+        // Recuperar userId desde argumentos o SharedPreferences
+        if (getArguments() != null && getArguments().containsKey("userId")) {
+            userId = getArguments().getInt("userId", -1);
         } else {
-            Toast.makeText(requireContext(), "Usuario no identificado.", Toast.LENGTH_SHORT).show();
+            SharedPreferences preferences = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+            userId = preferences.getInt("userId", -1); // Ajustar a la clave correcta
+        }
+
+        // Validar userId y cargar el inventario
+        if (userId == -1) {
+            Toast.makeText(requireContext(), "Error: Usuario no identificado.", Toast.LENGTH_SHORT).show();
+            Log.e("Inverntario_usuario", "Error: Usuario no identificado.");
+        } else {
+            Log.d("Inverntario_usuario", "userId recuperado: " + userId);
+            cargarInventarioUsuario(userId); // Cargar inventario si userId es válido
         }
 
         return view;
     }
-
     private void cargarInventarioUsuario(int userId) {
         String url = "http://98.82.247.63/NutriChefAi/get_inventario_usuario.php?id_usuario=" + userId;
 
         RequestQueue queue = Volley.newRequestQueue(requireContext());
+        Log.d("Inverntario_usuario", "URL de inventario: " + url);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
@@ -87,14 +93,12 @@ public class Inverntario_usuario extends Fragment {
                             for (int i = 0; i < ingredientes.length(); i++) {
                                 JSONObject obj = ingredientes.getJSONObject(i);
 
-                                int idIngrediente = obj.optInt("id_ingrediente", -1);
-                                String nombre = obj.optString("nombre", "Desconocido");
-                                String descripcion = obj.optString("descripcion", "Sin descripción");
-                                String imageName = obj.optString("image_nombre", "default_image");
-                                String cantidad = obj.optString("cantidad", "0");
-
                                 ingredientesList.add(new InventarioIngrediente(
-                                        idIngrediente, nombre, descripcion, imageName, cantidad
+                                        obj.optInt("id_ingrediente", -1),
+                                        obj.optString("nombre", "Desconocido"),
+                                        obj.optString("descripcion", "Sin descripción"),
+                                        obj.optString("image_nombre", "default_image"),
+                                        obj.optString("cantidad", "0")
                                 ));
                             }
 
@@ -102,9 +106,8 @@ public class Inverntario_usuario extends Fragment {
                                 adapter = new InventarioAdapter(ingredientesList, requireContext());
                                 recyclerView.setAdapter(adapter);
 
-                                // Configurar el listener para manejar clics en los elementos
                                 adapter.setOnItemClickListener(ingrediente -> {
-                                    mostrarCardInventario(ingrediente);
+                                    mostrarCardInventario(ingrediente); // Llama a mostrarCardInventario
                                 });
                             } else {
                                 adapter.notifyDataSetChanged();
@@ -114,16 +117,14 @@ public class Inverntario_usuario extends Fragment {
                         }
                     } catch (JSONException e) {
                         Log.e("Inverntario_usuario", "Error al procesar JSON", e);
-                        Toast.makeText(requireContext(), "Error al procesar los datos.", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> {
-                    Log.e("Inverntario_usuario", "Error de red al cargar los datos.", error);
-                    Toast.makeText(requireContext(), "Error al cargar los datos.", Toast.LENGTH_SHORT).show();
-                });
+                error -> Log.e("Inverntario_usuario", "Error al cargar datos", error)
+        );
 
         queue.add(request);
     }
+
 
     private void mostrarCardInventario(InventarioIngrediente ingrediente) {
         CardView cardViewInventario = requireView().findViewById(R.id.cardview_inventario);
@@ -189,7 +190,6 @@ public class Inverntario_usuario extends Fragment {
             cardViewInventario.setVisibility(View.GONE); // Ocultar la tarjeta después de eliminar
         });
 
-        // Botón para aceptar cambios
         acceptButton.setOnClickListener(v -> {
             // Enviar la cantidad temporal al servidor
             actualizarCantidadEnServidor(ingrediente.getId(), cantidadTemporal[0]);
@@ -272,6 +272,8 @@ public class Inverntario_usuario extends Fragment {
 
         queue.add(request);
     }
+
+
     private void eliminarIngredienteLocal(int idIngrediente) {
         for (int i = 0; i < ingredientesList.size(); i++) {
             if (ingredientesList.get(i).getId() == idIngrediente) {

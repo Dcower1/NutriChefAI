@@ -58,6 +58,12 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
             }
         });
     }
+    // Método para actualizar la lista de ingredientes
+    public void updateIngredientesList(List<InventarioIngrediente> newIngredientesList) {
+        this.ingredientesList.clear();
+        this.ingredientesList.addAll(newIngredientesList);
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getItemCount() {

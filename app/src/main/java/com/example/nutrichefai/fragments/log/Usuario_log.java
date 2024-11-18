@@ -117,6 +117,13 @@ public class Usuario_log extends Fragment {
                             // Obtener el ID del usuario desde la respuesta
                             int userId = jsonResponse.getJSONObject("data").getInt("id_usu");
 
+                            // Guardar el userId en SharedPreferences
+                            SharedPreferences preferences = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putInt("userId", userId);
+                            editor.apply();
+                            Log.d("Usuario_log", "userId guardado: " + userId);
+
                             // Redirigir a MainActivity pasando el userId
                             Intent intent = new Intent(requireActivity(), MainActivity.class);
                             intent.putExtra("userId", userId); // Pasar el userId a MainActivity
@@ -152,7 +159,6 @@ public class Usuario_log extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(requireContext());
         requestQueue.add(stringRequest);
     }
-
 
     private void togglePasswordVisibility(EditText editText, ImageView toggle, boolean isVisible) {
         if (isVisible) {
