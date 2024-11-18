@@ -1,6 +1,7 @@
 package com.example.nutrichefai.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.nutrichefai.R;
 import com.example.nutrichefai.bd.TipoAlimento;
 import com.example.nutrichefai.fragments.freezer.Freezer_inv;
@@ -41,17 +43,28 @@ public class TipoAlimentoAdapter extends RecyclerView.Adapter<TipoAlimentoAdapte
 
         holder.textFoodName.setText(tipo.getName());
 
+        // Construir el identificador de la imagen
+        String imageName = tipo.getImageName(); // Nombre esperado en la base de datos (ej. "img1")
         int imageResourceId = context.getResources().getIdentifier(
-                tipo.getImageName(), "drawable", context.getPackageName());
+                imageName, "drawable", context.getPackageName());
 
+        // Validar el recurso antes de cargar
         if (imageResourceId != 0) {
-            Glide.with(context).load(imageResourceId).into(holder.imageFood);
+            Log.d("ImageResource", "Cargando recurso: " + imageName + " con ID: " + imageResourceId);
+            Glide.with(context)
+                    .load(imageResourceId)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE) // Evitar caché en pruebas
+                    .skipMemoryCache(true) // Evitar caché en memoria
+                    .into(holder.imageFood);
         } else {
-            holder.imageFood.setImageResource(R.drawable.default_image);
+            Log.e("ImageResource", "Imagen no encontrada para: " + imageName + ". Usando imagen predeterminada.");
+            holder.imageFood.setImageResource(R.drawable.default_image); // Imagen predeterminada
         }
 
+        // Evento de clic en el elemento
         holder.itemView.setOnClickListener(v -> fragment.loadIngredientes(tipo.getId()));
     }
+
 
     @Override
     public int getItemCount() {

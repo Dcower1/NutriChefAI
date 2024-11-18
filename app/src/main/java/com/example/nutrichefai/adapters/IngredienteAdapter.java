@@ -15,6 +15,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.nutrichefai.R;
 import com.example.nutrichefai.bd.Ingrediente;
 
@@ -41,13 +42,20 @@ public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.
     public void onBindViewHolder(@NonNull IngredienteViewHolder holder, int position) {
         Ingrediente ingrediente = ingredientes.get(position);
 
+        // Establecer el nombre del ingrediente
         holder.textFoodName.setText(ingrediente.getNombre());
 
+        // Buscar la imagen en drawable según el nombre
+        String imageName = ingrediente.getImageName(); // Nombre esperado en la base de datos
         int imageResourceId = context.getResources().getIdentifier(
-                ingrediente.getImageName(), "drawable", context.getPackageName());
+                imageName, "drawable", context.getPackageName());
 
         if (imageResourceId != 0) {
-            Glide.with(context).load(imageResourceId).into(holder.imageFood);
+            Glide.with(context)
+                    .load(imageResourceId)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(holder.imageFood);
         } else {
             holder.imageFood.setImageResource(R.drawable.default_image);
         }

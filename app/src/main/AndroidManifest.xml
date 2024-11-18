@@ -24,10 +24,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".fragments.freezer.Inverntario_usuario"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
-
-
         <activity
             android:name=".fragments.log.Log_Usuario"
             android:exported="false" />

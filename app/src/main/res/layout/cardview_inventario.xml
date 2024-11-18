@@ -1,0 +1,96 @@
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardview_inventario"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Botón eliminar en la esquina izquierda -->
+        <ImageButton
+            android:id="@+id/button_delete"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignBottom="@+id/btn_add"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="265dp"
+            android:layout_marginBottom="0dp"
+            android:layout_toStartOf="@+id/btn_add"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/btn_delete" />
+
+        <!-- Botón aceptar en la esquina derecha -->
+        <ImageButton
+            android:id="@+id/btn_add"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/chek" />
+
+        <!-- Imagen del ingrediente -->
+        <ImageView
+            android:id="@+id/image_food_inventario"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@id/button_delete"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_image" />
+
+        <!-- Nombre del ingrediente -->
+        <TextView
+            android:id="@+id/text_food_name_inventario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/image_food_inventario"
+            android:layout_marginTop="8dp"
+            android:text="Nombre del Ingrediente"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- Cantidad actual -->
+        <TextView
+            android:id="@+id/text_food_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_food_name_inventario"
+            android:layout_marginTop="4dp"
+            android:text="Cantidad: 0"
+            android:textSize="16sp" />
+
+        <!-- Botones para añadir y restar cantidad -->
+        <LinearLayout
+            android:id="@+id/layout_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_food_quantity"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="8dp">
+
+            <!-- Botón añadir cantidad -->
+            <Button
+                android:id="@+id/button_add_quantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Añadir" />
+
+            <!-- Botón restar cantidad -->
+            <Button
+                android:id="@+id/button_subtract_quantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Restar" />
+        </LinearLayout>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

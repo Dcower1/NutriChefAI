@@ -14,6 +14,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.nutrichefai.R;
 import com.example.nutrichefai.bd.Grupo;
 import com.example.nutrichefai.fragments.freezer.Freezer_inv;
@@ -43,17 +44,28 @@ public class GrupoAdapter extends RecyclerView.Adapter<GrupoAdapter.GrupoViewHol
     public void onBindViewHolder(@NonNull GrupoViewHolder holder, int position) {
         Grupo grupo = grupos.get(position);
 
+        // Establecer el nombre del grupo
         holder.textFoodName.setText(grupo.getNombreGrupo());
 
+        // Construir el nombre completo del recurso (con extensión .webp)
+        String imageName = grupo.getImagenGrupo(); // Ejemplo: img1
         int imageResourceId = context.getResources().getIdentifier(
-                grupo.getImagenGrupo(), "drawable", context.getPackageName());
+                imageName, "drawable", context.getPackageName());
 
+        // Verificar si el recurso existe
         if (imageResourceId != 0) {
-            Glide.with(context).load(imageResourceId).into(holder.imageFood);
+            Log.d("ImageResource", "Loading resource: " + imageName + " with ID: " + imageResourceId);
+            Glide.with(context)
+                    .load(imageResourceId)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE) // Evitar caché en pruebas
+                    .skipMemoryCache(true) // Evitar caché en memoria
+                    .into(holder.imageFood);
         } else {
-            holder.imageFood.setImageResource(R.drawable.default_image);
+            Log.e("ImageResource", "Image not found for: " + imageName + ". Using default image.");
+            holder.imageFood.setImageResource(R.drawable.default_image); // Asegúrate de tener una imagen predeterminada
         }
 
+        // Establecer el evento de clic en el CardView
         holder.cardView.setOnClickListener(v -> fragment.loadTiposAlimentos(grupo.getIdGrupo()));
     }
 
@@ -63,7 +75,6 @@ public class GrupoAdapter extends RecyclerView.Adapter<GrupoAdapter.GrupoViewHol
     }
 
     public static class GrupoViewHolder extends RecyclerView.ViewHolder {
-
         TextView textFoodName;
         ImageView imageFood;
         CardView cardView;
