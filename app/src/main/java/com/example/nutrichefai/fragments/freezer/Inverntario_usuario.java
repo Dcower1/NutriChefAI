@@ -263,7 +263,6 @@ public class Inverntario_usuario extends Fragment {
                         JSONObject jsonResponse = new JSONObject(response);
                         if (jsonResponse.getInt("estado") == 1) {
                             Toast.makeText(requireContext(), "Ingrediente eliminado correctamente", Toast.LENGTH_SHORT).show();
-                            eliminarIngredienteLocal(idIngrediente); // Eliminar localmente
                         } else {
                             Toast.makeText(requireContext(), "Error al eliminar ingrediente", Toast.LENGTH_SHORT).show();
                         }
@@ -284,6 +283,7 @@ public class Inverntario_usuario extends Fragment {
 
         queue.add(request);
     }
+
     private void eliminarIngredienteLocal(int idIngrediente) {
         for (int i = 0; i < ingredientesList.size(); i++) {
             if (ingredientesList.get(i).getId() == idIngrediente) {

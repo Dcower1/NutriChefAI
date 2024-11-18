@@ -64,12 +64,19 @@ public class InventarioAdapter extends RecyclerView.Adapter<InventarioAdapter.In
             InventarioIngrediente ingrediente = ingredientesList.get(i);
             if (ingrediente.getId() == idIngrediente) {
                 ingrediente.setCantidad(nuevaCantidad); // Actualiza la cantidad
-                notifyItemChanged(i); // Notifica solo el cambio del elemento actualizado
-                Log.d("InventarioAdapter", "Cantidad actualizada para id: " + idIngrediente + " nuevaCantidad: " + nuevaCantidad);
+                if (Integer.parseInt(nuevaCantidad) == 0) {
+                    // Si la cantidad es 0, elimina el ingrediente de la lista
+                    ingredientesList.remove(i);
+                    notifyItemRemoved(i); // Notifica que el item ha sido eliminado
+                    Log.d("InventarioAdapter", "Ingrediente eliminado debido a cantidad 0: " + ingrediente.getNombre());
+                } else {
+                    notifyItemChanged(i); // Notifica solo el cambio del elemento
+                }
                 break;
             }
         }
     }
+
 
     @Override
     public int getItemCount() {
