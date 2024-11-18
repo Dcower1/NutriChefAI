@@ -323,11 +323,11 @@ public class Freezer_inv extends Fragment {
                         return;
                     }
 
-                    // Asociar el ingrediente con la cantidad ingresada
-                    asociarIngredienteConUsuario(idIngrediente, cantidad);
+                    // Asociar el ingrediente con el usuario solo cuando se presiona "Agregar"
+                    asociarIngredienteConUsuario(idIngrediente, cantidad); // Aquí asociamos el ingrediente
 
                     // Ocultar la tarjeta dinámica
-                    cardView.setVisibility(View.GONE);
+                    cardView.setVisibility(View.GONE); // Se oculta solo después de la acción de agregar
                     Toast.makeText(requireContext(), "Cantidad enviada: " + cantidad, Toast.LENGTH_SHORT).show();
                 } catch (NumberFormatException e) {
                     Toast.makeText(requireContext(), "Cantidad inválida. Por favor, ingresa un número.", Toast.LENGTH_SHORT).show();
@@ -335,7 +335,10 @@ public class Freezer_inv extends Fragment {
             });
 
             // Configurar el botón de cancelar
-            buttonCancel.setOnClickListener(v -> cardView.setVisibility(View.GONE));
+            buttonCancel.setOnClickListener(v -> {
+                // Ocultar la tarjeta dinámica si el usuario cancela la operación
+                cardView.setVisibility(View.GONE);
+            });
 
             // Mostrar la tarjeta dinámica
             cardView.setVisibility(View.VISIBLE);

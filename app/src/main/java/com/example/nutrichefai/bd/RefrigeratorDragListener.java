@@ -55,8 +55,7 @@ public class RefrigeratorDragListener implements View.OnDragListener {
                         // Llama al método del fragmento para mostrar la tarjeta dinámica
                         fragment.showDynamicCard(idIngrediente);
 
-                        // Asocia el ingrediente con el usuario
-                        fragment.asociarIngredienteConUsuario(idIngrediente, 1); // Cantidad predeterminada de 1
+                        // No asociamos el ingrediente aquí, solo mostramos la tarjeta y dejamos que el usuario lo haga cuando presione "Agregar"
 
                     } catch (NumberFormatException e) {
                         Log.e("RefrigeratorDragListener", "Error al convertir ID del ingrediente", e);
