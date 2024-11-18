@@ -14,6 +14,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.nutrichefai.R;
 import com.example.nutrichefai.bd.Grupo;
 import com.example.nutrichefai.fragments.freezer.Freezer_inv;
@@ -43,17 +45,33 @@ public class GrupoAdapter extends RecyclerView.Adapter<GrupoAdapter.GrupoViewHol
     public void onBindViewHolder(@NonNull GrupoViewHolder holder, int position) {
         Grupo grupo = grupos.get(position);
 
+        Log.d("GrupoAdapter", "onBindViewHolder - Posición: " + position +
+                ", ID: " + grupo.getIdGrupo() +
+                ", Nombre: " + grupo.getNombreGrupo() +
+                ", Imagen: " + grupo.getImagenGrupo());
+
         holder.textFoodName.setText(grupo.getNombreGrupo());
 
-        int imageResourceId = context.getResources().getIdentifier(
-                grupo.getImagenGrupo(), "drawable", context.getPackageName());
+        // Recuperamos el nombre exacto de la imagen asociada
+        String resourceName = grupo.getImagenGrupo().trim();
+        int resourceId = context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName());
 
-        if (imageResourceId != 0) {
-            Glide.with(context).load(imageResourceId).into(holder.imageFood);
-        } else {
-            holder.imageFood.setImageResource(R.drawable.default_image);
-        }
+        Log.d("GrupoAdapter", "Cargando imagen: " + resourceName + ", ResourceId: " + resourceId);
 
+        // Limpia cualquier imagen previa para evitar reciclaje incorrecto
+        Glide.with(context).clear(holder.imageFood);
+
+        // Configuramos Glide para cargar la imagen correctamente
+        Glide.with(context)
+                .load(resourceId != 0 ? resourceId : R.drawable.default_image)
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.default_image)
+                        .error(R.drawable.default_image)
+                        .skipMemoryCache(true)  // Desactiva caché de memoria para depuración
+                        .diskCacheStrategy(DiskCacheStrategy.NONE))  // Desactiva caché de disco
+                .into(holder.imageFood);
+
+        // Configuración de clic en el CardView
         holder.cardView.setOnClickListener(v -> fragment.loadTiposAlimentos(grupo.getIdGrupo()));
     }
 

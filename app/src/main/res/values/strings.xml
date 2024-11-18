@@ -10,8 +10,9 @@
 
 
     <string-array name="units_array">
-        <item>gramos</item>
-        <item>unidades</item>
+        <item>Unidades</item>
+        <item>Gramos</item>
+        <item>Litros</item>
     </string-array>
 
 </resources>

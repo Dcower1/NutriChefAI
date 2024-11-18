@@ -8,6 +8,7 @@
     tools:context=".fragments.freezer.Freezer_inv">
 
 
+    <!-- Contenedor principal ajustado a los márgenes de la pantalla -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/selector_ingredientes"
         android:layout_width="match_parent"
@@ -22,17 +23,28 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/contaner_freezer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_width="373dp"
+        android:layout_height="231dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.065">
 
+        <!-- Imagen principal adaptada al ancho del contenedor -->
         <ImageView
             android:id="@+id/image_refrigerator"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_width="354dp"
+            android:layout_height="250dp"
             android:src="@drawable/frezer2"
-            android:layout_margin="16dp"
-            tools:ignore="MissingConstraints" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.483"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <!-- Botón de retroceso -->
         <ImageView
             android:id="@+id/bt_atras"
             android:layout_width="wrap_content"
@@ -41,21 +53,23 @@
             android:src="@drawable/back_1"
             app:layout_constraintBottom_toBottomOf="@id/image_refrigerator"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- RecyclerView como carrusel horizontal -->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Contenedor para la tarjeta dinámica -->
+    <!-- Tarjeta dinámica para mostrar detalles del ingrediente -->
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view_dynamic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="8dp"
         android:visibility="gone"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/contaner_freezer">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,6 +77,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- Imagen del ingrediente -->
             <ImageView
                 android:id="@+id/image_food_dynamic"
                 android:layout_width="match_parent"
@@ -70,6 +85,7 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/default_image" />
 
+            <!-- Nombre del ingrediente -->
             <TextView
                 android:id="@+id/text_food_name_dynamic"
                 android:layout_width="wrap_content"
@@ -79,27 +95,42 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/edit_quantity_dynamic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Cantidad"
-                android:inputType="numberDecimal"
-                android:padding="8dp" />
-
-            <Spinner
-                android:id="@+id/spinner_unit_dynamic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:entries="@array/units_array" />
-
+            <!-- Contenedor de cantidad -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
+                <!-- Selector de cantidad -->
+                <EditText
+                    android:id="@+id/edit_quantity_dynamic"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:hint="Cantidad"
+                    android:padding="8dp"
+                    android:background="@android:drawable/edit_text" />
+
+                <!-- Selector de unidad -->
+                <Spinner
+                    android:id="@+id/spinner_unit_dynamic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:entries="@array/units_array" />
+            </LinearLayout>
+
+            <!-- Botones -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <!-- Botón Añadir -->
                 <Button
                     android:id="@+id/button_add_dynamic"
                     android:layout_width="0dp"
@@ -107,6 +138,7 @@
                     android:layout_weight="1"
                     android:text="Añadir" />
 
+                <!-- Botón Cancelar -->
                 <Button
                     android:id="@+id/button_cancel_dynamic"
                     android:layout_width="0dp"
@@ -114,6 +146,7 @@
                     android:layout_weight="1"
                     android:text="Cancelar" />
             </LinearLayout>
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

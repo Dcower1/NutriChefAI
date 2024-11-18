@@ -45,10 +45,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@android:drawable/edit_text"
-                android:hint="Cantidad"
                 android:inputType="numberDecimal"
-                android:padding="8dp" />
+                android:hint="Cantidad"
+                android:padding="8dp"
+                android:background="@android:drawable/edit_text" />
 
             <!-- Selector de unidad -->
             <Spinner
@@ -57,29 +57,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:entries="@array/units_array" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="337dp"
-            android:layout_height="57dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/button_add"
-                android:layout_width="158dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
-                android:text="Añadir" />
-
-            <Button
-                android:id="@+id/button_cancelar"
-                android:layout_width="153dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="cancelar" />
         </LinearLayout>
 
         <!-- Botón de añadir -->
+        <Button
+            android:id="@+id/button_add"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Añadir" />
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

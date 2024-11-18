@@ -5,16 +5,16 @@ import static androidx.core.content.ContentProviderCompat.requireContext;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-<<<<<<< Updated upstream
-=======
+
 import android.os.Handler;
 import android.os.Looper;
 import android.text.InputType;
->>>>>>> Stashed changes
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -66,44 +67,51 @@ public class Freezer_inv extends Fragment {
     private IngredienteAdapter ingredienteAdapter;
 
     private boolean showingGrupos = true; // Estado inicial: mostrando grupos
-    private int userId; // ID del usuario
 
     private ImageView backButton; // Botón de retroceso
+    private Map<Integer, Integer> ingredienteCantidadMap; // Manejo de cantidades como enteros
+
+    private int userId; // ID del usuario que inició sesión
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_freezer_inv, container, false);
 
+        // Recuperar el userId desde SharedPreferences
+        SharedPreferences preferences = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        userId = preferences.getInt("userId", -1); // Devuelve -1 si no se encuentra el ID
+
+        if (userId == -1) {
+            Toast.makeText(requireContext(), "Error: Usuario no identificado.", Toast.LENGTH_SHORT).show();
+            Log.e("Freezer_inv", "Error: Usuario no identificado.");
+        } else {
+            Log.d("Freezer_inv", "userId recuperado: " + userId);
+        }
+
+        // Configuración inicial
         recyclerView = view.findViewById(R.id.selector_ingredientes);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
 
         grupoList = new ArrayList<>();
         tipoAlimentoList = new ArrayList<>();
         ingredienteList = new ArrayList<>();
+        ingredienteCantidadMap = new HashMap<>();
 
         backButton = view.findViewById(R.id.bt_atras);
         backButton.setVisibility(View.GONE);
         backButton.setOnClickListener(v -> handleBackNavigation());
 
-        // Recuperar el userId desde SharedPreferences
-        SharedPreferences preferences = requireContext().getSharedPreferences("UsuarioPrefs", Context.MODE_PRIVATE);
-        userId = preferences.getInt("idUsuario", -1);
-        Log.d("Freezer_inv", "userId recuperado: " + userId);
-
-        if (userId == -1) {
-            Toast.makeText(requireContext(), "Usuario no identificado. Por favor, inicia sesión nuevamente.", Toast.LENGTH_SHORT).show();
-            return view; // Evita continuar si no hay usuario identificado
-        }
-
-        // Configurar el DragListener
+        // Configurar el DragListener con el userId
         ImageView refrigerator = view.findViewById(R.id.image_refrigerator);
-        refrigerator.setOnDragListener(new RefrigeratorDragListener(requireContext(), userId, this));
+        refrigerator.setOnDragListener(new RefrigeratorDragListener(requireContext(), this, userId));
+
+        refrigerator.setOnClickListener(v -> navigateToInverntarioUsuario());
 
         loadGrupos();
+
         return view;
     }
-
     private void loadGrupos() {
         String url = "http://98.82.247.63/NutriChefAi/obtener_grupos.php";
         RequestQueue queue = Volley.newRequestQueue(requireContext());
@@ -130,11 +138,10 @@ public class Freezer_inv extends Fragment {
                             showingGrupos = true;
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(requireContext(), "Error al procesar los datos", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Error al procesar los datos.", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(requireContext(), "Error al cargar los datos: " + error.getMessage(), Toast.LENGTH_SHORT).show());
+                error -> Toast.makeText(requireContext(), "Error al cargar los datos.", Toast.LENGTH_SHORT).show());
 
         queue.add(request);
     }
@@ -166,11 +173,10 @@ public class Freezer_inv extends Fragment {
                             showingGrupos = false;
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(requireContext(), "Error al procesar los datos", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Error al procesar los datos.", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(requireContext(), "Error al cargar los datos: " + error.getMessage(), Toast.LENGTH_SHORT).show());
+                error -> Toast.makeText(requireContext(), "Error al cargar los datos.", Toast.LENGTH_SHORT).show());
 
         queue.add(request);
     }
@@ -201,76 +207,27 @@ public class Freezer_inv extends Fragment {
                             backButton.setVisibility(View.VISIBLE); // Mostrar el botón en ingredientes
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(requireContext(), "Error al procesar los datos", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Error al procesar los datos.", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(requireContext(), "Error al cargar los datos: " + error.getMessage(), Toast.LENGTH_SHORT).show());
+                error -> Toast.makeText(requireContext(), "Error al cargar los datos.", Toast.LENGTH_SHORT).show());
 
         queue.add(request);
     }
 
-    private Ingrediente obtenerIngredientePorId(int idIngrediente) {
-        for (Ingrediente ingrediente : ingredienteList) {
-            if (ingrediente.getId() == idIngrediente) {
-                return ingrediente;
-            }
-        }
-        return null;
-    }
-
-<<<<<<< Updated upstream
-    private void asociarIngredienteConUsuario(int idIngrediente, String cantidad) {
-=======
-    private void asociarIngredienteConUsuario(int idIngrediente, String cantidadStr) {
-        try {
-            // Convertir cantidad a un número entero
-            int cantidad = Integer.parseInt(cantidadStr.split(" ")[0].trim());
-
-            // Verificar si el ingrediente ya está en el inventario
-            if (ingredienteCantidadMap.containsKey(idIngrediente)) {
-                // Sumar la cantidad al inventario
-                int nuevaCantidad = (int) (ingredienteCantidadMap.get(idIngrediente) + cantidad);
-                ingredienteCantidadMap.put(idIngrediente, Double.valueOf(nuevaCantidad));
-
-                // Notificar al servidor sobre la suma actualizada
-                enviarActualizacionAlServidor(idIngrediente, nuevaCantidad);
-
-                Toast.makeText(requireContext(), "Cantidad actualizada: " + nuevaCantidad, Toast.LENGTH_SHORT).show();
-            } else {
-                // Añadir nuevo ingrediente al inventario
-                ingredienteCantidadMap.put(idIngrediente, Double.valueOf(cantidad));
-
-                // Notificar al servidor sobre el nuevo ingrediente
-                enviarActualizacionAlServidor(idIngrediente, cantidad);
-
-                Toast.makeText(requireContext(), "Ingrediente añadido con cantidad: " + cantidad, Toast.LENGTH_SHORT).show();
-            }
-
-        } catch (NumberFormatException e) {
-            Toast.makeText(requireContext(), "Cantidad inválida. Inténtalo nuevamente.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    // Método para enviar la actualización al servidor
-    private void enviarActualizacionAlServidor(int idIngrediente, int cantidad) {
->>>>>>> Stashed changes
+    public void asociarIngredienteConUsuario(int idIngrediente, int cantidad) {
         String url = "http://98.82.247.63/NutriChefAi/asociar_ingrediente.php";
-        RequestQueue queue = Volley.newRequestQueue(requireContext());
 
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> Toast.makeText(requireContext(), "Ingrediente agregado al inventario", Toast.LENGTH_SHORT).show(),
-                error -> Toast.makeText(requireContext(), "Error al agregar ingrediente", Toast.LENGTH_SHORT).show()) {
+                error -> Toast.makeText(requireContext(), "Error al agregar el ingrediente: " + error.getMessage(), Toast.LENGTH_SHORT).show()) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("id_usuario", String.valueOf(userId));
                 params.put("id_ingrediente", String.valueOf(idIngrediente));
-<<<<<<< Updated upstream
-                params.put("cantidad", cantidad);
-=======
-                params.put("cantidad", String.valueOf(cantidad)); // Enviar como entero convertido a String
->>>>>>> Stashed changes
+                params.put("cantidad", String.valueOf(cantidad));
                 return params;
             }
         };
@@ -278,7 +235,23 @@ public class Freezer_inv extends Fragment {
         queue.add(request);
     }
 
+
+    private void navigateToInverntarioUsuario() {
+        Fragment inverntarioUsuarioFragment = new Inverntario_usuario();
+
+        Bundle args = new Bundle();
+        args.putInt("userId", userId);
+        inverntarioUsuarioFragment.setArguments(args);
+
+        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, inverntarioUsuarioFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
     public void showDynamicCard(int idIngrediente) {
+        Log.d("Freezer_inv", "showDynamicCard llamado con ID: " + idIngrediente);
+
         CardView cardView = requireView().findViewById(R.id.card_view_dynamic);
         TextView foodName = cardView.findViewById(R.id.text_food_name_dynamic);
         ImageView foodImage = cardView.findViewById(R.id.image_food_dynamic);
@@ -287,99 +260,56 @@ public class Freezer_inv extends Fragment {
         Button buttonAdd = cardView.findViewById(R.id.button_add_dynamic);
         Button buttonCancel = cardView.findViewById(R.id.button_cancel_dynamic);
 
-        // Configurar EditText para aceptar solo números enteros
-        editQuantity.setInputType(InputType.TYPE_CLASS_NUMBER);
-
-        // Obtener los detalles del ingrediente por ID
+        // Busca el ingrediente por ID
         Ingrediente ingrediente = obtenerIngredientePorId(idIngrediente);
         if (ingrediente != null) {
-            // Establecer el nombre del ingrediente
-            foodName.setText(ingrediente.getNombre());
+            Log.d("Freezer_inv", "Ingrediente encontrado: " + ingrediente.getNombre());
 
-            // Buscar la imagen en drawable usando el nombre almacenado en la tabla
+            foodName.setText(ingrediente.getNombre());
             int imageResourceId = requireContext().getResources().getIdentifier(
                     ingrediente.getImageName(), "drawable", requireContext().getPackageName());
-
-            // Establecer la imagen si se encuentra; de lo contrario, usar una imagen predeterminada
-<<<<<<< Updated upstream
-            if (imageResourceId != 0) {
-                foodImage.setImageResource(imageResourceId);
-            } else {
-                foodImage.setImageResource(R.drawable.default_image); // Imagen predeterminada
-=======
             foodImage.setImageResource(imageResourceId != 0 ? imageResourceId : R.drawable.default_image);
 
-            // Configurar visibilidad y opciones del Spinner o texto basado en la descripción
-            String descripcion = ingrediente.getDescripcion();
-            if ("1".equals(descripcion)) { // Mostrar solo unidades
-                spinnerUnit.setVisibility(View.GONE); // Ocultar el Spinner
-                editQuantity.setHint("Unidades");
-            } else if ("2".equals(descripcion)) { // Mostrar solo gramos
-                spinnerUnit.setVisibility(View.GONE); // Ocultar el Spinner
-                editQuantity.setHint("Gramos");
-            } else if ("3".equals(descripcion)) { // Mostrar ambos en Spinner
-                spinnerUnit.setVisibility(View.VISIBLE); // Mostrar el Spinner
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                        requireContext(),
-                        android.R.layout.simple_spinner_item,
-                        requireContext().getResources().getStringArray(R.array.units_array)
-                );
-                spinnerUnit.setAdapter(adapter);
-                editQuantity.setHint("Cantidad");
->>>>>>> Stashed changes
-            }
+            buttonAdd.setOnClickListener(v -> {
+                String cantidad = editQuantity.getText().toString();
+                if (!cantidad.isEmpty()) {
+                    asociarIngredienteConUsuario(idIngrediente, Integer.parseInt(cantidad));
+                    cardView.setVisibility(View.GONE);
+                } else {
+                    Toast.makeText(requireContext(), "Por favor, ingresa una cantidad válida.", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            buttonCancel.setOnClickListener(v -> cardView.setVisibility(View.GONE));
+            cardView.setVisibility(View.VISIBLE);
+        } else {
+            Log.e("Freezer_inv", "Ingrediente no encontrado para ID: " + idIngrediente);
         }
-
-        // Mostrar la tarjeta
-        cardView.setVisibility(View.VISIBLE);
-
-        // Manejar el botón "Añadir"
-        buttonAdd.setOnClickListener(v -> {
-            String cantidad = editQuantity.getText().toString();
-<<<<<<< Updated upstream
-            String unidad = spinnerUnit.getSelectedItem().toString();
-=======
->>>>>>> Stashed changes
-
-            // Validar que la cantidad no esté vacía y sea un número entero válido
-            if (cantidad.isEmpty()) {
-                Toast.makeText(requireContext(), "Por favor, ingresa la cantidad", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            try {
-                int cantidadEntera = Integer.parseInt(cantidad); // Convertir directamente a entero
-                String unidad = spinnerUnit.getSelectedItem() != null ? spinnerUnit.getSelectedItem().toString() : "unidad";
-
-                // Asociar el ingrediente con el usuario
-                asociarIngredienteConUsuario(idIngrediente, cantidadEntera + " " + unidad);
-
-                // Ocultar la tarjeta después de agregar
-                cardView.setVisibility(View.GONE);
-            } catch (NumberFormatException e) {
-                Toast.makeText(requireContext(), "Por favor, ingresa un número entero válido.", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Manejar el botón "Cancelar"
-        buttonCancel.setOnClickListener(v -> cardView.setVisibility(View.GONE));
     }
 
-<<<<<<< Updated upstream
-=======
 
 
->>>>>>> Stashed changes
+    private Ingrediente obtenerIngredientePorId(int idIngrediente) {
+        for (Ingrediente ingrediente : ingredienteList) {
+            if (ingrediente.getId() == idIngrediente) {
+                return ingrediente;
+            }
+        }
+        return null; // Devuelve null si no encuentra el ingrediente
+    }
+
     public void handleBackNavigation() {
         if (recyclerView.getAdapter() instanceof IngredienteAdapter) {
             recyclerView.setAdapter(tipoAlimentoAdapter);
-            backButton.setVisibility(View.VISIBLE); // Botón sigue visible en tipos de alimentos
+            backButton.setVisibility(View.VISIBLE);
         } else if (recyclerView.getAdapter() instanceof TipoAlimentoAdapter) {
             recyclerView.setAdapter(grupoAdapter);
-            backButton.setVisibility(View.GONE); // Ocultar el botón en grupos
+            backButton.setVisibility(View.GONE);
             showingGrupos = true;
         } else {
             Toast.makeText(requireContext(), "Ya estás en la vista inicial", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 }

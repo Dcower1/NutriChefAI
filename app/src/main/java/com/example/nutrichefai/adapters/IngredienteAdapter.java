@@ -3,6 +3,7 @@ package com.example.nutrichefai.adapters;
 import android.content.ClipData;
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.nutrichefai.R;
 import com.example.nutrichefai.bd.Ingrediente;
 
@@ -41,18 +44,34 @@ public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.
     public void onBindViewHolder(@NonNull IngredienteViewHolder holder, int position) {
         Ingrediente ingrediente = ingredientes.get(position);
 
+        // Logs para verificar datos
+        Log.d("IngredienteAdapter", "onBindViewHolder - Posición: " + position +
+                ", ID: " + ingrediente.getId() +
+                ", Nombre: " + ingrediente.getNombre() +
+                ", Imagen: " + ingrediente.getImageName());
+
         holder.textFoodName.setText(ingrediente.getNombre());
 
-        int imageResourceId = context.getResources().getIdentifier(
-                ingrediente.getImageName(), "drawable", context.getPackageName());
+        // Recupera el nombre exacto de la imagen asociada
+        String imageName = ingrediente.getImageName().trim();
+        int imageResourceId = context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
 
-        if (imageResourceId != 0) {
-            Glide.with(context).load(imageResourceId).into(holder.imageFood);
-        } else {
-            holder.imageFood.setImageResource(R.drawable.default_image);
-        }
+        Log.d("IngredienteAdapter", "Cargando imagen: " + imageName + ", ResourceId: " + imageResourceId);
 
-        // Configurar inicio de arrastre
+        // Limpia cualquier imagen previa antes de cargar la nueva
+        Glide.with(context).clear(holder.imageFood);
+
+        // Configura Glide para cargar correctamente la imagen
+        Glide.with(context)
+                .load(imageResourceId != 0 ? imageResourceId : R.drawable.default_image)
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.default_image)  // Imagen por defecto mientras carga
+                        .error(R.drawable.default_image)        // Imagen por defecto si hay error
+                        .skipMemoryCache(true)                  // Desactiva caché de memoria para depuración
+                        .diskCacheStrategy(DiskCacheStrategy.NONE))  // Desactiva caché de disco
+                .into(holder.imageFood);
+
+        // Configurar evento de arrastre
         holder.cardView.setOnLongClickListener(v -> {
             // Crear datos del arrastre
             ClipData data = ClipData.newPlainText("id_ingrediente", String.valueOf(ingrediente.getId()));
@@ -65,7 +84,6 @@ public class IngredienteAdapter extends RecyclerView.Adapter<IngredienteAdapter.
             return true;
         });
     }
-
 
     @Override
     public int getItemCount() {

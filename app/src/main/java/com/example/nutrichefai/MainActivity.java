@@ -17,17 +17,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.nutrichefai.fragments.chat.Chat_menu;
 import com.example.nutrichefai.fragments.freezer.Freezer_inv;
 import com.example.nutrichefai.fragments.perfiles.Perfil_Usuario;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,26 +36,51 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this); // este es tu método para hacer la app a pantalla completa asi no se bugea en los demas dispositivos.
         setContentView(R.layout.activity_main);
 
-        // Recibe el userId desde el Intent
+        // Ajustar los márgenes de los system bars (barra de estado y navegación)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        // Referencias a la barra de navegación y fragment container
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        frameLayout = findViewById(R.id.fragment_container);
+        toolbar = findViewById(R.id.toolbar);
+
+        // Obtener el ancho de la pantalla en dp
+        int screenWidthDp = getResources().getConfiguration().screenWidthDp;
+
+        // Obtener el userId desde el Intent
         Intent intent = getIntent();
         userId = intent.getIntExtra("userId", -1);
 
+        // Guardar el userId en SharedPreferences
         if (userId != -1) {
-            saveUserId(userId); // Guardar el userId en SharedPreferences
-            Log.d("MainActivity", "userId establecido: " + userId);
+            SharedPreferences preferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putInt("userId", userId);
+            editor.apply();
+            Log.d("MainActivity", "userId guardado: " + userId);
         } else {
-            Toast.makeText(this, "Error: Usuario no identificado", Toast.LENGTH_LONG).show();
+            Log.e("MainActivity", "Error: Usuario no identificado.");
+            Toast.makeText(this, "Error: Usuario no identificado.", Toast.LENGTH_SHORT).show();
         }
-
-        // Configurar y cargar el primer fragmento
+        // Cargar el fragmento Chat_menu con el userId si es la primera vez
         if (savedInstanceState == null) {
-            loadFragment(new Chat_menu(), userId, getResources().getConfiguration().screenWidthDp >= 600);
+            if (userId != -1) {
+                loadFragment(new Chat_menu(), userId, screenWidthDp >= 600);
+            } else {
+                Toast.makeText(this, "Error: Usuario no identificado", Toast.LENGTH_LONG).show();
+            }
         }
 
-        // Configuración del BottomNavigationView
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        // Configurar la toolbar como ActionBar
+        setSupportActionBar(toolbar);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment fragment;
 
@@ -76,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
 
-            return loadFragment(fragment, userId, getResources().getConfiguration().screenWidthDp >= 600);
+            // Llamar al método loadFragment con la condición del tamaño de pantalla
+            return loadFragment(fragment, userId, screenWidthDp >= 600); // Pasar la condición del tamaño
         });
     }
 
@@ -87,55 +106,12 @@ public class MainActivity extends AppCompatActivity {
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
-    private void saveUserId(int idUsuario) {
-        SharedPreferences preferences = getSharedPreferences("UsuarioPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("idUsuario", idUsuario);
-        editor.apply();
-    }
-
-    private void loadUserData(int userId) {
-        String url = "http://98.82.247.63/NutriChefAi/cargar_usuario.php?id_usu=" + userId;
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                response -> {
-                    try {
-                        JSONObject jsonResponse = new JSONObject(response);
-                        String estado = jsonResponse.getString("estado");
-
-                        if (estado.equals("1")) {
-                            JSONObject data = jsonResponse.getJSONObject("data");
-                            int idUsuario = data.getInt("id_usu");
-
-                            // Guarda el ID del usuario en SharedPreferences
-                            saveUserId(idUsuario);
-                        } else {
-                            Toast.makeText(this, "No se encontraron datos para el usuario", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, "Error en la respuesta del servidor", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                error -> {
-                    Log.e("VolleyError", error.toString());
-                    Toast.makeText(this, "Hubo un error con la conexión", Toast.LENGTH_SHORT).show();
-                });
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
-    }
-
-    private boolean loadFragment(Fragment fragment, int userId) {
-        // Asume que no es una pantalla grande (valor por defecto)
-        return loadFragment(fragment, userId, false);
-    }
     // Modificar el método loadFragment para aceptar el tercer parámetro
     private boolean loadFragment(Fragment fragment, int userId, boolean isLargeScreen) {
         if (fragment != null) {
             Bundle args = new Bundle();
             args.putInt("userId", userId);
-            args.putBoolean("isLargeScreen", isLargeScreen); // Pasar el tamaño de pantalla
+            args.putBoolean("isLargeScreen", isLargeScreen);
             fragment.setArguments(args);
 
             getSupportFragmentManager()
@@ -146,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
+
 
 
 }

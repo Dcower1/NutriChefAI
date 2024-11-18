@@ -1,6 +1,7 @@
 package com.example.nutrichefai.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.nutrichefai.R;
 import com.example.nutrichefai.bd.TipoAlimento;
 import com.example.nutrichefai.fragments.freezer.Freezer_inv;
@@ -39,17 +42,34 @@ public class TipoAlimentoAdapter extends RecyclerView.Adapter<TipoAlimentoAdapte
     public void onBindViewHolder(@NonNull TipoAlimentoViewHolder holder, int position) {
         TipoAlimento tipo = tipoAlimentos.get(position);
 
+        // Verifica y registra los datos para depuración
+        Log.d("TipoAlimentoAdapter", "onBindViewHolder - Posición: " + position +
+                ", ID: " + tipo.getId() +
+                ", Nombre: " + tipo.getName() +
+                ", Imagen: " + tipo.getImageName());
+
         holder.textFoodName.setText(tipo.getName());
 
-        int imageResourceId = context.getResources().getIdentifier(
-                tipo.getImageName(), "drawable", context.getPackageName());
+        // Recupera el nombre exacto de la imagen asociada
+        String resourceName = tipo.getImageName().trim();
+        int resourceId = context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName());
 
-        if (imageResourceId != 0) {
-            Glide.with(context).load(imageResourceId).into(holder.imageFood);
-        } else {
-            holder.imageFood.setImageResource(R.drawable.default_image);
-        }
+        Log.d("TipoAlimentoAdapter", "Cargando imagen: " + resourceName + ", ResourceId: " + resourceId);
 
+        // Limpia cualquier imagen previa para evitar problemas de reciclaje
+        Glide.with(context).clear(holder.imageFood);
+
+        // Configura Glide para cargar la imagen correctamente
+        Glide.with(context)
+                .load(resourceId != 0 ? resourceId : R.drawable.default_image)
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.default_image)  // Imagen por defecto mientras carga
+                        .error(R.drawable.default_image)        // Imagen por defecto si hay error
+                        .skipMemoryCache(true)                  // Desactiva caché de memoria para depuración
+                        .diskCacheStrategy(DiskCacheStrategy.NONE))  // Desactiva caché de disco
+                .into(holder.imageFood);
+
+        // Configura el evento de clic para cargar ingredientes
         holder.itemView.setOnClickListener(v -> fragment.loadIngredientes(tipo.getId()));
     }
 

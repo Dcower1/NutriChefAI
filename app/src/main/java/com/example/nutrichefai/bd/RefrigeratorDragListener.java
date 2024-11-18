@@ -1,6 +1,8 @@
 package com.example.nutrichefai.bd;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -18,16 +20,18 @@ import java.util.Map;
 
 public class RefrigeratorDragListener implements View.OnDragListener {
 
-    private final Context context;
-    private final int idUsuario;
-    private final Freezer_inv fragment;
 
-    public RefrigeratorDragListener(Context context, int idUsuario, Freezer_inv fragment) {
+    private final Context context;
+    private final Freezer_inv fragment;
+    private final int userId;
+
+    public RefrigeratorDragListener(Context context, Freezer_inv fragment, int userId) {
         this.context = context;
-        this.idUsuario = idUsuario;
         this.fragment = fragment;
+        this.userId = userId;
     }
 
+    @SuppressLint("LongLogTag")
     @Override
     public boolean onDrag(View v, DragEvent event) {
         switch (event.getAction()) {
@@ -35,28 +39,37 @@ public class RefrigeratorDragListener implements View.OnDragListener {
                 return true;
 
             case DragEvent.ACTION_DRAG_ENTERED:
-                v.setAlpha(0.7f); // Cambiar apariencia al entrar
+                v.setAlpha(0.7f); // Cambia la transparencia al arrastrar sobre la vista
                 return true;
 
             case DragEvent.ACTION_DRAG_EXITED:
-                v.setAlpha(1.0f); // Restaurar apariencia
+                v.setAlpha(1.0f); // Restaura la transparencia
                 return true;
 
             case DragEvent.ACTION_DROP:
-                v.setAlpha(1.0f);
+                if (event.getClipData() != null && event.getClipData().getItemCount() > 0) {
+                    try {
+                        int idIngrediente = Integer.parseInt(event.getClipData().getItemAt(0).getText().toString());
+                        Log.d("RefrigeratorDragListener", "Ingrediente soltado con ID: " + idIngrediente);
 
-                String idIngrediente = event.getClipData().getItemAt(0).getText().toString();
-                fragment.showDynamicCard(Integer.parseInt(idIngrediente)); // Mostrar la tarjeta dinámica
+                        // Llama al método del fragmento para mostrar la tarjeta dinámica
+                        fragment.showDynamicCard(idIngrediente);
+
+                        // Asocia el ingrediente con el usuario
+                        fragment.asociarIngredienteConUsuario(idIngrediente, 1); // Cantidad predeterminada de 1
+
+                    } catch (NumberFormatException e) {
+                        Log.e("RefrigeratorDragListener", "Error al convertir ID del ingrediente", e);
+                    }
+                }
                 return true;
 
             case DragEvent.ACTION_DRAG_ENDED:
-                v.setAlpha(1.0f);
+                v.setAlpha(1.0f); // Restaura la transparencia
                 return true;
 
             default:
                 return false;
         }
     }
-
-
 }
