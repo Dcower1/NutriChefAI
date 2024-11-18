@@ -9,55 +9,6 @@
 
 
     <!-- Contenedor principal ajustado a los márgenes de la pantalla -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/selector_ingredientes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/contaner_freezer"
-        tools:listitem="@layout/cardview" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/contaner_freezer"
-        android:layout_width="373dp"
-        android:layout_height="231dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.065">
-
-        <!-- Imagen principal adaptada al ancho del contenedor -->
-        <ImageView
-            android:id="@+id/image_refrigerator"
-            android:layout_width="354dp"
-            android:layout_height="250dp"
-            android:src="@drawable/frezer2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.483"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-        <!-- Botón de retroceso -->
-        <ImageView
-            android:id="@+id/bt_atras"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:src="@drawable/back_1"
-            app:layout_constraintBottom_toBottomOf="@id/image_refrigerator"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- RecyclerView como carrusel horizontal -->
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Tarjeta dinámica para mostrar detalles del ingrediente -->
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view_dynamic"
         android:layout_width="match_parent"
@@ -66,10 +17,10 @@
         android:visibility="gone"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/contaner_freezer">
+        app:layout_constraintBottom_toBottomOf="@id/image_refrigerator"
+
+        tools:layout_editor_absoluteY="577dp"
+        tools:ignore="NotSibling">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -109,12 +60,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:inputType="number"
-                    android:hint="Cantidad"
-                    android:padding="8dp"
                     android:background="@android:drawable/edit_text"
                     android:gravity="center_vertical"
-                    android:maxLength="5" />
+                    android:hint="Cantidad"
+                    android:inputType="number"
+                    android:maxLength="5"
+                    android:padding="8dp" />
 
                 <!-- Selector de unidad -->
                 <Spinner
@@ -151,5 +102,59 @@
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/selector_ingredientes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/contaner_freezer"
+        tools:listitem="@layout/cardview" >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contaner_freezer"
+        android:layout_width="373dp"
+        android:layout_height="231dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.065">
+
+        <!-- Imagen principal adaptada al ancho del contenedor -->
+        <ImageView
+            android:id="@+id/image_refrigerator"
+            android:layout_width="354dp"
+            android:layout_height="250dp"
+            android:src="@drawable/frezer2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.483"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Tarjeta dinámica para mostrar detalles del ingrediente -->
+
+        <!-- Botón de retroceso -->
+        <ImageView
+            android:id="@+id/bt_atras"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:src="@drawable/back_1"
+            app:layout_constraintBottom_toBottomOf="@id/image_refrigerator"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- RecyclerView como carrusel horizontal -->
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

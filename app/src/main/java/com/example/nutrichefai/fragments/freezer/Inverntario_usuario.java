@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -208,7 +210,9 @@ public class Inverntario_usuario extends Fragment {
             cardViewInventario.setVisibility(View.GONE);
             fabCancelar.setVisibility(View.GONE); // Ocultar el botón flotante
         });
-
+        // Aplicar animación de FAB
+        Animation slideUpAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.fab_slide_up);
+        fabCancelar.startAnimation(slideUpAnim);
         Log.d("mostrarCardInventario", "Ingrediente mostrado: " + ingrediente.getNombre());
     }
 
