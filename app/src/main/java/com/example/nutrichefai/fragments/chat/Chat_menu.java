@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.nutrichefai.R;
+import com.example.nutrichefai.fragments.platillos.Platillos;
 
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
@@ -33,6 +35,7 @@ import org.json.JSONObject;
 public class Chat_menu extends Fragment {
 
     TextView nombreusuario, id;
+    ImageView card1, card2, card3;
 
     @SuppressLint("MissingInflatedId")
     @Nullable
@@ -49,7 +52,14 @@ public class Chat_menu extends Fragment {
 
         nombreusuario = view.findViewById(R.id.nomUsuario);
         id = view.findViewById(R.id.id_usuario);
+        card1 = view.findViewById(R.id.card1);
+        card2 = view.findViewById(R.id.card2);
+        card3 = view.findViewById(R.id.card3);
 
+        // Listener para las cards
+        card1.setOnClickListener(v -> navigateToPlatillos());
+        card2.setOnClickListener(v -> navigateToPlatillos());
+        card3.setOnClickListener(v -> navigateToPlatillos());
         // Recibir el userId desde los argumentos del fragmento
         Bundle args = getArguments();
         if (args != null) {
@@ -63,7 +73,15 @@ public class Chat_menu extends Fragment {
 
         return view;
     }
+    private void navigateToPlatillos() {
+        Fragment platillosFragment = new Platillos();
 
+        // Iniciar la transacción de fragmento
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, platillosFragment) // fragment_container es el contenedor del fragmento en tu actividad
+                .addToBackStack(null) // Para permitir volver al fragmento anterior
+                .commit();
+    }
     private void loadUserData(int userId) {
         // URL para obtener los datos del usuario (ajusta según tu API)
         String url = "http://98.82.247.63/NutriChefAi/cargar_usuario.php?id_usu=" + userId;

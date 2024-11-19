@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -121,6 +122,30 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Verifica si el fragment actual necesita manejar el botón de retroceso
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            // Si hay fragmentos en la pila de retroceso, llama al comportamiento predeterminado
+            super.onBackPressed();
+        } else {
+            // Si no hay más fragmentos, muestra el diálogo de confirmación
+            new AlertDialog.Builder(this)
+                    .setTitle("Salir de la aplicación")
+                    .setMessage("¿Estás seguro de que deseas salir?")
+                    .setPositiveButton("Sí", (dialog, which) -> {
+                        // Finaliza la actividad y cierra la aplicación
+                        finish();
+                    })
+                    .setNegativeButton("No", (dialog, which) -> {
+                        // Cierra el diálogo sin hacer nada
+                        dialog.dismiss();
+                    })
+                    .setCancelable(false) // Impide cerrar el diálogo tocando fuera de él
+                    .show();
+        }
     }
 
 
