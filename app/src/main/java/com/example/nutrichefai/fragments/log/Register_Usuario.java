@@ -94,12 +94,6 @@ public class Register_Usuario extends Fragment {
         spinnerGender.setAdapter(adapter);
 
 
-        //botones de la dieta
-        bfueza = view.findViewById(R.id.bt_1);
-        bsubirpeso = view.findViewById(R.id.bt_2);
-        bbajarpeso = view.findViewById(R.id.bt_3);
-        bmantenerpeso = view.findViewById(R.id.bt_4);
-
         RegisterUser = view.findViewById(R.id.editTextRegisterUser);
         RegisterEmail = view.findViewById(R.id.editTextRegisterEmail);
         RegisterPasswordRepeat = view.findViewById(R.id.editTextRegisterPasswordRepeat);
@@ -167,51 +161,63 @@ public class Register_Usuario extends Fragment {
         btn_registrarce.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (validar()) {
-                    String usuario = RegisterUser.getText().toString().trim();
-                    String email = RegisterEmail.getText().toString().trim();
-                    String password = RegisterPassword.getText().toString().trim();
-                    String birthday = editBirthday.getText().toString().trim();
-                    SimpleDateFormat inputFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                    SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                if (validatePage1() && validatePage2()) { // Validar ambas páginas
+                    try {
+                        // Obtener valores del formulario
+                        String usuario = RegisterUser.getText().toString().trim();
+                        String email = RegisterEmail.getText().toString().trim();
+                        String password = RegisterPassword.getText().toString().trim();
+                        String birthday = editBirthday.getText().toString().trim();
+                        int peso = seekBarPeso.getProgress();
+                        float altura = seekBarAltura.getProgress() / 100.0f;
+                        float imc = peso / (altura * altura);
 
-                    int peso = seekBarPeso.getProgress();
-                    float altura = seekBarAltura.getProgress() / 100.0f;
-                    float imc = peso / (altura * altura);
-
-                    Spinner spinnerGender = view.findViewById(R.id.spinner_gender);
-                    int sexo;
-                    switch (spinnerGender.getSelectedItemPosition()) {
-                        case 0:
-                            sexo = 1; // Hombre
-                            break;
-                        case 1:
-                            sexo = 2; // Mujer
-                            break;
-                        case 2:
-                            sexo = 3; // Otro
-                            break;
-                        default:
-                            sexo = 1;
-                    }
-
-                    if (!dieta.isEmpty()) {
-                        String hashedPassword = Utilidades.hashPassword(password);
-                        limpiarCamposRegistro(view);
-
-                        try {
-                            Date date = inputFormat.parse(birthday);
-                            String formattedDate = outputFormat.format(date);
-
-                            cambiarAFragmentoLogUsuario();
-                            insertarUsuario(usuario, email, hashedPassword, formattedDate, peso, sexo, altura, imc);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            Toast.makeText(getContext(), "Formato de fecha no válido. Por favor, use dd/MM/yyyy.", Toast.LENGTH_SHORT).show();
+                        // Obtener el género seleccionado desde el Spinner
+                        Spinner spinnerGender = view.findViewById(R.id.spinner_gender);
+                        int sexo;
+                        switch (spinnerGender.getSelectedItemPosition()) {
+                            case 0:
+                                sexo = 1; // Hombre
+                                break;
+                            case 1:
+                                sexo = 2; // Mujer
+                                break;
+                            case 2:
+                                sexo = 3; // Otro
+                                break;
+                            default:
+                                sexo = 1; // Valor por defecto (Hombre)
                         }
-                    } else {
-                        Toast.makeText(getContext(), "Debe seleccionar una dieta", Toast.LENGTH_SHORT).show();
+
+                        // Validar y formatear la fecha de nacimiento
+                        SimpleDateFormat inputFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                        Date date = inputFormat.parse(birthday);
+                        String formattedDate = outputFormat.format(date);
+
+                        // Hashear la contraseña
+                        String hashedPassword = Utilidades.hashPassword(password);
+
+                        // Enviar datos al servidor o base de datos
+                        insertarUsuario(usuario, email, hashedPassword, formattedDate, peso, sexo, altura, imc);
+
+                        // Limpiar campos y cambiar de fragmento
+                        limpiarCamposRegistro(v);
+                        cambiarAFragmentoLogUsuario();
+
+                        Toast.makeText(getContext(), "Registro exitoso", Toast.LENGTH_SHORT).show();
+                    } catch (ParseException e) {
+                        // Manejar errores de formato de fecha
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), "Formato de fecha no válido. Use dd/MM/yyyy.", Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        // Manejar cualquier otra excepción
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), "Ocurrió un error al registrar. Inténtelo de nuevo.", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    // Mostrar mensaje si hay errores en los campos
+                    Toast.makeText(getContext(), "Por favor, corrija los errores en los campos", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -220,22 +226,24 @@ public class Register_Usuario extends Fragment {
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // Si todos los campos están llenos y las contraseñas coinciden, pasamos a la siguiente vista
-                if (validar()) {
-
+                if (validatePage1()) {
                     viewSwitcher.showNext();
+                } else {
+                    Toast.makeText(getContext(), "Por favor, corrija los errores en los campos", Toast.LENGTH_SHORT).show();
                 }
-
-
             }
         });
+
+
 
         btn_atras.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                viewSwitcher.showPrevious();
+                if (validatePage2()) {
+                    viewSwitcher.showNext();
+                } else {
+                    Toast.makeText(getContext(), "Por favor, corrija los errores en los campos", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         return view;
@@ -261,7 +269,6 @@ public class Register_Usuario extends Fragment {
         editBirthday.setText("");
         seekBarPeso.setProgress(0);
         seekBarAltura.setProgress(0);
-        dieta = ""; // Limpiar selección de dieta
 
         // Restablecer el Spinner de género a la primera opción
         Spinner spinnerGender = view.findViewById(R.id.spinner_gender);
@@ -269,6 +276,7 @@ public class Register_Usuario extends Fragment {
             spinnerGender.setSelection(0);
         }
     }
+
 
 
     // Método para cambiar al fragmento Log_Usuario
@@ -316,22 +324,86 @@ public class Register_Usuario extends Fragment {
             }
         });
     }
+    private boolean validatePage1() {
+        boolean isValid = true;
 
-    private void setupDietaButtons() {
-        bfueza.setOnClickListener(v -> selectDietaButton(bfueza, "fuerza"));
-        bsubirpeso.setOnClickListener(v -> selectDietaButton(bsubirpeso, "subir_peso"));
-        bbajarpeso.setOnClickListener(v -> selectDietaButton(bbajarpeso, "bajar_peso"));
-        bmantenerpeso.setOnClickListener(v -> selectDietaButton(bmantenerpeso, "mantener_peso"));
+        // Validar usuario
+        String usuario = RegisterUser.getText().toString().trim();
+        if (usuario.isEmpty()) {
+            RegisterUser.setError("El campo de usuario está vacío");
+            isValid = false;
+        } else if (usuario.length() < 4) {
+            RegisterUser.setError("El usuario debe tener al menos 4 caracteres");
+            isValid = false;
+        } else if (!usuario.matches("[a-zA-Z0-9]+")) {
+            RegisterUser.setError("El usuario solo puede contener letras y números");
+            isValid = false;
+        }
+
+        // Validar email
+        String email = RegisterEmail.getText().toString().trim();
+        if (email.isEmpty()) {
+            RegisterEmail.setError("El campo de email está vacío");
+            isValid = false;
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            RegisterEmail.setError("El formato del email no es válido");
+            isValid = false;
+        }
+
+        // Validar contraseña
+        String password = RegisterPassword.getText().toString().trim();
+        String passwordRepeat = RegisterPasswordRepeat.getText().toString().trim();
+        if (password.isEmpty()) {
+            RegisterPassword.setError("El campo de contraseña está vacío");
+            isValid = false;
+        } else if (password.length() < 6) {
+            RegisterPassword.setError("La contraseña debe tener al menos 6 caracteres");
+            isValid = false;
+        }
+
+        // Validar que las contraseñas coincidan
+        if (!password.equals(passwordRepeat)) {
+            RegisterPasswordRepeat.setError("Las contraseñas no coinciden");
+            isValid = false;
+        }
+
+        return isValid;
     }
+    private boolean validatePage2() {
+        boolean isValid = true;
 
-    //accion para marcar los botones
-    private void selectDietaButton(Button selectedButton, String dietaValue) {
-        dieta = dietaValue; // Asigna la dieta seleccionada
-        desmarcarBotonesDieta(); // Desmarcar botones previos
-        selectedButton.setSelected(true); // Marcar el botón seleccionado
-        selectedButton.setBackgroundColor(getResources().getColor(R.color.colorSelected)); // Resaltar
+        // Validar fecha de nacimiento
+        String birthday = editBirthday.getText().toString().trim();
+        if (birthday.isEmpty()) {
+            editBirthday.setError("Debe seleccionar su fecha de nacimiento");
+            isValid = false;
+        } else {
+            // Validar formato y rango de edad
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            try {
+                Date birthDate = dateFormat.parse(birthday);
+                Calendar birthCalendar = Calendar.getInstance();
+                birthCalendar.setTime(birthDate);
+
+                Calendar today = Calendar.getInstance();
+                int age = today.get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR);
+
+                if (today.get(Calendar.DAY_OF_YEAR) < birthCalendar.get(Calendar.DAY_OF_YEAR)) {
+                    age--;
+                }
+
+                if (age < 16 || age > 130) {
+                    editBirthday.setError("Debe tener entre 16 y 130 años");
+                    isValid = false;
+                }
+            } catch (ParseException e) {
+                editBirthday.setError("Formato de fecha no válido. Use dd/MM/yyyy");
+                isValid = false;
+            }
+        }
+
+        return isValid;
     }
-
 
     private void updateIMC() {
         int peso = seekBarPeso.getProgress();
@@ -342,122 +414,12 @@ public class Register_Usuario extends Fragment {
             float imc = peso / (altura * altura);
             textViewIMC.setText(String.format("IMC: %.2f", imc));
 
-            // Inicializar dieta según IMC
-            inicializarDietaRecomendada(imc);
+
         }
     }
 
-    private void inicializarDietaRecomendada(float imc) {
-        // Limpiar selección previa
-        desmarcarBotonesDieta();
 
-        // Seleccionar dieta según IMC
-        if (imc < 18.5) {
-            // Subir peso
-            bsubirpeso.setBackgroundColor(getResources().getColor(R.color.colorSelected)); // Resaltar el botón
-            dieta = "subir_peso";
-        } else if (imc >= 18.5 && imc < 25) {
-            // Mantener peso
-            bmantenerpeso.setBackgroundColor(getResources().getColor(R.color.colorSelected));
-            dieta = "mantener_peso";
-        } else if (imc >= 25 && imc < 30) {
-            // Bajar peso
-            bbajarpeso.setBackgroundColor(getResources().getColor(R.color.colorSelected));
-            dieta = "bajar_peso";
-        } else {
-            // Fuerza (IMC ≥ 30)
-            bfueza.setBackgroundColor(getResources().getColor(R.color.colorSelected));
-            dieta = "fuerza";
-        }
-    }
 
-    private void desmarcarBotonesDieta() {
-        // Reiniciar el fondo de los botones para que no se vean seleccionados
-        bfueza.setBackgroundColor(getResources().getColor(R.color.colorDefault));
-        bsubirpeso.setBackgroundColor(getResources().getColor(R.color.colorDefault));
-        bbajarpeso.setBackgroundColor(getResources().getColor(R.color.colorDefault));
-        bmantenerpeso.setBackgroundColor(getResources().getColor(R.color.colorDefault));
-    }
-
-    //esto es boolean porque me deberia retornar un true o un false
-    private boolean validar() {
-        String usuario = RegisterUser.getText().toString().trim();
-        String email = RegisterEmail.getText().toString().trim();
-        String password = RegisterPassword.getText().toString().trim();
-        String passwordRepeat = RegisterPasswordRepeat.getText().toString().trim();
-        String birthday = editBirthday.getText().toString().trim();
-
-        boolean isValid = true;
-
-        if (usuario.isEmpty()) {
-            RegisterUser.setError("El campo de usuario está vacío");
-            isValid = false; // Set valid to false
-        } else if (usuario.length() < 4) {
-            RegisterUser.setError("El usuario debe tener al menos 4 letras");
-            isValid = false;
-        } else if (!usuario.matches("[a-zA-Z0-9]+")) {
-            RegisterUser.setError("El usuario solo puede contener letras y números");
-            isValid = false;
-        }
-
-        if (email.isEmpty()) {
-            RegisterEmail.setError("El campo de email está vacío");
-            isValid = false;
-        } else if (!Utilidades.isValidEmail(email)) {
-            RegisterEmail.setError("El formato del email no es válido");
-            isValid = false;
-        }
-        if (password.isEmpty()) {
-            RegisterPassword.setError("El campo de contraseña está vacío");
-            isValid = false;
-        } else if (!isValidPassword(password)) {
-            RegisterPassword.setError("La contraseña debe tener al menos 6 caracteres y 1 mayúscula");
-            isValid = false;
-        }
-
-        if (passwordRepeat.isEmpty()) {
-            RegisterPasswordRepeat.setError("Debe repetir la contraseña");
-            isValid = false; // Set valid to false
-        }
-
-        if (birthday.isEmpty()) {
-            editBirthday.setError("El campo de fecha de nacimiento está vacío");
-            isValid = false;
-        } else {
-            // Validar la edad con la fecha de nacimiento
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            try {
-                Date birthDate = dateFormat.parse(birthday);
-                Calendar birthCalendar = Calendar.getInstance();
-                birthCalendar.setTime(birthDate);
-
-                Calendar today = Calendar.getInstance();
-                int age = today.get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR);
-
-                // Si el cumpleaños aún no ha ocurrido este año, restar 1 a la edad
-                if (today.get(Calendar.DAY_OF_YEAR) < birthCalendar.get(Calendar.DAY_OF_YEAR)) {
-                    age--;
-                }
-
-                if (age < 16 || age > 130) {
-                    editBirthday.setError("Debes tener entre 16 y 130 años");
-                    isValid = false;
-                }
-            } catch (ParseException e) {
-                editBirthday.setError("Formato de fecha no válido");
-                isValid = false;
-            }
-        }
-
-        // Validar si las contraseñas coinciden
-        if (!password.equals(passwordRepeat)) {
-            RegisterPassword.setError("Las contraseñas no coinciden");
-            RegisterPasswordRepeat.setError("Las contraseñas no coinciden");
-            isValid = false; // Set valid to false
-        }
-
-        return isValid; // Return the result of the validation
-    }
 
     // Método para insertar un usuario
     private void insertarUsuario(String usuario, String email, String password, String birthday, int peso, int sexo, float altura, float imc) {

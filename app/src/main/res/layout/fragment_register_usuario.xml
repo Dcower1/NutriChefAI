@@ -17,6 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!-- Primer Layout -->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -31,7 +32,7 @@
                     android:id="@+id/logo"
                     android:layout_width="128dp"
                     android:layout_height="86dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:src="@drawable/fondosombra"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +42,7 @@
                     android:id="@+id/editTextRegisterUser"
                     android:layout_width="265dp"
                     android:layout_height="47dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:gravity="center"
                     android:hint="Usuario"
                     android:inputType="text"
@@ -49,22 +50,11 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/logo" />
 
-
-                <Spinner
-                    android:id="@+id/spinner_gender"
-                    android:layout_width="125dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.462"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editRegisterBirthday" />
-
                 <EditText
                     android:id="@+id/editTextRegisterEmail"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:gravity="center"
                     android:hint="Email"
                     android:inputType="textEmailAddress"
@@ -120,79 +110,16 @@
                     app:layout_constraintEnd_toEndOf="@id/editTextRegisterPasswordRepeat"
                     app:layout_constraintTop_toTopOf="@id/editTextRegisterPasswordRepeat" />
 
-
-                <EditText
-                    android:id="@+id/editRegisterBirthday"
-                    android:layout_width="260dp"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="8dp"
-                    android:clickable="true"
-                    android:focusable="false"
-                    android:gravity="center"
-                    android:hint="Fecha de Cumpleaños"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.497"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editTextRegisterPasswordRepeat" />
-
-                <TextView
-                    android:id="@+id/textViewPeso"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Peso: ejemplo 70 kg"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spinner_gender" />
-
-                <SeekBar
-                    android:id="@+id/seekBarPeso"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="200"
-                    android:progress="70"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewPeso" />
-
-                <TextView
-                    android:id="@+id/textViewAltura"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Altura: 1.20 m"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/seekBarPeso" />
-
-                <SeekBar
-                    android:id="@+id/seekBarAltura"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="250"
-                    android:progress="120"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewAltura" />
-
-                <TextView
-                    android:id="@+id/textViewIMC"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="IMC: "
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.498"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/seekBarAltura" />
-
                 <Button
                     android:id="@+id/btn_next"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="5dp"
                     android:backgroundTint="@color/btnintenso"
                     android:text="Siguiente"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewIMC" />
+                    app:layout_constraintTop_toBottomOf="@+id/editTextRegisterPasswordRepeat" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
@@ -207,82 +134,107 @@
                 android:layout_height="match_parent"
                 android:padding="16dp">
 
+                <Spinner
+                    android:id="@+id/spinner_gender"
+                    android:layout_width="125dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/editRegisterBirthday"
+                    tools:ignore="MissingConstraints"
+                    tools:layout_editor_absoluteX="125dp" />
+
+                <EditText
+                    android:id="@+id/editRegisterBirthday"
+                    android:layout_width="260dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="8dp"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:hint="Fecha de Cumpleaños"
+                    app:layout_constraintTop_toBottomOf="@+id/logo2"
+                    tools:ignore="MissingConstraints"
+                    tools:layout_editor_absoluteX="66dp" />
+
+                <TextView
+                    android:id="@+id/textViewPeso"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Peso: ejemplo 70 kg"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.055"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spinner_gender" />
+
+                <SeekBar
+                    android:id="@+id/seekBarPeso"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:max="200"
+                    android:progress="70"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewPeso" />
+
+                <TextView
+                    android:id="@+id/textViewAltura"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Altura: 1.20 m"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.012"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/seekBarPeso" />
+
+                <SeekBar
+                    android:id="@+id/seekBarAltura"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:max="250"
+                    android:progress="120"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewAltura" />
+
+                <TextView
+                    android:id="@+id/textViewIMC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="IMC: "
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/seekBarAltura" />
+
                 <ImageView
                     android:id="@+id/logo2"
                     android:layout_width="128dp"
                     android:layout_height="86dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="4dp"
                     android:src="@drawable/fondosombra"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-
-                <TextView
-                    android:id="@+id/textViewDieta"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="¿Qué clase de dieta quieres seguir?"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/logo2" />
-
-
-                <LinearLayout
-                    android:id="@+id/linearLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:orientation="vertical"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewDieta"
-                    tools:layout_editor_absoluteX="16dp">
-
-                    <Button
-                        android:id="@+id/bt_1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/btnintenso"
-                        android:text="Subir de Peso" />
-
-                    <Button
-                        android:id="@+id/bt_2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/btnintenso"
-                        android:text="Ganar Fuerza" />
-
-                    <Button
-                        android:id="@+id/bt_3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/btnintenso"
-                        android:text="Bajar de Peso" />
-
-                    <Button
-                        android:id="@+id/bt_4"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/btnintenso"
-                        android:text="Mantener el Peso" />
-                </LinearLayout>
-
                 <Button
                     android:id="@+id/btn_registrar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:backgroundTint="@color/btnintenso"
                     android:text="Registrar"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.838"
                     app:layout_constraintStart_toEndOf="@+id/btn_back"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintTop_toBottomOf="@+id/textViewIMC" />
 
                 <Button
                     android:id="@+id/btn_back"
@@ -293,11 +245,11 @@
                     android:text="atras"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintTop_toBottomOf="@+id/textViewIMC" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
+
 
     </ViewSwitcher>
 </androidx.constraintlayout.widget.ConstraintLayout>
