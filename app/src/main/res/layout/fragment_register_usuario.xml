@@ -18,237 +18,230 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <!-- Primer Layout -->
-        <ScrollView
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/register_layout1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="16dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/register_layout1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="16dp">
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="128dp"
+                android:layout_height="86dp"
+                android:src="@drawable/fondosombra"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/logo"
-                    android:layout_width="128dp"
-                    android:layout_height="86dp"
-                    android:layout_marginTop="4dp"
-                    android:src="@drawable/fondosombra"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <EditText
+                android:id="@+id/editTextRegisterUser"
+                android:layout_width="265dp"
+                android:layout_height="47dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:hint="Usuario"
+                android:inputType="text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/logo" />
 
-                <EditText
-                    android:id="@+id/editTextRegisterUser"
-                    android:layout_width="265dp"
-                    android:layout_height="47dp"
-                    android:layout_marginTop="4dp"
-                    android:gravity="center"
-                    android:hint="Usuario"
-                    android:inputType="text"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/logo" />
+            <EditText
+                android:id="@+id/editTextRegisterEmail"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                app:layout_constraintEnd_toEndOf="@id/editTextRegisterUser"
+                app:layout_constraintStart_toStartOf="@id/editTextRegisterUser"
+                app:layout_constraintTop_toBottomOf="@id/editTextRegisterUser" />
 
-                <EditText
-                    android:id="@+id/editTextRegisterEmail"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center"
-                    android:hint="Email"
-                    android:inputType="textEmailAddress"
-                    app:layout_constraintEnd_toEndOf="@id/editTextRegisterUser"
-                    app:layout_constraintStart_toStartOf="@id/editTextRegisterUser"
-                    app:layout_constraintTop_toBottomOf="@id/editTextRegisterUser" />
+            <EditText
+                android:id="@+id/editTextRegisterPassword"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:hint="Password"
+                android:inputType="textPassword"
+                app:layout_constraintEnd_toEndOf="@id/editTextRegisterEmail"
+                app:layout_constraintStart_toStartOf="@id/editTextRegisterEmail"
+                app:layout_constraintTop_toBottomOf="@id/editTextRegisterEmail" />
 
-                <EditText
-                    android:id="@+id/editTextRegisterPassword"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="16dp"
-                    android:gravity="center"
-                    android:hint="Password"
-                    android:inputType="textPassword"
-                    app:layout_constraintEnd_toEndOf="@id/editTextRegisterEmail"
-                    app:layout_constraintStart_toStartOf="@id/editTextRegisterEmail"
-                    app:layout_constraintTop_toBottomOf="@id/editTextRegisterEmail" />
+            <ImageView
+                android:id="@+id/passwordToggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:clickable="true"
+                android:contentDescription="Mostrar/Ocultar Contraseña"
+                android:src="@drawable/baseline_visibility_off_24"
+                app:layout_constraintEnd_toEndOf="@+id/editTextRegisterPassword"
+                app:layout_constraintHorizontal_bias="0.846"
+                app:layout_constraintStart_toStartOf="@+id/editTextRegisterPassword"
+                app:layout_constraintTop_toTopOf="@id/editTextRegisterPassword" />
 
-                <ImageView
-                    android:id="@+id/imageViewPasswordToggle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="8dp"
-                    android:clickable="true"
-                    android:contentDescription="Mostrar/Ocultar Contraseña"
-                    android:src="@drawable/baseline_visibility_off_24"
-                    app:layout_constraintEnd_toEndOf="@id/editTextRegisterPassword"
-                    app:layout_constraintTop_toTopOf="@id/editTextRegisterPassword" />
+            <EditText
+                android:id="@+id/editTextRegisterPasswordRepeat"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:hint="Repetir Password"
+                android:inputType="textPassword"
+                app:layout_constraintEnd_toEndOf="@id/editTextRegisterPassword"
+                app:layout_constraintStart_toStartOf="@id/editTextRegisterPassword"
+                app:layout_constraintTop_toBottomOf="@id/editTextRegisterPassword" />
 
-                <EditText
-                    android:id="@+id/editTextRegisterPasswordRepeat"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="16dp"
-                    android:gravity="center"
-                    android:hint="Repetir Password"
-                    android:inputType="textPassword"
-                    app:layout_constraintEnd_toEndOf="@id/editTextRegisterPassword"
-                    app:layout_constraintStart_toStartOf="@id/editTextRegisterPassword"
-                    app:layout_constraintTop_toBottomOf="@id/editTextRegisterPassword" />
+            <ImageView
+                android:id="@+id/reppasswordToggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="204dp"
+                android:layout_marginTop="4dp"
+                android:clickable="true"
+                android:contentDescription="Mostrar/Ocultar Repetir Contraseña"
+                android:src="@drawable/baseline_visibility_off_24"
+                app:layout_constraintStart_toStartOf="@+id/editTextRegisterPasswordRepeat"
+                app:layout_constraintTop_toTopOf="@id/editTextRegisterPasswordRepeat" />
 
-                <ImageView
-                    android:id="@+id/imageViewPasswordRepeatToggle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="8dp"
-                    android:clickable="true"
-                    android:contentDescription="Mostrar/Ocultar Repetir Contraseña"
-                    android:src="@drawable/baseline_visibility_off_24"
-                    app:layout_constraintEnd_toEndOf="@id/editTextRegisterPasswordRepeat"
-                    app:layout_constraintTop_toTopOf="@id/editTextRegisterPasswordRepeat" />
+            <Button
+                android:id="@+id/btn_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:backgroundTint="@color/btnintenso"
+                android:text="Siguiente"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextRegisterPasswordRepeat" />
 
-                <Button
-                    android:id="@+id/btn_next"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:backgroundTint="@color/btnintenso"
-                    android:text="Siguiente"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editTextRegisterPasswordRepeat" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
-
-        <ScrollView
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/register_layout2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:padding="16dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/register_layout2"
+            <Spinner
+                android:id="@+id/spinner_gender"
+                android:layout_width="125dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editRegisterBirthday"
+                tools:ignore="MissingConstraints" />
+
+            <EditText
+                android:id="@+id/editRegisterBirthday"
+                android:layout_width="260dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="4dp"
+                android:clickable="true"
+                android:focusable="false"
+                android:gravity="center"
+                android:hint="Fecha de Cumpleaños"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/logo2"
+                tools:ignore="MissingConstraints" />
+
+            <TextView
+                android:id="@+id/textViewPeso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Peso: ejemplo 70 kg"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.055"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_gender" />
+
+            <SeekBar
+                android:id="@+id/seekBarPeso"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="16dp">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:max="200"
+                android:progress="70"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewPeso" />
 
-                <Spinner
-                    android:id="@+id/spinner_gender"
-                    android:layout_width="125dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/editRegisterBirthday"
-                    tools:ignore="MissingConstraints"
-                    tools:layout_editor_absoluteX="125dp" />
+            <TextView
+                android:id="@+id/textViewAltura"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Altura: 1.20 m"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.012"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/seekBarPeso" />
 
-                <EditText
-                    android:id="@+id/editRegisterBirthday"
-                    android:layout_width="260dp"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="8dp"
-                    android:clickable="true"
-                    android:focusable="false"
-                    android:gravity="center"
-                    android:hint="Fecha de Cumpleaños"
-                    app:layout_constraintTop_toBottomOf="@+id/logo2"
-                    tools:ignore="MissingConstraints"
-                    tools:layout_editor_absoluteX="66dp" />
+            <SeekBar
+                android:id="@+id/seekBarAltura"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:max="250"
+                android:progress="120"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewAltura" />
 
-                <TextView
-                    android:id="@+id/textViewPeso"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Peso: ejemplo 70 kg"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.055"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spinner_gender" />
+            <TextView
+                android:id="@+id/textViewIMC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="IMC: "
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/seekBarAltura" />
 
-                <SeekBar
-                    android:id="@+id/seekBarPeso"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:max="200"
-                    android:progress="70"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewPeso" />
+            <ImageView
+                android:id="@+id/logo2"
+                android:layout_width="128dp"
+                android:layout_height="86dp"
+                android:src="@drawable/fondosombra"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/textViewAltura"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Altura: 1.20 m"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.012"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/seekBarPeso" />
+            <Button
+                android:id="@+id/btn_registrar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:backgroundTint="@color/btnintenso"
+                android:text="Registrar"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_back"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.73"
+                app:layout_constraintStart_toEndOf="@+id/btn_back"
+                app:layout_constraintTop_toBottomOf="@+id/textViewIMC"
+                app:layout_constraintVertical_bias="1.0" />
 
-                <SeekBar
-                    android:id="@+id/seekBarAltura"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:max="250"
-                    android:progress="120"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewAltura" />
+            <Button
+                android:id="@+id/btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="36dp"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/btnintenso"
+                android:text="atras"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewIMC" />
 
-                <TextView
-                    android:id="@+id/textViewIMC"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="IMC: "
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/seekBarAltura" />
-
-                <ImageView
-                    android:id="@+id/logo2"
-                    android:layout_width="128dp"
-                    android:layout_height="86dp"
-                    android:layout_marginTop="4dp"
-                    android:src="@drawable/fondosombra"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Button
-                    android:id="@+id/btn_registrar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:backgroundTint="@color/btnintenso"
-                    android:text="Registrar"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.838"
-                    app:layout_constraintStart_toEndOf="@+id/btn_back"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewIMC" />
-
-                <Button
-                    android:id="@+id/btn_back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="36dp"
-                    android:backgroundTint="@color/btnintenso"
-                    android:text="atras"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewIMC" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </ViewSwitcher>

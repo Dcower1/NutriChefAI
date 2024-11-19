@@ -61,11 +61,12 @@
             app:layout_constraintTop_toBottomOf="@+id/editTextLoginUsername" />
 
         <ImageView
-            android:id="@+id/passwordToggle"
+            android:id="@+id/reppasswordToggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
             android:contentDescription="Toggle Password Visibility"
             android:src="@drawable/baseline_visibility_off_24"
             app:layout_constraintBottom_toBottomOf="@+id/editTextLoginPassword"
@@ -104,6 +105,16 @@
                 app:layout_constraintStart_toEndOf="@+id/btn_gogle"
                 app:layout_constraintTop_toTopOf="@+id/btn_gogle"
                 app:layout_constraintVertical_bias="0.487" />
+
+            <ImageView
+                android:id="@+id/candado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/lock"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button

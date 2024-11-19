@@ -51,34 +51,52 @@
             android:id="@+id/btn_login"
             android:layout_width="104dp"
             android:layout_height="46dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:backgroundTint="@color/btnintenso"
             android:text="Login"
-            app:layout_constraintEnd_toStartOf="@+id/btn_register"
-            app:layout_constraintHorizontal_bias="1.0"
 
-            app:layout_constraintStart_toStartOf="@+id/fragment_container"
-            app:layout_constraintTop_toTopOf="@+id/btn_register" />
+            app:layout_constraintEnd_toStartOf="@+id/btn_register"
+            app:layout_constraintHorizontal_bias="0.266"
+            app:layout_constraintStart_toStartOf="@+id/constraintLayout"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="NotSibling" />
 
         <Button
             android:id="@+id/btn_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="68dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
             android:backgroundTint="@color/btnintenso"
             android:text="Registro"
-            app:layout_constraintEnd_toEndOf="@+id/fragment_container"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="NotSibling" />
 
-        <FrameLayout
-            android:id="@+id/fragment_container"
-            android:layout_width="285dp"
-            android:layout_height="450dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="286dp"
+            android:layout_height="496dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_register"
-            app:layout_constraintVertical_bias="0.118" />
+            app:layout_constraintVertical_bias="0.029">
+
+            <FrameLayout
+                android:id="@+id/fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

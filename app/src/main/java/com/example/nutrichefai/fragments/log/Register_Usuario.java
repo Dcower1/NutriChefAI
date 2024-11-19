@@ -1,7 +1,5 @@
 package com.example.nutrichefai.fragments.log;
 
-import static com.example.nutrichefai.utils.Utilidades.isValidPassword;
-
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -40,6 +38,8 @@ import com.example.nutrichefai.bd.DBHelper;
 import com.example.nutrichefai.utils.Utilidades;
 
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -101,8 +101,8 @@ public class Register_Usuario extends Fragment {
         editBirthday = view.findViewById(R.id.editRegisterBirthday);
 
         // Inicializar los toggles de visibilidad
-        passwordToggle = view.findViewById(R.id.imageViewPasswordToggle);
-        passwordRepeatToggle = view.findViewById(R.id.imageViewPasswordRepeatToggle);
+        passwordToggle = view.findViewById(R.id.passwordToggle);
+        passwordRepeatToggle = view.findViewById(R.id.reppasswordToggle);
         // Inicializar SeekBar and TextView con los ID
         seekBarPeso = view.findViewById(R.id.seekBarPeso);
         seekBarAltura = view.findViewById(R.id.seekBarAltura);
@@ -227,8 +227,22 @@ public class Register_Usuario extends Fragment {
             @Override
             public void onClick(View v) {
                 if (validatePage1()) {
-                    viewSwitcher.showNext();
+                    // Obtener valores del formulario
+                    String usuario = RegisterUser.getText().toString().trim();
+                    String email = RegisterEmail.getText().toString().trim();
+
+                    // Validar si el usuario y el email ya existen
+                    checkUniqueFields(usuario, email, isUnique -> {
+                        if (isUnique) {
+                            // Si no hay duplicados, avanzar al siguiente layout
+                            viewSwitcher.showNext();
+                        } else {
+                            // Mostrar mensaje de error si el usuario o el email ya están registrados
+                            Toast.makeText(getContext(), "Usuario o correo ya registrados", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 } else {
+                    // Mostrar mensaje si hay errores de validación en los campos
                     Toast.makeText(getContext(), "Por favor, corrija los errores en los campos", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -324,6 +338,51 @@ public class Register_Usuario extends Fragment {
             }
         });
     }
+    interface UniqueFieldCallback {
+        void onResult(boolean isUnique);
+    }
+    private void checkUniqueFields(String usuario, String email, UniqueFieldCallback callback) {
+        String apiUrl = "http://98.82.247.63/NutriChefAi/check_user_email.php";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, apiUrl,
+                response -> {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        boolean userExists = jsonResponse.getBoolean("userExists");
+                        boolean emailExists = jsonResponse.getBoolean("emailExists");
+
+                        // Establecer errores en los campos si los datos ya existen
+                        if (userExists) {
+                            RegisterUser.setError("Este usuario ya está registrado");
+                        }
+                        if (emailExists) {
+                            RegisterEmail.setError("Este email ya está registrado");
+                        }
+
+                        // Retornar si ambos campos son únicos
+                        callback.onResult(!userExists && !emailExists);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        callback.onResult(false); // Error al procesar JSON
+                    }
+                },
+                error -> {
+                    Log.e("API_ERROR", "Error en la conexión: " + error.getMessage());
+                    callback.onResult(false); // Error de red o servidor
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("usuario", usuario);
+                params.put("email", email);
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(requireContext());
+        requestQueue.add(stringRequest);
+    }
+
     private boolean validatePage1() {
         boolean isValid = true;
 
@@ -335,8 +394,8 @@ public class Register_Usuario extends Fragment {
         } else if (usuario.length() < 4) {
             RegisterUser.setError("El usuario debe tener al menos 4 caracteres");
             isValid = false;
-        } else if (!usuario.matches("[a-zA-Z0-9]+")) {
-            RegisterUser.setError("El usuario solo puede contener letras y números");
+        } else if (!usuario.matches("[a-zA-Z0-9\\s\\-áéíóúÁÉÍÓÚñÑ]+")) {
+            RegisterUser.setError("El usuario solo puede contener letras, números, espacios o guiones");
             isValid = false;
         }
 
@@ -359,6 +418,9 @@ public class Register_Usuario extends Fragment {
         } else if (password.length() < 6) {
             RegisterPassword.setError("La contraseña debe tener al menos 6 caracteres");
             isValid = false;
+        } else if (!password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).+$")) {
+            RegisterPassword.setError("La contraseña debe incluir al menos una mayúscula, una minúscula y un número");
+            isValid = false;
         }
 
         // Validar que las contraseñas coincidan
@@ -369,6 +431,7 @@ public class Register_Usuario extends Fragment {
 
         return isValid;
     }
+
     private boolean validatePage2() {
         boolean isValid = true;
 

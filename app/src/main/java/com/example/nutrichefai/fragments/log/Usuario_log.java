@@ -1,13 +1,8 @@
 package com.example.nutrichefai.fragments.log;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -20,32 +15,22 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.nutrichefai.MainActivity;
 import com.example.nutrichefai.R;
-import com.example.nutrichefai.bd.DBHelper;
 import com.example.nutrichefai.utils.Utilidades;
 
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,7 +51,7 @@ public class Usuario_log extends Fragment {
         txtloginusu = view.findViewById(R.id.editTextLoginUsername);
         txtpassword = view.findViewById(R.id.editTextLoginPassword);
         bt_ingresar = view.findViewById(R.id.btn_ingresar);
-        passwordToggle = view.findViewById(R.id.passwordToggle);
+        passwordToggle = view.findViewById(R.id.reppasswordToggle);
 
         datos = Volley.newRequestQueue(requireContext());
 
@@ -75,8 +60,15 @@ public class Usuario_log extends Fragment {
             String usernameOrEmail = txtloginusu.getText().toString().trim();
             String password = txtpassword.getText().toString().trim();
 
-            if (usernameOrEmail.isEmpty() || password.isEmpty()) {
-                Toast.makeText(requireContext(), "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
+            if (usernameOrEmail.isEmpty()) {
+                txtloginusu.setError("Por favor, ingresa tu nombre de usuario o correo");
+                txtloginusu.requestFocus(); // Enfoca el campo
+                return;
+            }
+
+            if (password.isEmpty()) {
+                txtpassword.setError("Por favor, ingresa tu contraseña");
+                txtpassword.requestFocus(); // Enfoca el campo
                 return;
             }
 
