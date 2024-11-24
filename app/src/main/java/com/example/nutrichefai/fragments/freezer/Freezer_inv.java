@@ -28,6 +28,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -132,7 +134,7 @@ public class Freezer_inv extends Fragment {
             });
         });
 
-        //refrigerator.setOnClickListener(v -> navigateToInverntarioUsuario());
+
 
         loadGrupos();
 
@@ -264,26 +266,24 @@ public class Freezer_inv extends Fragment {
 
     private void navigateToInverntarioUsuario() {
         if (userId == -1) {
-            Toast.makeText(requireContext(), "Error: Usuario no identificado.", Toast.LENGTH_SHORT).show();
             Log.e("Freezer_inv", "Error: Usuario no identificado.");
+            Toast.makeText(requireContext(), "Error: Usuario no identificado.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Fragment inverntarioUsuarioFragment = new Inverntario_usuario();
+        try {
+            NavController navController = Navigation.findNavController(requireView());
+            Bundle args = new Bundle();
+            args.putInt("userId", userId);
 
-        // Pasar el userId al fragmento
-        Bundle args = new Bundle();
-        args.putInt("userId", userId);
-        inverntarioUsuarioFragment.setArguments(args);
+            navController.navigate(R.id.action_freezer_inv_to_inventario_usuario, args);
 
-        // Realizar la transacción del fragmento
-        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, inverntarioUsuarioFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-
-        Log.d("Freezer_inv", "Navegación a Inverntario_usuario con userId: " + userId);
+            Log.d("Freezer_inv", "Navegación a Inventario_usuario con userId: " + userId);
+        } catch (Exception e) {
+            Log.e("Freezer_inv", "Error al navegar a Inventario_usuario", e);
+        }
     }
+
 
     public void showDynamicCard(int idIngrediente) {
         Log.d("Freezer_inv", "showDynamicCard llamado con ID: " + idIngrediente);

@@ -1,21 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
-        android:id="@+id/chat_nav"
+        android:id="@+id/chat_menu"
         android:icon="@drawable/menu_bt_ia"
-        app:showAsAction="always"
-        android:title=""/>
+        android:title="@string/title_chat"
+        app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/add_nav"
+        android:id="@+id/freezer_inv"
         android:icon="@drawable/add_food"
-        app:showAsAction="always"
-        android:title=""/>
+        android:title="@string/title_freezer"
+        app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/perfil_nav"
+        android:id="@+id/perfil_usuario"
         android:icon="@drawable/usuario_bt"
-        app:showAsAction="always"
-        android:title=""/>
+        android:title="@string/title_perfil"
+        app:showAsAction="ifRoom" />
+
 </menu>

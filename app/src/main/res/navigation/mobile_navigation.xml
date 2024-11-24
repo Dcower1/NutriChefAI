@@ -1,0 +1,53 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/chat_menu">
+
+    <!-- Fragmento Chat Menu -->
+    <fragment
+        android:id="@+id/chat_menu"
+        android:name="com.example.nutrichefai.fragments.chat.Chat_menu"
+        android:label="@string/title_chat"
+        tools:layout="@layout/fragment_chat_menu">
+        <!-- Argumento opcional para userId -->
+        <argument
+            android:name="userId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
+
+    <!-- Fragmento Freezer Inventario -->
+    <fragment
+        android:id="@+id/freezer_inv"
+        android:name="com.example.nutrichefai.fragments.freezer.Freezer_inv"
+        android:label="Freezer"
+        tools:layout="@layout/fragment_freezer_inv">
+        <action
+            android:id="@+id/action_freezer_inv_to_inventario_usuario"
+            app:destination="@id/inverntario_usuario"
+            app:popUpTo="@id/freezer_inv"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <!-- Fragmento Inventario Usuario -->
+    <fragment
+        android:id="@+id/inverntario_usuario"
+        android:name="com.example.nutrichefai.fragments.freezer.Inverntario_usuario"
+        android:label="Inventario Usuario"
+        tools:layout="@layout/fragment_inverntario_usuario">
+        <!-- Argumento obligatorio para userId -->
+        <argument
+            android:name="userId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
+
+    <!-- Fragmento Perfil Usuario -->
+    <fragment
+        android:id="@+id/perfil_usuario"
+        android:name="com.example.nutrichefai.fragments.perfiles.Perfil_Usuario"
+        android:label="@string/title_perfil"
+        tools:layout="@layout/fragment_perfil_usuario">
+    </fragment>
+</navigation>

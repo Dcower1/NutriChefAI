@@ -1,6 +1,7 @@
 package com.example.nutrichefai.fragments.chat;
 
 import android.annotation.SuppressLint;
+import android.app.BroadcastOptions;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,6 +18,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -34,77 +37,50 @@ import org.json.JSONObject;
 
 public class Chat_menu extends Fragment {
 
-    TextView nombreusuario, id;
-    ImageView card1, card2, card3;
+    private TextView nombreusuario, id;
 
-    @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chat_menu, container, false);
 
-        // Configuración del padding según los insets del sistema (barra de estado, etc.)
-        ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
+        // Inicializar las vistas
         nombreusuario = view.findViewById(R.id.nomUsuario);
         id = view.findViewById(R.id.id_usuario);
-        card1 = view.findViewById(R.id.card1);
-        card2 = view.findViewById(R.id.card2);
-        card3 = view.findViewById(R.id.card3);
 
-        // Listener para las cards
-        card1.setOnClickListener(v -> navigateToPlatillos());
-        card2.setOnClickListener(v -> navigateToPlatillos());
-        card3.setOnClickListener(v -> navigateToPlatillos());
-        // Recibir el userId desde los argumentos del fragmento
-        Bundle args = getArguments();
-        if (args != null) {
-            int userId = args.getInt("userId", -1); // -1 si no hay userId en los argumentos
-            if (userId != -1) {
-                loadUserData(userId); // Cargar los datos del usuario usando el userId
-            } else {
-                Toast.makeText(requireContext(), "Error: Usuario no identificado", Toast.LENGTH_LONG).show();
-            }
+        // Recuperar el userId desde los argumentos o SharedPreferences
+        int userId = getArguments() != null ? getArguments().getInt("userId", -1) : -1;
+        if (userId == -1) {
+            SharedPreferences preferences = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+            userId = preferences.getInt("userId", -1);
+        }
+
+        if (userId != -1) {
+            Log.d("Chat_menu", "userId recuperado: " + userId);
+            loadUserData(userId);
+        } else {
+            Toast.makeText(requireContext(), "Error: Usuario no identificado.", Toast.LENGTH_SHORT).show();
         }
 
         return view;
     }
-    private void navigateToPlatillos() {
-        Fragment platillosFragment = new Platillos();
 
-        // Iniciar la transacción de fragmento
-        requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, platillosFragment) // fragment_container es el contenedor del fragmento en tu actividad
-                .addToBackStack(null) // Para permitir volver al fragmento anterior
-                .commit();
-    }
     private void loadUserData(int userId) {
-        // URL para obtener los datos del usuario (ajusta según tu API)
         String url = "http://98.82.247.63/NutriChefAi/cargar_usuario.php?id_usu=" + userId;
+        Log.d("Chat_menu", "Cargando datos del usuario con URL: " + url);
 
-        // Crear una solicitud para obtener los datos del usuario
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
                     try {
-                        // Analiza la respuesta JSON
                         JSONObject jsonResponse = new JSONObject(response);
                         String estado = jsonResponse.getString("estado");
 
                         if (estado.equals("1")) {
                             JSONObject data = jsonResponse.getJSONObject("data");
                             String nombre = data.getString("usuario");
-                            String edad = data.getString("fechaNac");
-                            String peso = data.getString("peso");
-                            String altura = data.getString("altura");
-                            String imc = data.getString("imc");
 
-                            // Establece los datos en los TextViews
                             nombreusuario.setText(nombre);
-                            id.setText("ID: " + data.getString("id_usu")); // Muestra el ID del usuario cargado
+                            id.setText("ID: " + userId);
                         } else {
                             Toast.makeText(requireContext(), "No se encontraron datos para el usuario", Toast.LENGTH_SHORT).show();
                         }
@@ -113,14 +89,9 @@ public class Chat_menu extends Fragment {
                         Toast.makeText(requireContext(), "Error en la respuesta del servidor", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> {
-                    // Maneja errores de la solicitud
-                    Log.e("VolleyError", error.toString());
-                    Toast.makeText(requireContext(), "Hubo un error con la conexión", Toast.LENGTH_SHORT).show();
-                }
+                error -> Log.e("Chat_menu", "Error al cargar datos: " + error.toString())
         );
 
-        // Añadir la solicitud a la cola
         RequestQueue requestQueue = Volley.newRequestQueue(requireContext());
         requestQueue.add(stringRequest);
     }

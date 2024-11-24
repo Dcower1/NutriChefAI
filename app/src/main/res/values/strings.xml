@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">NutriChefAI</string>
+    <string name="title_chat">""</string>
+    <string name="title_freezer">""</string>
+    <string name="title_perfil">""</string>
 
 
     <string-array name="gender_options">

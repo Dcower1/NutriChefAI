@@ -17,7 +17,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
+import com.example.nutrichefai.databinding.ActivityMainBinding;
 import com.example.nutrichefai.fragments.chat.Chat_menu;
 import com.example.nutrichefai.fragments.freezer.Freezer_inv;
 import com.example.nutrichefai.fragments.perfiles.Perfil_Usuario;
@@ -25,129 +30,72 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Botones de la navegación de la app
-    Toolbar toolbar;
-    BottomNavigationView bottomNavigationView;
-
-    // Para inicializar los fragmentos
-    FrameLayout frameLayout;
-
-    int userId;
+    private ActivityMainBinding binding;
+    private BottomNavigationView bottomNavigationView;
+    private int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this); // este es tu método para hacer la app a pantalla completa asi no se bugea en los demas dispositivos.
-        setContentView(R.layout.activity_main);
 
-        // Ajustar los márgenes de los system bars (barra de estado y navegación)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+        // Hacer la app pantalla completa
+        EdgeToEdge.enable(this);
+
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        // Inicializar vistas
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        // Configurar Navigation Component
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.chat_menu, R.id.freezer_inv, R.id.perfil_usuario
+        ).build();
+
+
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
+
+        // Eliminar backstack al cambiar de sección en BottomNavigationView
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            boolean handled = NavigationUI.onNavDestinationSelected(item, navController);
+            navController.popBackStack(R.id.freezer_inv, false); // Borra Inventario_usuario al cambiar
+            return handled;
         });
 
-        // Referencias a la barra de navegación y fragment container
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
-        frameLayout = findViewById(R.id.fragment_container);
-        toolbar = findViewById(R.id.toolbar);
-
-        // Obtener el ancho de la pantalla en dp
-        int screenWidthDp = getResources().getConfiguration().screenWidthDp;
-
-        // Obtener el userId desde el Intent
-        Intent intent = getIntent();
-        userId = intent.getIntExtra("userId", -1);
+        // Obtener el userId del Intent
+        userId = getIntent().getIntExtra("userId", -1);
 
         // Guardar el userId en SharedPreferences
         if (userId != -1) {
             SharedPreferences preferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putInt("userId", userId);
-            editor.apply();
-            Log.d("MainActivity", "userId guardado: " + userId);
+            preferences.edit().putInt("userId", userId).apply();
+            Log.d("MainActivity", "User ID guardado en SharedPreferences: " + userId);
         } else {
-            Log.e("MainActivity", "Error: Usuario no identificado.");
             Toast.makeText(this, "Error: Usuario no identificado.", Toast.LENGTH_SHORT).show();
-        }
-        // Cargar el fragmento Chat_menu con el userId si es la primera vez
-        if (savedInstanceState == null) {
-            if (userId != -1) {
-                loadFragment(new Chat_menu(), userId, screenWidthDp >= 600);
-            } else {
-                Toast.makeText(this, "Error: Usuario no identificado", Toast.LENGTH_LONG).show();
-            }
+            Log.e("MainActivity", "Error: Usuario no identificado.");
         }
 
-
-        // Configurar la toolbar como ActionBar
-        setSupportActionBar(toolbar);
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            Fragment fragment;
-
-            if (item.getItemId() == R.id.chat_nav) {
-                fragment = new Chat_menu();
-            } else if (item.getItemId() == R.id.add_nav) {
-                fragment = new Freezer_inv();
-            } else if (item.getItemId() == R.id.perfil_nav) {
-                fragment = new Perfil_Usuario();
-            } else {
-                return false;
-            }
-
-            // Llamar al método loadFragment con la condición del tamaño de pantalla
-            return loadFragment(fragment, userId, screenWidthDp >= 600); // Pasar la condición del tamaño
-        });
-    }
-
-    // Método para detectar si el dispositivo es una tableta
-    public boolean esTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK)
-                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
-    }
-
-    // Modificar el método loadFragment para aceptar el tercer parámetro
-    private boolean loadFragment(Fragment fragment, int userId, boolean isLargeScreen) {
-        if (fragment != null) {
-            Bundle args = new Bundle();
-            args.putInt("userId", userId);
-            args.putBoolean("isLargeScreen", isLargeScreen);
-            fragment.setArguments(args);
-
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .commit();
-            return true;
-        }
-        return false;
+        // Pasar el userId al gráfico de navegación
+        Bundle args = new Bundle();
+        args.putInt("userId", userId);
+        navController.setGraph(navController.getGraph(), args);
     }
 
     @Override
     public void onBackPressed() {
-        // Verifica si el fragment actual necesita manejar el botón de retroceso
+        // Si hay fragmentos en la pila de retroceso, manejarlo normalmente
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            // Si hay fragmentos en la pila de retroceso, llama al comportamiento predeterminado
             super.onBackPressed();
         } else {
-            // Si no hay más fragmentos, muestra el diálogo de confirmación
+            // Mostrar un diálogo para confirmar salir
             new AlertDialog.Builder(this)
                     .setTitle("Salir de la aplicación")
                     .setMessage("¿Estás seguro de que deseas salir?")
-                    .setPositiveButton("Sí", (dialog, which) -> {
-                        // Finaliza la actividad y cierra la aplicación
-                        finish();
-                    })
-                    .setNegativeButton("No", (dialog, which) -> {
-                        // Cierra el diálogo sin hacer nada
-                        dialog.dismiss();
-                    })
-                    .setCancelable(false) // Impide cerrar el diálogo tocando fuera de él
+                    .setPositiveButton("Sí", (dialog, which) -> finish())
+                    .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                    .setCancelable(false)
                     .show();
         }
     }
-
-
-
 }

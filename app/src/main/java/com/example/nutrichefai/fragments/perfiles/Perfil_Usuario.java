@@ -1,6 +1,8 @@
 package com.example.nutrichefai.fragments.perfiles;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,12 +47,18 @@ public class Perfil_Usuario extends Fragment {
         peso = view.findViewById(R.id.textView12);
 
         // Recuperar userId desde los argumentos o SharedPreferences
+        // Recuperar el userId desde los argumentos o SharedPreferences
         int userId = getArguments() != null ? getArguments().getInt("userId", -1) : -1;
+        if (userId == -1) {
+            SharedPreferences preferences = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+            userId = preferences.getInt("userId", -1);
+        }
 
         if (userId != -1) {
-            loadUserData(userId); // Llamar al método para cargar los datos del usuario
+            Log.d("Perfil_Usuario", "userId recuperado: " + userId);
+            loadUserData(userId);
         } else {
-            Log.e("Perfil_Usuario", "No se encontró un userId válido");
+            Toast.makeText(requireContext(), "Error: Usuario no identificado.", Toast.LENGTH_SHORT).show();
         }
 
         return view;
