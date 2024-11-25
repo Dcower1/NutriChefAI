@@ -14,17 +14,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+
         android:visibility="gone"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="@id/image_refrigerator"
-
-        tools:layout_editor_absoluteY="577dp"
-        tools:ignore="NotSibling">
+        tools:ignore="NotSibling"
+        tools:layout_editor_absoluteX="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/background_with_border"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -89,6 +90,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:backgroundTint="@color/btnintenso"
                     android:text="Añadir" />
 
                 <!-- Botón Cancelar -->
@@ -97,6 +99,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:backgroundTint="@color/btnintenso"
                     android:text="Cancelar" />
             </LinearLayout>
 

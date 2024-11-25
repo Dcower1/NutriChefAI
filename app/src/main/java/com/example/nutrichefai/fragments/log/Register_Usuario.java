@@ -84,6 +84,7 @@ public class Register_Usuario extends Fragment {
 
         viewSwitcher = view.findViewById(R.id.viewSwitcher_register);
         btnNext = view.findViewById(R.id.btn_next);
+
         btn_atras = view.findViewById(R.id.btn_back);
         btn_registrarce = view.findViewById(R.id.btn_registrar);
 

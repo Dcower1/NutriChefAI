@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#80F3EEEA"/>
+    <!-- Fondo del CardView -->
+    <solid android:color="#EBE3D5" /> <!-- Color de fondo -->
 
+    <!-- Bordes -->
     <stroke
         android:width="2dp"
         android:color="#776B5D" /> <!-- Color del borde -->
 
     <!-- Esquinas redondeadas -->
     <corners android:radius="8dp" />
-
 </shape>

@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.log.Usuario_log">
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/login_layout"
         android:layout_width="match_parent"
@@ -27,68 +26,88 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/fondosombra" />
 
-        <EditText
-            android:id="@+id/editTextLoginUsername"
+        <!-- TextInputLayout para Usuario-Mail -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutUsername"
             android:layout_width="210dp"
-            android:layout_height="40dp"
-            android:ems="10"
-            android:gravity="center"
-
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:hint="Usuario-Mail"
-            android:inputType="text"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:boxStrokeWidth="2dp"
+            app:boxStrokeColor="#603F26"
+            app:hintTextColor="@color/secondary_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/logoimg"
-            app:layout_constraintVertical_bias="0.117" />
+            app:layout_constraintVertical_bias="0.117">
 
-        <EditText
-            android:id="@+id/editTextLoginPassword"
-            android:layout_width="210dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="36dp"
-            android:ems="10"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextLoginUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint=""
+            android:inputType="text"
+            android:textColor="#000000"
+            android:textColorHint="#808080"
             android:gravity="center"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:paddingEnd="16dp"
+            android:padding="10dp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- TextInputLayout para Password -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutPassword"
+            android:layout_width="210dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Password"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:boxStrokeWidth="2dp"
+            app:boxStrokeColor="#603F26"
+            app:hintTextColor="@color/secondary_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutUsername">
 
-            app:layout_constraintTop_toBottomOf="@+id/editTextLoginUsername" />
-
-        <ImageView
-            android:id="@+id/reppasswordToggle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
-            android:contentDescription="Toggle Password Visibility"
-            android:src="@drawable/baseline_visibility_off_24"
-            app:layout_constraintBottom_toBottomOf="@+id/editTextLoginPassword"
-            app:layout_constraintEnd_toEndOf="@+id/editTextLoginPassword"
-            app:layout_constraintTop_toTopOf="@+id/editTextLoginPassword" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextLoginPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint=""
+                 android:inputType="textPassword"
+                 android:textColor="#000000"
+                 android:textColorHint="#808080"
+                 android:gravity="center"
+                 android:padding="10dp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout2"
             android:layout_width="168dp"
             android:layout_height="50dp"
             android:layout_marginTop="28dp"
-            android:background="@drawable/rounded_corners"
+            android:background="@drawable/background_with_border"
             app:circularflow_radiusInDP="25%"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView6">
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/btn_gogle"
-                android:layout_width="59dp"
-                android:layout_height="58dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:src="@drawable/logogogle"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -117,19 +136,30 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!-- Botón para mostrar/ocultar contraseña -->
+        <ImageView
+            android:id="@+id/reppasswordToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="Toggle Password Visibility"
+            android:src="@drawable/baseline_visibility_off_24"
+            app:layout_constraintBottom_toBottomOf="@+id/textInputLayoutPassword"
+            app:layout_constraintEnd_toEndOf="@+id/textInputLayoutPassword"
+            app:layout_constraintTop_toTopOf="@+id/textInputLayoutPassword" />
+
+        <!-- Botón de ingreso -->
         <Button
             android:id="@+id/btn_ingresar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
-
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/btnintenso"
             android:text="Ingresar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPassword" />
 
+        <!-- Texto de recuperar contraseña -->
         <TextView
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
@@ -138,8 +168,7 @@
             android:text="Recuperar password"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextLoginPassword" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_ingresar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,14 +3,14 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="secondary_text">#FFFFFFFF</color>
+    <color name="toorbar">#AB886D</color>
+    <color name="fondo">#B0A695</color>
+    <color name="whiteobjetos">#F3EEEA</color>
+    <color name="botones">#EBE3D5</color>
+    <color name="btnintenso">#776B5D</color>
 
-    <color name="toorbar">#7FA1C3</color>
-    <color name="fondo">#DAE8FC</color>
-    <color name="whiteobjetos">#F5EDED</color>
-    <color name="botones">#E2DAD6</color>
-    <color name="btnintenso">#7EA6E0</color>
-
-    <color name="colorDefault">#B0BEC5</color>
-    <color name="colorSelected">#81D4FA</color>
+    <color name="colorDefault">#F3EEEA</color>
+    <color name="colorSelected">#776B5D</color>
 </resources>
 

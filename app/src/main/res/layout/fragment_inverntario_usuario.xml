@@ -13,7 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/freez" />
+        android:src="@drawable/freez"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- RecyclerView para mostrar los ingredientes -->
     <androidx.recyclerview.widget.RecyclerView
@@ -45,6 +49,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/background_with_border"
             android:padding="16dp">
 
             <!-- Botón eliminar en la esquina izquierda -->
@@ -114,6 +119,7 @@
                     android:id="@+id/button_add_quantity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/btnintenso"
                     android:text="Añadir" />
 
                 <!-- Botón restar cantidad -->
@@ -122,6 +128,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
+                    android:backgroundTint="@color/btnintenso"
                     android:text="Restar" />
             </LinearLayout>
         </RelativeLayout>
