@@ -102,8 +102,8 @@ public class Register_Usuario extends Fragment {
         editBirthday = view.findViewById(R.id.editRegisterBirthday);
 
         // Inicializar los toggles de visibilidad
-        passwordToggle = view.findViewById(R.id.passwordToggle);
-        passwordRepeatToggle = view.findViewById(R.id.reppasswordToggle);
+        //passwordToggle = view.findViewById(R.id.passwordToggle);
+        //passwordRepeatToggle = view.findViewById(R.id.reppasswordToggle);
         // Inicializar SeekBar and TextView con los ID
         seekBarPeso = view.findViewById(R.id.seekBarPeso);
         seekBarAltura = view.findViewById(R.id.seekBarAltura);
@@ -111,34 +111,7 @@ public class Register_Usuario extends Fragment {
         textViewAltura = view.findViewById(R.id.textViewAltura);
         textViewIMC = view.findViewById(R.id.textViewIMC);
 
-        passwordToggle.setOnTouchListener((v, event) -> {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    togglePasswordVisibility(RegisterPassword, passwordToggle, true);
-                    v.performClick(); // Asegurarte de que el clic se maneje correctamente
-                    return true; // Evento manejado
 
-                case MotionEvent.ACTION_UP:
-                    togglePasswordVisibility(RegisterPassword, passwordToggle, false);
-                    return true;
-            }
-            return false;
-        });
-
-
-        passwordRepeatToggle.setOnTouchListener((v, event) -> {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    togglePasswordVisibility(RegisterPasswordRepeat, passwordRepeatToggle, true);
-                    return true; // Evento manejado
-
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    togglePasswordVisibility(RegisterPasswordRepeat, passwordRepeatToggle, false);
-                    return true; // Evento manejado
-            }
-            return false; // Evento no manejado
-        });
         // Funcionamiento de los SeekBars
         setupSeekBarListeners();
         // Configurar el campo de fecha de cumpleaños
